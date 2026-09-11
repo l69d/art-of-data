@@ -1,0 +1,1251 @@
+
+
+=== [page 1] ===
+Learning from tragedy, keeping
+patientssafe
+Overview of the Government’s
+actionprogramme in response
+to the recommendations of the
+ShipmanInquiry
+Presented to Parliament by
+the Home Secretary and the Secretary of State for Health
+by Command of Her Majesty
+February 2007
+Cm 7014 London: the Stationery Office
+£13.50
+
+=== [page 2] ===
+© Crown Copyright 2007
+The text in this document (excluding the Royal Arms and departmental logos) may be
+reproduced free of charge in any format or medium providing that it is reproduced accurately and
+not used in a misleading context. The material must be acknowledged as Crown copyright and
+the title of the document specified.
+Any enquiries relating to the copyright in this document should be addressed to The Licensing
+Division, HMSO, St Clements House, 2-16 Colegate, Norwich, NR3 1BQ.
+Fax: 01603 723000 or e-mail: licensing@cabinet-office.x.gsi.gov.uk
+
+=== [page 3] ===
+Contents
+Foreword 3
+Chapter 1: Introduction 5
+Harold Shipman 5
+Early action 6
+Setting up the Shipman Inquiry 6
+The inquiry’s reports 6
+Chapter 2: Main themes of the inquiry’s reports 8
+The 1998 police investigation 8
+Death certification and the coroners’ system 8
+Use of routine monitoring data 9
+Responding to complaints and concerns 10
+The controlled drugs audit trail 11
+Regulation of doctors 11
+Chapter 3: Developments in the NHS since Shipman’s day 13
+Clinical governance 13
+Patient safety – An organisation with a memory 14
+Handling performance issues and the National Clinical Assessment Service 15
+Towards a “patient-led NHS” 15
+Regulation of healthcare organisations 16
+Summary 16
+Chapter 4: The Government’s action programme 17
+Police investigation of cases involving health professionals 17
+Reform of the coroners’ system 18
+Improvements in the process for death certification 19
+Safer management of controlled drugs 20
+Clinical governance and the identification of potential performance issues 22
+A new approach to complaints and concerns 23
+Local handling of identified performance issues 24
+Reform of professional regulation 25
+Making a reality of revalidation 26
+Chapter 5: Taking the action forward 28
+References 29
+List of abbreviations 32
+Annexes:
+A. The “three inquiries”: Ayling, Neale, and Kerr and Haslam 33
+B. Further details on the Government’s action programme 35
+
+=== [page 4] ===
+
+
+=== [page 5] ===
+There can be few people in the United Kingdom who are unaware of Harold Shipman, a respected
+GP from Hyde in Greater Manchester who, over a period of 20 or more years, was responsible for
+the murder of around 250 of his patients. In the years since Shipman was convicted, two questions
+are continuously debated. Firstly, what made an apparently caring, competent doctor turn to
+murder on such a horrific scale? And secondly, why did nobody in authority realise what was
+going on?
+The Shipman Inquiry was set up in January 2001, following Shipman’s conviction the previous year
+for the murder of 15 of his patients. The Inquiry was tasked with investigating the extent of
+Shipman’s unlawful activities, enquiring into the activities of the statutory authorities and other
+organisations involved, and making recommendations on the steps needed to protect patients for
+the future. 
+The Inquiry published a total of six reports. The first and last addressed the extent of Shipman’s
+criminal activities, as a general practitioner (First Report) and in the early part of his career as a
+junior hospital doctor (Sixth Report). The other reports considered the various processes and
+systems which failed to detect his activities at an earlier stage – the 1998 investigation by the
+Greater Manchester Police (Second Report), death certification and the coroner system (Third
+Report), the systems for ensuring the safe and appropriate use of controlled drugs (Fourth report),
+and the arrangements for monitoring and disciplining GPs including arrangements for
+whistleblowing and handling complaints in the NHS (Fifth Report).
+We owe an immense debt of gratitude to Dame Janet Smith and her team for their meticulous
+analysis of the weaknesses in existing systems which Shipman was able to exploit for his criminal
+purposes, and for the skill with which her recommendations balance the need to safeguard the
+normal processes of patient care and the need to protect the public from professional abuse.
+As the Shipman Inquiry acknowledged, the NHS today is in many ways very different from the NHS
+in which Shipman practised. Among many other changes, there is a far greater acceptance of the
+view that the quality and safety of patient care is not just the responsibility of individual doctors,
+nurses and other health professionals – important though that is – but a shared responsibility of all
+healthcare organisations. New structures and processes have been put in place to ensure the
+quality of care, to focus healthcare organisations on continuous quality improvement, and to ensure
+that seriously deficient clinical performance is rapidly identified and dealt with. In this new climate,
+it seems unlikely that the activities of a Shipman would have gone unrecognised for long.
+It is also vital to keep a sense of proportion. The overwhelming majority of health professionals are
+committed to providing the best care they can to their patients. We need to celebrate their
+commitment, support their efforts, and provide them with the means to seek even further
+improvement in the quality of the care they provide. It would be a tragedy if, in trying to protect
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 3
+Foreword
+from the Secretary of State for
+Health, the Minister of State for
+Policing, Security and Community
+Safety, and the Minister of State
+for Constitutional Affairs
+
+
+=== [page 6] ===
+patients from the small minority of professionals who pose a threat to them through incompetence,
+ill health or deliberate malevolence, we were to put obstacles in the way of the vast majority of
+caring and competent professionals.
+Nevertheless, the Government has always accepted the need to strengthen the existing
+safeguards in all the areas covered in the Inquiry’s reports. We have already responded formally
+to the recommendations on controlled drugs in the Inquiry’s Fourth Report and action on reform of
+the coroners’ system is underway. Today we are publishing a full response to the Inquiry’s Fifth
+Report, covering also the related recommendations of the Ayling, Neale and Kerr/Haslam Inquiries;
+a major White Paper with proposals for reform of the regulation of health professionals; and outline
+proposals for reform of the processes for scrutiny of death certificates. This paper provides an
+overview of all the action the Government is taking, summarising all these publications and
+spanning the responsibilities of four government departments, to respond to the challenges posed
+by the Inquiry reports. 
+As Dame Janet has acknowledged, no system can offer complete security against abuse from
+minds as devious as Shipman’s. We believe however that the government’s comprehensive
+programme of action will provide patients with robust safeguards against abuse, without imposing
+additional burdens on health professionals or impeding access of patients to modern patient care.
+Patricia Hewitt Tony McNulty
+Harriet Harman
+4 FOREWORD
+
+=== [page 7] ===
+Harold Shipman
+1.1 In January 2000 Harold Shipman, a single-handed GP practising in Hyde, Greater Manchester,
+was convicted at Preston Crown Court of murdering 15 of his patients. He committed these
+murders by injecting his patients with lethal doses of diamorphine, a strong painkiller related to
+heroin which has legitimate and widespread use in the treatment of the terminal stages of cancer
+and in other medical conditions. As further information came out both during and after the trial,
+including the results of an audit of Shipman’s mortality data commissioned by the Department
+1, it
+became apparent that these were not isolated crimes but merely a small sample of a horrific series
+of murders committed over as long as 25 years and spanning virtually the whole of Shipman’s
+professional life.
+1.2 We will never know exactly what motivated an apparently caring doctor – a doctor who in some
+respects was in the vanguard of medical practice i and who was popular with his patients and
+respected by his local community – to commit such atrocious crimes. The priority now must be to
+ask how Shipman’s crimes could have gone undetected for so long and why a number of potential
+warning signals were ignored or overlooked. We need to learn the lessons from the Shipman case,
+and to put into practice those reasonable safeguards needed to protect patients and the general
+public from any possible recurrence.
+1.3 There are still people who say that Shipman was unique; that it is futile to attempt to strengthen
+the existing safeguards, because any future individual who wanted to harm patients would evade
+them by using different methods; and that any additional safeguards will only have the effect of
+undermining the bond of trust between patient and health professional and of impeding the delivery
+of patient care. 
+1.4 The Government does not accept this point of view. Regrettably, there have been other recent
+examples, both in the United Kingdom and abroad, of health professionals who have abused the
+trust of their patients
+ii. Annex A summarises the findings of three recent inquiries which in some
+respects raise very similar issues to those of Shipman. It would be deeply irresponsible for the
+Government to turn a blind eye to the issues raised by these cases and to pretend that such crimes
+could never happen again.
+1.5 The Government does, however, fully accept that any additional safeguards have to be
+proportionate to the risk and that they must be carefully designed to minimise the impact on patient
+care and on the relation between patients and health professionals. In addition, there have been
+significant changes in the NHS since Shipman’s day which, as the Shipman Inquiry recognised,
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 5
+Chapter 1
+Introduction
+i For instance, Shipman started prescribing statins for patients with heart disease before this was commonly recognised as good practice.
+ii For instance, Benjamin Green, a nurse at Horton Hospital, Banbury was found guilty in April 2006 of murdering two patients an d causing
+grievous bodily harm to 15 others.
+
+=== [page 8] ===
+provide many of the safeguards needed (see Chapter 3 below). This paper sets out a brief
+summary of the further action which the Government is taking – in various fields and spanning the
+responsibilities of four separate government departments – to learn from the lessons of the
+Shipman case. Further details can be found in the various documents listed in Annex B.
+Early action
+1.6 The Government took early action to strengthen the powers available to primary care trusts to
+safeguard patients. This included:
+/circle6introducing checks on the qualifications, professional history and police record of candidates for
+GP positions; 
+/circle6securing undertakings that GPs would participate in appraisal and cooperate with assessment
+by the National Clinical Assessment Service (see para 3.10 below); and
+/circle6introducing new powers to enable Primary Care Trusts (PCTs) to suspend GPs or remove them
+from the local list (see para 3.11). 
+But it was recognised that this action, necessary as it was, could only be a starting point in
+considering the additional safeguards that might be needed.
+Setting up the Shipman Inquiry
+1.7 A public inquiry into the circumstances surrounding Shipman’s activities was announced in
+September 2000 and established the following January. Dame Janet Smith (now Lady Justice
+Smith) was invited to chair the inquiry and, in addition to the inquiry’s legal investigation team, the
+inquiry also had access to expert medical and epidemiological advice.
+The inquiry’s reports
+1.8 The Shipman Inquiry published six reports in all. Two reports, the first report of July 20022 and
+the sixth report of January 2005 3, are essentially factual and seek to establish, as far as is now
+possible, which of the patients who died under Shipman’s care died of natural causes and which
+as a result of his wrongdoing. 
+1.9 That leaves four reports which form the basis of this paper and which, between them, seek to
+answer the question: how was it possible for Shipman to continue his murderous career for so long
+without apparently arousing suspicion? These are:
+/circle6the second report of July 2003 4, which examines the shortcomings in the original police
+investigation by Greater Manchester Police in March and April 1998;
+/circle6the third report, also of July 20035, which examines the processes for death certification and the
+coroners’ system, and asks whether more clues could have been found by better scrutiny either
+of individual deaths or of the pattern of deaths among Shipman’s patients;
+/circle6the fourth report of July 2004 6, which looks at the then current safeguards on access to
+controlled drugs such as diamorphine and asks how Shipman was able to evade these controls
+and to amass such large quantities of lethal drugs;
+6 CHAPTER 1 INTRODUCTION
+
+=== [page 9] ===
+/circle6the fifth report of December 2004 7, which looks at current systems for monitoring the
+performance of doctors in general practice, at the handling of complaints from members of the
+general public and concerns of fellow professionals, and at the systems operated by the
+General Medical Council (GMC) for ensuring that doctors are and remain competent to practise.
+1.10 The inquiry’s reports confirm that Shipman was a devious and unscrupulous character who
+used his professional reputation and plausible manner to conceal most of the traces of his criminal
+actions. Nevertheless, the inquiry found that he did let his guard slip on a number of occasions,
+leaving clues that could and should have been picked up at an earlier stage. On one occasion, two
+of Shipman’s professional colleagues noticed his use of diamorphine in a condition for which it is
+not appropriate – but failed to report their concerns. Other people, including a colleague in a
+neighbouring general practice who countersigned his cremation certificates, eventually noticed the
+apparently high rate of deaths among his patients – but their concerns were not taken seriously.
+Only when Shipman forged the will of one of his victims was serious action taken to unmask his
+activities.
+1.11 The inquiry concluded that, if stronger safeguards had been in place, either Shipman might
+have been deterred from his criminal career or at least he would have been detected sooner. The
+further safeguards proposed by the inquiry are summarised in the next chapter.
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 7
+
+=== [page 10] ===
+2.1 The Shipman Inquiry’s second, third, fourth and fifth reports are meticulous and detailed and
+contain a total of 190 recommendations. Details of the inquiry’s recommendations and of the way
+in which they are being taken forward are given in the documents listed at Annex B. However, the
+main themes from the four reports can be summarised as follows.
+The 1998 police investigation (second report)
+2.2 The main conclusion of the second report was that the Greater Manchester Police investigation
+was delegated to an officer who was too inexperienced to work without direction and supervision.
+As a result, the officer in question failed to understand the nature of the concerns he was asked to
+investigate and failed to follow up what could have been vital leads. 
+2.3 The report makes no formal recommendations. It does, however, suggest that it would be
+helpful to issue guidance to detective officers who have to investigate allegations of wrongdoing by
+health professionals, and commends work already under way to develop guidance of this kind.
+Death certification and the coroners’ system (third report)
+2.4 Under current arrangements, the doctor responsible for a patient’s care during their final illness
+completes a “medical certificate of the cause of death” (MCCD), and this is the basis of the
+registration of the death. Doctors refer the case to the coroner if they have any suspicions over the
+cause of death or in other specified circumstances, for example if the death appears to have
+occurred during an operation or to result from an industrial disease. The registrar of births and
+deaths checks the MCCD to ensure that it is correctly completed and must report any cases to the
+coroner where the MCCD or information from the family of the deceased suggests that further
+investigation is needed, for instance if there was an unexplained injury or uncertainty over the
+cause of death. However registrars are not medically qualified, do not have access to medical
+records, and are not in a position to make informed judgements about the validity of the stated
+cause of death.
+2.5 Where the bereaved family choose a burial, there are no further checks on the MCCD. For
+cremations, statutory forms are completed by two doctors, namely the treating doctor and an
+independent experienced doctor who makes enquiries and examines the body. The applicant for
+cremation (usually the next of kin) also completes a form. The medical referee at the crematorium
+authorises cremation in the light of the information on the forms completed by the applicant and the
+two doctors but does not examine the MCCD; nor does the medical referee have access to the
+medical records of the deceased. Either of the two doctors may refer the case to the coroner in
+cases of doubt. The medical referee is entitled to refuse to authorise the cremation if these doubts
+are not resolved but must give reasons for such a refusal.
+8 CHAPTER 2 MAIN THEMES OF THE INQUIRY’S REPORTS
+Chapter 2
+Main themes of the Inquiry’s reports
+
+=== [page 11] ===
+2.6 The inquiry concluded that this system provided inadequate safeguards, particularly against
+the very unlikely (but sadly not unthinkable) possibility that the doctor completing the MCCD was
+responsible for the patient’s death. It proposed a radical overhaul both of the coroners’ system and
+of the arrangements for death certification, in which
+/circle6a single system for oversight of death certificateswould be established, regardless of whether
+the deceased is to be buried or cremated;
+/circle6the certifying doctor would provide a description of the chain of events leading to deathand an
+opinion on the cause of death and would refer all deaths to the coroners’ service;
+/circle6a new national coroners’ serviceunder a Chief Coroner would be established at arm’s length
+from national government, replacing the current system of local coroners appointed and funded
+by local authorities. This service would be responsible for the final certification of death and for
+deciding whether further investigation was necessary in all deaths; and
+/circle6the new system would contain both medical coronerswho would be responsible for establishing
+the medical cause of death and judicial coronerswho would carry out further investigations
+where necessary (eg in the case of suspicious deaths).
+An independent Home Office review, the Tom Luce review, came to broadly similar conclusions 8
+about the shortcomings of the current arrangements, although proposing rather different solutions.
+Use of routine monitoring data (fifth report)
+2.7 At the time Shipman was committing his crimes, very little systematic data was collected on the
+performance of health professionals, especially in general practice where the “independent status”
+of GPs was (and to a large extent still is) greatly valued by GPs and their patients alike. From the
+1980s onwards data on prescribing patterns was collected, but mainly to encourage appropriate
+and cost-effective prescribing. Information on complaints and concerns about individual GPs was
+held, if at all, in informal files held in the offices of directors of public health in primary care
+organisations
+iii. There were no systematic arrangements for sharing information between
+healthcare organisations, even when doctors worked for more than one organisation iv.
+2.8 Research carried out on behalf of the Shipman Inquiry 9 suggested that, if data on the number
+and pattern of deaths of Shipman’s patients had been analysed, some unusual features would
+have come to light – for instance, the high proportion who died in the afternoon when Shipman
+carried out his home visits. The inquiry concluded that the NHS needed to adopt a much more
+systematic approach to collecting and monitoring information on the performance of doctors,
+including
+/circle6more accurate ascription of prescribing datato individual doctors;
+/circle6routine monitoring of mortality ratesby GP practice;
+/circle6closer specification of the information on individual doctorsto be held in personnel files of NHS
+organisations; and
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 9
+iii Over the period covered by Shipman’s crimes there were several changes in the organisation of primary care. For much of the relevant
+period GPs like Shipman were accountable to “family health service authorities” (FHSAs), which were responsible for aspects of
+monitoring, discipline and complaints. The role is now exercised by primary care trusts (PCTs).
+iv This was a major weakness of NHS systems in the case of Clifford Ayling – see Annex A.
+
+=== [page 12] ===
+/circle6setting up a central databasecontaining a subset of this information on all doctors so as to
+enable – subject to strict safeguards on access – better sharing of information between NHS
+organisations.
+Responding to complaints and concerns (fifth report)
+2.9 Complaints from patients, and expressions of concern from fellow professionals, are potentially
+a rich source of information to help healthcare organisations detect early signs of poor or malicious
+performance in health professionals. In Shipman’s time there were already avenues open to
+complaints from patients, and from 1987 onwards doctors had an explicit ethical duty to report any
+concerns about their colleagues. But these potential safeguards were ineffective, for various
+reasons:
+/circle6a reluctance on the part of patients or members of the general public to voice complaints about
+health professionals, in part because of the prevailing culture of deference to authority;
+/circle6a professional culture which prized loyalty to one’s fellow professionals, even if the safety of
+patients might be at risk;
+/circle6a perception (largely correct) that primary care organisations had little influence over GPs and
+that there was little point in raising concerns if no action was likely to follow.
+2.10 The Shipman Inquiry recommended a number of improvements both to encourage the raising
+of complaints and concerns and to ensure that primary care organisations took effective action on
+them. Key proposals were:
+/circle6arrangements for making complaints about professional performance should be simplified, with
+a “single portal” rather than the current confusing arrangements;
+/circle6patients should have the right to express complaints directly to the primary care trust(PCT), and
+in any case all complaints (even if originally directed to the GP practice) should be copied to the
+PCT;
+/circle6PCTs should scrutinise all complaintsand investigate systematicallythose which appear to
+relate to issues of professional performance or patient safety, referring on to the professional
+regulator where needed;
+/circle6PCTs should treat expressions of concernas seriously, and in the same way, as complaints;
+/circle6healthcare organisations (including GP practices) should clarify the arrangements for raising
+concerns about fellow professionals;
+/circle6the statutory protectionfor whistleblowers should be strengthened.
+2.11 The inquiry noted that the powers of primary care organisations to discipline GPs (including
+suspension or removal from the “Performers List”, the list of GPs practising in the PCT area) had
+been considerably strengthened since Shipman’s day. But the inquiry proposed some further
+strengthening, including lesser sanctions to enable PCTs to deal with issues not sufficiently serious
+to require referral to the GMC or use of the list management powers.
+10 CHAPTER 2 MAIN THEMES OF THE INQUIRY’S REPORTS
+
+=== [page 13] ===
+The controlled drugs audit trail (fourth report)
+2.12 Diamorphine, the drug used by Shipman for his murders, is a “controlled drug” (CD). CDs are
+subject to special controls because of their potential for diversion and abuse v. Shipman however
+was able to evade the controls and to amass a lethal quantity of diamorphine, in two main ways:
+/circle6by offering to collect prescriptions on behalf of his patients but then diverting some or all of the
+drugs to his own use;
+/circle6by collecting unused drugs from the homes of deceased patients, promising to return them for
+destruction (but in fact keeping them himself).
+2.13 The inquiry proposed a number of changes to strengthen the audit trail, to restrict the number
+of prescribers authorised to prescribe CDs, and to provide oversight of the whole system. Key
+proposals were
+/circle6the creation of a new CD inspectoratewith the skills to detect unusual prescribing patterns or
+other evidence of diversion;
+/circle6creation of a special registerof prescribers authorised to prescribe CDs as part of their normal
+clinical practice;
+/circle6collection and collation of information on private prescribingof CDs and on requisitions(bulk
+orders) of CDs by GP practices for personal administration to patients;
+/circle6creation of an audit trailwhen health professionals or others collect CDs on behalf of a patient;
+/circle6special safeguards on the most dangerous CDs (injectable “schedule 2” CDs) dispensed for use
+in the community, eg for palliative care in terminal cancer.
+Regulation of doctors (fifth report)
+Appraisal and revalidation
+2.14 Shortly before the Shipman Inquiry started work the GMC published proposals for a five yearly
+“revalidation” of doctors10. This was widely promoted as the equivalent of an “MOT for doctors”, ie
+a means by which doctors could assure their patients that they had maintained their skills and
+remained fit to practise. An effective revalidation cycle would provide a further opportunity for
+concerns about a doctor’s performance to be aired and for remedial action to be taken as needed.
+2.15 The inquiry reviewed the way in which the GMC was intending to implement these proposals,
+including the use of an annual peer review process (“appraisal”) introduced in 2001. The inquiry
+concluded that the original concept of revalidation had been seriously watered down to the point at
+which it would no longer provide any independent assurance of fitness to practise. It recommended
+a complete review of both appraisal and revalidation so that revalidation would provide the
+safeguards originally intended.
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 11
+v See for example the article on controlled drugs on the NHS Direct website http://www.nhsdirect.nhs.uk
+
+=== [page 14] ===
+Fitness to practise processes
+2.16 Once a doctor has been referred to the GMC – for instance, by a primary care organisation –
+the GMC initiates a series of processes to determine whether the doctor remains fit to practise or
+whether some sanction is required (in the most serious cases, erasure from the medical register).
+These processes comprise, in essence:
+/circle6a screening process, to see whether the allegation is sufficiently serious to proceed further;
+/circle6an investigation by GMC staff, leading to a preliminary hearing; and then if necessary
+/circle6a formal hearing by an adjudication panel set up by the GMC.
+These processes have been substantially revised in recent years.
+2.17 The inquiry studied in detail the recent changes in the processes and the guidance given to
+GMC officials and panels at the various stages. It concluded that, where choices had to be made,
+there was a consistent tendency to place a higher premium on the fair treatment of the doctor than
+on the protection of patients. It proposed a large number of detailed changes to the processes, of
+which the most significant were
+/circle6the adoption of the civil standard of proof(“on the balance of probabilities”) rather than the
+criminal standard (“beyond reasonable doubt”) in fitness to practise cases;
+/circle6publishing clear and explicit standardsto be applied at each stage in the process;
+/circle6setting up an independent adjudication panel(ie completely independent of the GMC) to carry
+out the final adjudication stage of the process.
+The inquiry saw these as the essential preconditions for re-establishing public confidence in the
+regulation of doctors.
+12 CHAPTER 2 MAIN THEMES OF THE INQUIRY’S REPORTS
+
+=== [page 15] ===
+3.1 As the Shipman Inquiry recognised, the NHS of today is in some respects very different from
+the NHS in which Shipman practised. Some of these changes have happened because of – or at
+least have been accelerated by – the reaction to the Shipman case and other high-profile cases in
+which patients’ trust in health professionals has been betrayed. Other changes reflect wider
+changes in society, for instance attitudes towards traditional authority figures, and changes
+prompted by a vigorous debate within the health professions themselves of what constitutes high-
+quality healthcare. Many of these changes derive from the wide-ranging strategy A first class
+service: quality in the new NHS, issued as a consultation document in 1998
+11. This chapter reviews
+some of the developments that are particularly relevant to the issues raised by the Shipman case.
+Clinical governance
+3.2 The concept of clinical governance was first introduced in The new NHS – modern, dependable
+in 1997 12 and developed further in A first class service and other publications in the following
+years13. The concept describes both an attitude – the acceptance that healthcare organisations
+have a corporate responsibility to provide safe and effective services and to strive for continuous
+quality improvement – and a set of structures and processes which help to put that attitude into
+effect. One definition is “a unifying concept for quality which provides organisations with a
+systematic means for ensuring that they comply with their statutory duty [for quality]”
+14.
+3.3 At the heart of clinical governance is the requirement for clinicians and clinical teams 
+/circle6to assess the quality of the care they provide, using a combination of clinical outcomes and
+measures of patients’ experience; 
+/circle6to reflect on this experience, including both successes and failures; and
+/circle6to apply the lessons learnt in order to improve the quality of services.
+3.4 At the level of the individual clinician or clinical team this process includes participation in
+clinical audit. But healthcare organisations as a whole – and PCTs in relation to the primary care
+services which they commission on behalf of their populations – need to carry out a similar process
+of assessment in order to identify poor-quality services and to encourage and reward the good.
+Identifying poor performance, and taking whatever steps are needed to protect patients from its
+results, is therefore an integral part of clinical governance.
+3.5 This represents a radical shift from Shipman’s day, when the dominant view was that GPs were
+independent practitioners accountable only to their own patients and to the GMC. Such a major
+cultural change cannot be expected to take place overnight. A recent National Audit Office report
+has
+15 found that, in late 2005 when the fieldwork was carried out, most PCTs had made good
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 13
+Chapter 3
+Developments in the NHS since Shipman’s day
+
+=== [page 16] ===
+progress in establishing the basic structures and processes of clinical governancebut that there
+was less evidence of the underlying cultural change needed. The next chapter describes the action
+the Government is taking to promote the further development of clinical governance concepts
+throughout the NHS.
+Patient safety – An organisation with a memory
+3.6 Patient safety is one vital aspect of clinical quality. It has two complementary facets:
+/circle6ensuring that the appropriate treatments are offered with as near as possible to 100% reliability;
+and
+/circle6minimising the risk of errors leading to avoidable adverse effects of treatment.
+3.7 Much healthcare is intrinsically risky, especially in emergency situations, and some degree of
+error is inevitable. However, study of other high-risk “industries” has shown that error rates can be
+very significantly reduced by a combination of
+/circle6careful design of processes, assessing and minimising the intrinsic risk; and
+/circle6open reporting of safety incidents (adverse events and “near misses”), followed by a detailed
+“root cause” analysis of what went wrong and why.
+Moreover, in an organisation as large as the NHS even rare accidents can be repeated over and
+over in different parts of the organisation unless information is shared and common lessons learnt.
+Patient safety incidents should therefore be reported not only locally but also to a national
+“reporting and learning system” so that lessons learnt can be disseminated throughout the NHS.
+These principles were first set out in the seminal report An organisation with a memory
+16 and are
+now an integral part of NHS clinical governance processes.
+3.8 One key element of a patient safety culture is the upward reporting of “significant events”,
+ie patient safety incidents involving serious harm or death. In general practice, all unexpected
+deaths should be regarded as “significant events” in this sense and should result in both
+/circle6analysis and learning at the practice level; and
+/circle6upward reporting to the PCT for further analysis of patterns and trends.
+In a mature patient safety culture of this kind, a cluster of unexpected deaths of the kind perpetrated
+by Shipman would be far more likely to be identified.
+3.9 Although much progress has been made since the publication of An organisation with a
+memory, much more is still needed to establish a true patient safety culture in every NHS
+organisation. The recent report Safety first 17 proposes a number of further steps to re-affirm the
+priority of patient safety, including
+/circle6establishing a national patient safety forum; 
+/circle6developing patient safety action teams in strategic health authorities, providing a specialist
+resource to support NHS organisations in investigating patient safety incidents; and
+14 CHAPTER 3 DEVELOPMENTS IN THE NHS SINCE SHIPMAN’S DAY
+
+=== [page 17] ===
+/circle6making more effective use of reports of incidents and other information which could help to
+identify sources of unsafe care.
+Handling performance issues and the National Clinical Assessment
+Service
+3.10 Setting up systems to monitor and evaluate the outcomes of treatment would be of limited
+value in itself. NHS organisations also need effective processes to deal with the rare cases of poor
+professional performance which those systems will occasionally throw up. There have been
+important developments recently in both primary and secondary care:
+/circle6In primary care, new list management powerswere introduced in 200118 to enable PCTs to
+suspend doctors while investigating concerns about their practice, and where necessary to
+remove them from the PCT’s list of doctors authorised to provide care for that community;
+/circle6In secondary care, new guidance was issued in 2005 on performance processes for employed
+doctors and dentists.
+19 This established the principle of a clear separation between the
+investigation of allegations and the formal machinery for determining what action is needed to
+protect patients. A similar model for primary care has been published.20
+3.11 In dealing with performance issues NHS employers and PCTs will often need expert advice
+in deciding what action is needed, for instance whether the apparent deficiency can be relatively
+easily corrected by some form of remediation or whether the problem is more deep-seated. The
+National Clinical Assessment Authority (now the National Clinical Assessment Service (NCAS) of
+the National Patient Safety Agency) was set up in 2001 to provide this service
+21. National policies
+require NHS employers and PCTs to seek NCAS advice at all key stages of investigations and
+disciplinary procedures, and NCAS can also, if invited, carry out a full assessment of the clinician’s
+performance. Final responsibility for action remains with the employer or PCT.
+Towards a “patient-led NHS”
+3.12 In Shipman’s day, the predominant assumption in medicine was one of benevolent
+paternalism: health professionals were the experts on the treatment of disease and had the
+responsibility to use this expertise in deciding what was best for their patients.
+3.13 We now live in a very different era. Patients have ready access, through the internet and by
+other means, to information about their condition and its treatment, and many patients (especially
+those with longer-term conditions) are now “expert patients”, fully able to engage in informed
+discussion with their clinicians. The Government has encouraged and supported this development
+through its “expert patients programme”
+22. With the development of more powerful treatments
+clinicians are more aware that the choice of treatment can involve a difficult weighing up of the
+benefits, risks and adverse effects of different treatments and that the “right” choice depends
+crucially on the value judgements of patients and carers rather than on those of the clinician. There
+is also a wider recognition that patients, carers and the general public have key insights into the
+design of services and into the steps needed to improve quality and safety
+23.
+3.14 In this changing climate of opinion, feedback from patients and carers – whether in the form
+of complaints or commendations – is now recognised as a positive input to improving the quality of
+services rather than as a “nuisance” to be dealt with. If this had been the mentality in the health
+service of Shipman’s day, his story might have been very different.
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 15
+
+=== [page 18] ===
+Regulation of healthcare organisations
+3.15 For many years, private healthcare organisations have been subject to inspection to ensure
+that they meet national standards of quality and safety. The principle of external assessment, to
+clear national standards, was extended to NHS organisations as a result of the proposals in A first
+class service
+11. The Commission for Healthcare Inspection (later the Healthcare Commission) was
+set up to provide this external assessment against national standards, published in 2004 as
+Standards for Better Health
+14. Each year the Healthcare Commission published its assessment of
+the performance of all specialist trusts and primary care trusts against these standards, leading to
+an overall rating based on the balance of performance across all the standards.
+3.16 Further developments of these arrangements were recently announced in The regulation of
+health and adult social care in England 24. With effect from 2009-10 all healthcare providers, NHS
+and private sector, will need to be “registered” with the regulator and assessed against national
+standards of quality and safety. Organisations failing to meet the standards will need to take urgent
+remedial action and could, in the last resort, lose their registration.
+Summary
+3.17 This chapter has surveyed some of the changes which have already taken place in the NHS
+since Shipman’s day. If the processes and attitudes described had been in place then, it is very
+likely that Shipman’s misdeeds would have been detected far earlier. However, the Government
+accepts that more needs to be done to embed these processes and, more importantly, to achieve
+the change in culture needed to instil a true patient focus throughout the NHS. The next chapter
+describes the Government’s proposals for further strengthening the safeguards needed to ensure
+the safety of patients and the general public.
+16 CHAPTER 3 DEVELOPMENTS IN THE NHS SINCE SHIPMAN’S DAY
+
+=== [page 19] ===
+4.1 This chapter summarises the action which the Government has set in hand to take forward the
+recommendations of the Shipman Inquiry and of the “three inquiries” described in Annex A. It
+includes a brief summary of the complementary action on the regulation of the health professions,
+following consultation on the reviews of medical
+25 and non-medical26 regulation which were in part
+prompted by the inquiry’s fifth report. This is a comprehensive action programme spanning the
+work of several government departments. Further detail on individual components of the work
+programme can be found in the documents listed in Annex B, including a White Paper on the future
+of professional regulation, Trust, assurance and safety: the regulation of health professionals in the
+21st century, which is also published today.
+4.2 In approaching the recommendations of the various inquiries, the Government adopted four
+overarching principles:
+/circle6The protection of patients and of the general public should be the overriding priority;
+/circle6This should however be done in a way that minimises any potential impact on the delivery of
+patient care and affirms and supports those health professionals – the overwhelming majority –
+who aspire to do the best for their patients;
+/circle6Any additional safeguards should build on the existing processes in the NHS for ensuring
+clinical quality and safety, that is to say on existing clinical governance processes;
+/circle6These additional safeguards should also apply consistently across all sectors of healthcare – in
+particular, to secondary as well as to primary care – and, on a proportionate basis, to all health
+professions and not just to doctors.
+4.3 The Shipman Inquiry was of course fully aware of the need to protect patients’ access to
+services and of the need to build on existing NHS structures. Nevertheless, the NHS has continued
+to evolve rapidly even in the relatively short period since the inquiry carried out its fieldwork. And
+consideration of the implications for secondary care and for the non-medical professions was
+outside the inquiry’s terms of reference. The Government believes that the actions set out below
+are faithful to the spirit of the Shipman Inquiry’s recommendations, even if the detailed
+implementation differs in some respects.
+Police investigation of cases involving health professionals
+4.4 As noted above (para 2.3), the Shipman Inquiry’s Second Report made no formal
+recommendation but commended work already under way to develop guidance for police officers
+carrying out investigations of unexpected deaths – or other incidents leading to serious harm – of
+patients following treatment by health professionals. This work has now been completed; there is
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 17
+Chapter 4
+The Government’s action programme
+
+=== [page 20] ===
+a relevant entry on this issue in the 2006 edition of the Murder Investigation Manual , and to
+complement this the Association of Police Officers, the NHS and the Health and Safety Executive
+have published a “Memorandum of Understanding”, following widespread consultation with the
+NHS, patient groups, and professional and police interests
+27. Key points in the memorandum are:
+/circle6the differing roles of the three parties, with the presumption that the NHS will lead any
+investigation into patient safety issues unless there is clear evidence that harm was deliberately
+intended or was the result of gross negligence or recklessness;
+/circle6early liaison between the three parties through an initial meeting of an “incident coordination
+group”;
+/circle6clarity over the responsibility for initial investigation;
+/circle6securing and preserving evidence;
+/circle6sharing information; and
+/circle6supporting those harmed, other patients, relatives and NHS staff.
+The national development group which was responsible for drafting the protocol will review the use
+made of it at the end of the first year after publication.
+Reform of the coroners’ system
+4.5 The Government announced its plans for reform of the coroners’ system in February 2006 28
+and published a draft Coroners Bill in June 200629. A substantive bill will be introduced as soon as
+Parliamentary time allows. Reform will bring five main benefits:
+/circle6bereaved people will be able to contribute more to coroners’ investigations, and there will be a
+new appeals systemif they are unhappy about decisions taken;
+/circle6national leadership will be introduced through a new Chief Coroner and an advisory Coronial
+Council;
+/circle6coroners will continue to be funded by local authorities, but posts will be whole timeand current
+boundaries will be reshaped to ensure a fair distribution of workand good links with relevant
+agencies;
+/circle6coroners will have new powers to obtain information and to summon witnesses, ensuring better
+investigations and inquests;
+/circle6coroners will have better medical support and adviceat both local and national levels.
+4.6 The Government fully recognises the importance of additional medical advice to the coroners’
+service. A new Medical Adviser to the Chief Coroner will
+/circle6provide advice on strategic issues, such as whether the right cases are being reported to the
+coroner under the proposed new statutory duty on the medical profession to report specified
+deaths, or the provision of pathology services and the use of post mortems; and 
+18 CHAPTER 4 THE GOVERNMENT’S ACTION PROGRAMME
+
+=== [page 21] ===
+/circle6act as consultant to the Chief Coroneron particularly complex medical cases on which he or
+she may be required, for example, to determine appeals. 
+4.7 The Government will set aside additional funds to provide coroners with similar advice at a
+local level.Each coroner will, in consultation with his or her local authority, determine precisely
+what medical support and advice they would like to access to benefit the service, within budget
+constraints. In doing so, coroners will need to ensure that for any given investigation the source of
+this advice is a doctor who is independent of the healthcare organisations responsible for the final
+care of the patient whose death has been referred; with this proviso, coroners may wish to use the
+expertise of doctors who are involved in the initial scrutiny of deaths in PCTs and hospital trusts
+(see below). The Government believes that these are positive proposals which will have a real
+benefit for the bereaved. 
+4.8 We will also be consulting shortly on modernising and consolidating the Cremation
+Regulations. These will include a new right for families to examine the medical forms prior to
+authorisation of the cremation by the medical referee, and to challenge or query their accuracy with
+a view to further investigation of the cause of death by the medical referee or the coroner.
+Furthermore, we will publicise the opportunity that bereaved relatives already have to ask a coroner
+to investigate a cause of death, if they have concerns about the reasons given for death, by a
+doctor, on a death certificate.
+Improvements in the process for death certification
+4.9 The Government accepts the Shipman Inquiry’s conclusion30 that the existing arrangements for
+scrutinising the medical certificate of cause of death (MCCD) are confusing and inadequate. The
+key problems are that
+/circle6there is no independent medical scrutiny of the MCCD at all in the case of burials, unless the
+doctor signing the MCCD specifically refers the case to the coroner, or the registrar refers to the
+coroner before registering the death;
+/circle6in contrast, although there are successive checks by two successive doctors in cremation
+cases, the scrutiny is not always sufficiently independent of the doctor signing the MCCD and
+is not subject to effective quality assurance. The existing processes were criticised both by the
+Shipman Inquiry and by the independent report commissioned by the Home Office
+8;
+/circle6there is no routine system for analysis for local clinical governance purposes of the information
+on the MCCDs or on the additional forms completed for cremations, and no explicit link to
+clinical governance processes in hospitals or in PCTs.
+4.10 The Government therefore proposes a variant of the Shipman Inquiry’s key recommendationvi
+in order to create a rigorous, unified system covering both burials and cremations. The proposal is
+that:
+/circle6MCCDs, for burials and cremations alike, would be subject to scrutiny by an independent
+“medical examiner” attached to the clinical governance team in the hospital trust (secondary
+care) or PCT (primary care);
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 19
+vi These proposals would apply in England and Wales. The existing system in Scotland is rather different, and a separate review of Scottish
+burial and cremation legislation will announce its conclusions later this year.
+
+=== [page 22] ===
+/circle6where the medical examiner was not satisfied that the MCCD told the full story or felt that there
+were other unusual circumstances, he or she would refer the case to the coroner for further
+investigation, along with his or her reasons for doing so;
+/circle6the medical examiner would have full access to medical records and would be empowered to
+discuss the circumstances of the death with the doctor signing the MCCD and with the family of
+the deceased;
+/circle6the clinical governance team would collate information from MCCDs and would use this to
+analyse trends and patterns, looking out for unusual features such as those revealed by
+Shipman’s pattern of deaths;
+/circle6the clinical governance team would ensure that all unexpected deaths were treated as
+significant events and followed up in individual and team clinical audit. This would link well with
+the proposals from Good doctors, safer patients
+25 for the monitoring of all significant events in
+general practice (see below para 4.17).
+4.11 The Government believes that arrangements along these lines will be fair to families and will
+provide much more effective safeguards for both burial and cremation cases than the current
+arrangements. Further details are will be published shortly in a consultation paper.
+Safer management of controlled drugs
+4.12 The Government’s action programme for strengthening the safeguards relating to controlled
+drugs was published in 2004 as Safer management of controlled drugs 31, and action is now well
+under way. The main components of the action programme are:
+i. New governance arrangements. The Government carefully considered the inquiry’s
+recommendation of a new controlled drugs inspectorate (see para 2.13) but decided that it
+would be better to build on existing governance arrangementsin the NHS. Details were set out
+in guidance to the NHS in March 2006 32, and the legislative underpinning was provided by a
+section in the 2006 Health Act and in subsequent regulations 33. The key features are
+– requiring health organisations (including hospital trusts and PCTs) to appoint an
+“accountable officer” with personal responsibility for the safe management and use of CDs
+within the organisation;
+– requiring health organisations, police forces and health professions regulators to share
+informationabout potential CD offences and to collaborate in any action needed to protect
+the public; and
+– creating clearer arrangements for the monitoring and inspection of the use of CDs by
+health and social care organisations, including clarifying or in some cases extending the
+right of entry for accountable officers and their staff, health professions regulators and
+police.
+20 CHAPTER 4 THE GOVERNMENT’S ACTION PROGRAMME
+
+=== [page 23] ===
+ii. Restrictions on prescribing CDs. The Government has worked with professional organisations
+to place a clear professional requirement on all professionals who prescribe CDs to work within
+their professional competence. Guidance has now been issued or reissued by all relevant
+health professions regulators.Any significant breaches will be followed up by the regulator. The
+Government considers that this is more practicable than attempting to create a special cadre of
+professionals who could or could not prescribe CDs
+34, given that the great majority of doctors
+and other prescribers will have a legitimate need to prescribe CDs as some part of their
+professional practice.
+iii Strengthening the audit trail. The Government has accepted essentially all the inquiry’s
+proposals for strengthening the audit trail
+35. The Government has already
+– developed and implemented a new system for capturing and analysing information on
+private prescribing of CDs36;
+– introduced new checks on patients or health professionals who claim to be collecting CDs
+on behalf of a patient36;
+and will shortly
+– introduce a statutory requirement for all GP practicesto develop and agree with their PCT
+a standing operating requirementsetting out clear protocols for their use of CDs; and
+– develop and implement an audit trail for GP requisitionsof CDs for use within the practice.
+The most potentially difficult recommendations relate to the audit trail for drugs dispensed into
+the community (see para 2.13 above); a small-scale pilot gave encouraging results and the
+Department of Health is now proceeding to a larger-scale pilot before final decisions are taken.
+In the longer term, the Government considers that the best way of strengthening the audit trail
+will be through promoting the use of electronic generation (and ultimately electronic
+transmission) of CD prescriptions and electronic CD registers, and legislative changes to allow
+this are under way
+37.
+iv Information for patients. The Government agrees with the inquiry 38 that patients need to be
+better informed about the special status of CDs and the need to ensure that they do not fall into
+the wrong hands. This, however, needs to be done in a way that does not unduly alarm patients
+or discourage them from taking the medicines they need. In collaboration with other
+organisations and information providers, the Department of Health
+/circle6has used a number of routes to convey generic information on the safe handling of all
+medicines; and
+/circle6has commissioned guidance giving specificinformation about the therapeutic uses and special
+status of CDs;the first of these “medicines guides” have recently been published39.
+v Professional education. The Government considers that one of the best safeguards for patients
+will lie in better education for health professionals in the appropriate use of CDs and in the
+special precautions needed in handling them. The Department of Health is therefore working
+with the health professions regulators and with the authorities responsible for undergraduate
+and postgraduate training to ensure that these principles are fully reflected in initial and
+postgraduate education and in continuing professional development.
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 21
+
+=== [page 24] ===
+Clinical governance and the identification of potential performance issues
+4.13 The crucial first step in any system for managing professional performance is the initial
+identification of cause for concern. In Shipman’s case, despite the ingenuity with which he
+attempted to cover his traces, a number of potential clues were missed (see para 1.10). As Annex
+A describes in more detail, similar lessons emerge from the Ayling and Kerr/Haslam inquiries of
+failure to recognise the significance of concerns expressed, coupled – in Ayling’s case – with the
+failure of different NHS organisations to combine the information they had.
+4.14 The Government considers that establishing strong clinical governance processes and culture
+is the key to this initial identification of potential problems. Considerable progress has already been
+made in establishing the underlying structures and processes, although more is needed to embed
+the cultural change required
+40. The Department has recently carried out a review of NHS clinical
+governance arrangements and confirmed that there is still a need for central support to help
+healthcare organisations enhance their clinical governance processes.
+4.15 To identify potential performance issues, clinical governance units in PCTs and specialist
+trusts need to work with two different kinds of information:
+/circle6indicators of clinical processes and outcomes which, taken together, give a broad view of the
+clinical competence and performance of clinical teams and (where appropriate) individual
+clinicians;
+/circle6information derived from complaints from patients and carers, expressions of concern from
+fellow professionals, and information from other organisations that have employed the
+professional.
+4.16 Clinical process and outcome data.In general practice, a number of PCTs have experimented
+with the use of “scorecards” combining routinely available data and comparing all GPs within the
+PCT. Hospitals can similarly “benchmark” clinical indicators for their own clinicians or clinical teams
+against indicators in other comparable units or against international best practice. In either case an
+unusual score on any one indicator may have a perfectly innocuous explanation, but extreme
+scores on a number of complementary indicators would indicate the need for further investigation.
+As recommended in the CMO’s review of medical regulation
+41, the Department will work with
+professional bodies both in general practice and in hospital specialties to develop such indicator
+sets for all major clinical specialties, and in particular to explore the use of prescribing data and the
+monitoring of significant events, including death monitoring.Information from the proposed
+additional scrutiny of death certificates (see above para 4.10) will be very valuable for this purpose.
+4.17 Other intelligence. The use of other forms of intelligence raises difficult issues. Some
+complaints and expressions of concern may be malicious or based on a genuine
+misunderstanding, and such information must be subject to very strict safeguards to ensure that
+professionals’ reputations are not unfairly impugned. On the other hand, both the Shipman and the
+Ayling cases demonstrate that the safety of patients may depend on joining up pieces of “soft”
+information which individually would not justify taking action. And where, following a fair and
+thorough investigation, a complaint has been upheld and action taken – for instance, where this
+has led to formal disciplinary action or, for doctors, the issuing of a “recorded concern” (see para
+4.26 below) – this is information which could well be relevant to handling any further complaints or
+concerns. The Government will work with the health professions regulators, as recommended by
+the Shipman Inquiry, to agree guidance to the NHS on 
+/circle6what information should be held in the personnel files of NHS organisations; and
+22 CHAPTER 4 THE GOVERNMENT’S ACTION PROGRAMME
+
+=== [page 25] ===
+/circle6the safeguards under which such information may be shared between organisations. 
+4.18 For the medical profession, special safeguards may be needed because many doctors in both
+general and hospital practice are working without direct supervision and have access to powerful
+drugs and other treatments. The Government is therefore implementing the proposal in the CMO’s
+review
+42 to set up a network of “GMC affiliates” and lay associates, trained by the GMC but working
+alongside clinical governance units in NHS organisations.They will help to assess the significance
+of information relating to the performance of individual doctors and to determine which issues
+should be referred to the GMC and which can be handled locally, including by use of the “recorded
+concern” procedure described in para 4.26 below. 
+4.19 In addition, the Government will work with the GMC and other stakeholders to make the
+Medical Register the prime source of information about the registration status of doctors, including
+any “recorded concerns” or information about disciplinary issues affecting their practice
+43. Some of
+this information will be freely available; other information will be accessible only to the doctors
+themselves, to GMC affiliates and their teams, and to approved employers.
+A new approach to complaints and concerns
+4.20 As already noted, complaints from patients and carers and expressions of concern from fellow
+professionals and other sources form an important source of information which may indicate poor
+professional performance or (in very rare cases) deliberate abuse of patients. For this to work
+properly, there are two requirements:
+/circle6supporting people who want to make complaints or raise concerns, so that they know where to
+go and can be assured that their story will be listened to and acted on;
+/circle6ensuring that healthcare organisations have the processes and skills to act effectively on what
+they hear.
+The Department of Health will be addressing both these aspects in a consultation document, to be
+published in the near future, proposing a comprehensive reform of the complaints system for health
+and social care. Key aspects relevant to professional performance issues are as follows.
+4.21 Supporting people with complaints and concerns. Subject to consultation, the Government
+proposes:
+/circle6to introduce a right for patients with complaints against a GP to go directly to the PCT rather
+than to the GP practice, as recommended by the Shipman Inquiry and endorsed by the CMO’s
+review
+44;
+/circle6to create for patients with complaints or concerns about a doctor the opportunity to discuss their
+concerns with a GMC affiliate paired with a lay person(current GMC procedures do not provide
+such an opportunity);
+/circle6to consider parallel arrangements for patients with a complaint against a local hospitalwho have
+inhibitions about going direct to the hospital management; 
+/circle6to agree a concordatbetween organisations likely to receive complaints from patients to ensure
+that complaints are speedily routed, with the complainant’s permission, to the most appropriate
+body;
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 23
+
+=== [page 26] ===
+/circle6to develop good practice on the need to keep complainants informed about the process which
+will be adopted to investigate the complaint, and about the subsequent progress of the
+investigation;
+/circle6to ensure widespread dissemination of the arrangements to enable fellow professionals or
+members of the general public to raise concerns, including arrangements to cater for situations
+in which the person raising the complaint feels unable to go to their own management or
+organisation.
+4.22 Acting on complaints and concerns. The government proposes:
+/circle6to issue guidance on the level at which complaints should be investigated, in particular ensuring
+that those which may raise more general issues about the performance or conduct of health
+professionals are investigated at a sufficient level of seniority, and that complaints from more
+vulnerable people who may find it difficult to articulate their true concerns are taken seriously;
+/circle6to place a responsibility on PCTs to maintain an overview of complaints against GPs, including
+where necessary taking over the investigation of complaints even where they were lodged with
+the practice in the first instance, as recommended by the Shipman Inquiry
+45;
+/circle6to work with the NHS to build capacity and skills in practices, PCTs and hospital trusts to
+investigate serious allegations, including collaboration between PCTs where this would help to
+concentrate skills and experience;
+/circle6to develop more robust arrangements for the performance management of complaints handling
+in healthcare organisations.
+Underpinning these specific measures, the Government proposes, as Parliamentary time allows,
+to strengthen the statutory responsibility for quality of healthcare organisations, including a specific
+responsibility for ensuring that lessons are learnt from medical errors and complaints.This fulfils
+recommendations from the Shipman Inquiry and from the CMO’s review
+46.
+Local handling of identified performance issues 
+4.23 Where local information suggests a potential performance issue, and further investigation
+shows that there is indeed a significant cause for concern, then local NHS organisations (hospital
+trusts and PCTs) have a statutory obligation to take whatever action is needed to protect patients
+and the public. The basic structures are already in place. For doctors and dentists, referral to the
+NCAS at this stage may be indicated (see above para 3.11), and the GMC affiliate should be
+involved (para 4.18). In some cases – particularly where the health professional accepts the need
+for improvement – it may be sufficient to agree a remediation plan. 
+4.24 In cases in which there is a possible need for more formal disciplinary action, PCTs and
+employers need to be able to act promptly to protect patients. The Government has recently agreed
+new arrangements with the professions to clarify and simplify the process(see para 3.10). The new
+guidance emphasises that
+/circle6decisions should be taken by the organisation’s board, on advice from a panel chaired by a
+board member;
+/circle6the decision-making process should be clearly separated from the initial investigation; and
+24 CHAPTER 4 THE GOVERNMENT’S ACTION PROGRAMME
+
+=== [page 27] ===
+/circle6health professionals should be fully informed about the allegations against them and have the
+opportunity to present their side of the case.
+Possible sanctions available to hospital trusts include oral and written warnings, placing formal
+conditions on continuing practice (eg restriction to certain clinical areas or requirement for
+monitoring/supervision), dismissal, and referral to the health profession regulator. For GPs the
+equivalent sanctions include suspension from the list, the imposition of conditions (eg an
+undertaking not to use certain types of drugs), “contingent removal” from the list (removal which
+will become effective if the GP breaks certain conditions), removal from the local PCT list, and a
+national ban from appearing on any list. 
+4.25 The Shipman Inquiry considered that, despite recent reforms, the powers of PCTs to protect
+patients in the case of poor performance by GPs were still inadequate. Similarly, the early
+experience of PCT chief executives in using the new powers, as reported in the CMO’s review,
+suggests that these arrangements are seen as too inflexible to deal with all but the most serious
+cases
+47. The Government agrees and intends to strengthen these existing arrangements in three
+ways:
+i following a proposal in the CMO’s review 48, the Department of Health will clarify any ambiguity
+over the right of access of PCT staff to individual patient records , subject to reasonable
+safeguards, where this is needed in the context of an investigation to protect patient safety;
+ii during 2007 the Department will review the operation of the Performers List systemin the light
+of other developments, including the introduction of GMC affiliates and “recorded concerns”
+(see para 4.26) and the proposed introduction of a system of registration of healthcare
+organisations (see para 3.16 above);
+iii as part of this review, the Department will discuss with GP interests a range of lesser sanctions
+(short of suspension or placing formal conditions on remaining on the Performers List) that
+could be applied to GPs, including issuing formal warning notices and financial withholdings.
+Reform of professional regulation
+4.26 As already noted, the Government is today publishing a White Paper, Trust, assurance and
+safety: the regulation of health professionals in the 21st century , which sets out a comprehensive
+programme of reform of the system of professional regulation. Some of the key themes relevant to
+the issues raised by the Shipman case are as follows:
+i Clear standards. As recommended by the Shipman Inquiry
+49, the GMC will be asked to develop
+clear generic standards to determine whether a doctor is or remains fit to practise. For doctors
+wishing to record additional specialist qualifications on the GMC’s specialist register, similar
+specialty-specific standards will be drawn up by the appropriate Royal Medical College.
+ii Local and national coordination. The Government will establish better arrangements to ensure
+that action by the local NHS employer (or PCT in the case of GPs and other primary care
+contractors) is coordinated with action by the national health professions regulator: 
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 25
+
+=== [page 28] ===
+– for doctors, this will be ensured by means of the network of “GMC affiliates” described
+above (para 4.18). GMC affiliates will receive information from local employers/PCTs
+relating to the performance of individual doctors and will be responsible for deciding
+whether particular performance issues should be formally recorded on the doctor’s record
+(with the doctor’s agreement) as a “recorded concern” or be referred to the GMC’s national
+fitness to practise procedures;
+– for other health professionals working as employees of a healthcare organisation, the
+employer will have a direct role in checking qualifications at initial registration and in
+operating local revalidation processes(see next section), referring to the national regulator
+as at present for serious performance issues which could bring registration into question;
+– for health professionals providing dental, pharmacy or optometry primary care services
+commissioned by the NHS (often alongside provision of private services), we will discuss
+with the relevant regulatory bodies how best to involve PCTs in the routine monitoring of
+the quality of services and in the revalidation process.
+iii National fitness to practise processes. As recommended by the Shipman Inquiry, an
+independent tribunal will be set up to adjudicate in the final stage of fitness to practise
+procedures against doctors. The other health professions regulators will be invited to establish
+a clear separation between adjudication and their other functions and to draw members of their
+fitness to practise panels from a list maintained by the independent tribunal.
+Making a reality of revalidation
+4.27 As noted above, the Shipman Inquiry was critical of the GMC’s proposals for implementing
+the concept of “revalidation” and considered that they fell far short of what was needed to ensure
+that doctors were periodically assessed as fit to practise. Market research carried out by the
+Department of Health in October 2005
+50 showed that the majority of the public not only agreed that
+doctors should undergo an “MOT” of this kind, but believed that this was already the case.
+4.28 Trust, assurance and safety: the regulation of health professionals in the 21st century also
+addresses this issue, and future arrangements will be as follows:
+/circle6all health professionals will undergo periodic reassessment of their continuing fitness to
+practise, although the frequency and rigour of the process will depend on an assessment of the
+intrinsic risk; 
+/circle6for doctors, the current NHS appraisal system will be strengthened to include an explicit
+judgement about performance in relation to the required standards. Revalidation will have two
+components. Relicensing (revalidation against the generic standards) will be based on the
+recommendation of a local clinical governance and patient safety committee, informed by the
+results of appraisals and any recorded concerns. Separate recertification of specialist
+professional qualifications will be needed and will be based on recommendations from the
+appropriate Royal Medical College;
+26 CHAPTER 4 THE GOVERNMENT’S ACTION PROGRAMME
+
+=== [page 29] ===
+/circle6for other health professions, revalidation will be based on existing information available to
+employers, supplemented where needed by additional information or assessments. The
+Department will work with interested parties to determine the form of this additional information
+and the circumstances in which it would be needed, bearing in mind the general principles of
+proportionality described above. For health professionals not working as employees of health
+organisations (eg primary care contractors) we will support the relevant regulatory bodies in
+developing proportionate revalidation procedures, building on existing developments such as
+the mandatory recertification introduced by the General Dental Council in 2002
+51.
+The Government believes that a system of revalidation along these lines will provide the assurance
+that patients and the general public are looking for, and will help to identify the very small number
+of professionals who are failing to maintain their skills, without imposing an undue burden on the
+rest of the profession.
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 27
+
+=== [page 30] ===
+5.1 This paper has surveyed a wide range of action spanning the responsibilities of four separate
+government departments. Much of this action has already been completed or is already under way,
+in particular action relating to the Shipman Inquiry’s second and fourth reports. 
+5.2 As noted above (para 4.11), the Government will shortly be issuing a consultation document
+spelling out in more detail our proposals for more rigorous scrutiny of death certificates, as
+proposed in the inquiry’s third report, and for use of this information for local clinical governance
+purposes. During the consultation period, we will work with stakeholders and experts in this field to
+design a pilot study of the proposed arrangements. Final proposals, including proposals for the
+legislative changes that would be needed to put these ideas into effect, will be published later this
+year.
+5.3 In relation to the inquiry’s fifth report, the action set out in the Government’s formal response
+Safeguarding patients and in the White Paper on professional regulation Trust, assurance and
+safety (see Annex B for detailed references) should be seen as a single programme of action. The
+overall objective must be to ensure patient safety, and to reassure the public that in future any
+behaviour by health professionals which puts that safety at risk will be swiftly identified,
+investigated, and dealt with. Although the broad thrust of the action programme is clear, many
+issues of detail remain which the Department of Health will need to discuss with patient, NHS, and
+professional groups. The Department will
+/circle6in due course publish an integrated action plan setting out a timetable for all the action
+envisaged in the two documents; and
+/circle6establish a national advisory group with all relevant stakeholders to advise the Department on
+implementation.
+5.4 As the Shipman Inquiry noted, it will never be possible to give absolute assurances against the
+possibility of criminal action like that perpetrated by Shipman. The Government believes however
+that the actions summarised in this paper 
+/circle6represent a proportionate response to the challenges posed by the Shipman case;
+/circle6will make it highly unlikely that any future criminal could go long without being detected; and
+/circle6will achieve this without putting undue obstacles in the way of that overwhelming majority of
+health professionals who want to give the best possible service to their patients.
+28 CHAPTER 5 TAKING THE ACTION FORWARD
+Chapter 5
+Taking the action forward
+
+=== [page 31] ===
+1 Richard Baker Harold Shipman’s clinical practice 1974-1998: a clinical audit commissioned by
+the Chief Medical Officer (December 2000)
+2 Shipman Inquiry Death disguised (TSO July 2002)
+3 Shipman Inquiry Shipman: the final report (TSO January 2005)
+4 Shipman Inquiry The police investigation of March 1998 (TSO, July 2003)
+5 Shipman Inquiry Death certification and the investigation of deaths by coroners (TSO, July
+2003)
+6 Shipman Inquiry The regulation of controlled drugs in the community (TSO, July 2004)
+7 Shipman Inquiry Safeguarding patients: lessons from the past – proposals for the future (TSO,
+December 2004)
+8 Death certification and investigation in England, Wales and Northern Ireland: the report of a
+fundamental review (TSO, June 2003)
+9 See reference 1 and additional analyses in reference 2
+10 Revalidating doctors, ensuring standards, securing the future (General Medical Council, June
+2000)
+11 A first class service: quality in the new NHS (Department of Health, July 1998)
+12 The new NHS – modern, dependable (Department of Health, December 1997)
+13 Steps towards clinical governance (Department of Health, January 1999); Clinical governance
+– a practical guide for primary care teams (Department of Health, January 1999); Liam
+Donaldson and Aidan Halligan Implementing clinical governance: turning vision into reality (BMJ,
+June 2001 322 1413-1417)
+14 Standards for better health, Annex A to National standards, local action (Department of Health,
+July 2004)
+15 Improving quality and safety – progress in implementing clinical governance in primary care
+(National Audit Office, January 2007)
+16 An organisation with a memory (Department of Health, June 2000)
+17 Safety first (Department of Health, December 2006)
+18 Health and Social Care Act 2001
+19 Maintaining high professional standards in the modern NHS (Department of Health, February
+2005)
+20 Local GP performance procedures, available on the NCAS website
+www.ncas.npsa.nhs.uk/toolkit
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 29
+References
+
+=== [page 32] ===
+21 Supporting doctors, protecting patients (Department of Health, November 1999); Assuring the
+quality of medical practice: implementing ‘Supporting doctors, protecting patients’ (Department of
+Health, January 2001)
+22 The expert patient: a new approach to chronic disease management for the 21st century
+(Department of Health, June 2004)
+23 Creating a patient-led NHS – delivering the NHS improvement plan (Department of Health,
+March 2005); Our health, our care, our say: a new direction for community services (Department
+of Health, January 2006); A stronger local voice (Department of Health, July 2006)
+24 The future regulation of health and adult social care in England (Department of Health,
+December 2006)
+25 Good doctors, safer patients: proposals to strengthen the system to assure and improve the
+performance of doctors and to protect the safety of patients – a report by the Chief Medical
+Officer (Department of Health, July 2006)
+26 The regulation of the non-medical healthcare professions: a review by the Department of
+Health (Department of Health, July 2006)
+27 Memorandum of understanding: investigating patient safety incidents involving unexpected
+death or serious untoward harm (Association of Police Officers, Department of Health and Health
+and Safety Executive, February 2006)
+28 Oral Statement by the Minister of State for Constitutional Affairs, 6 February 2006; briefing
+note Coroners service reform (Department for Constitutional Affairs, February 2006)
+29 Coroner reform: the Government’s draft bill – improving death investigation in England and
+Wales (Department for Constitutional Affairs, June 2006)
+30 See reference 5 summary paras 13–20; recommendations 13–20
+31 Safer management of controlled drugs: the government response to the Fourth Report of the
+Shipman Inquiry, Cm 6343 (TSO, December 2004)
+32 Safer management of controlled drugs: guidance on strengthened governance arrangements
+(Department of Health, updated January 2007)
+33 Health Act 2006, Part 3, Chapter 1, Supervision of management and use of controlled drugs;
+Controlled drugs (supervision of management and use) regulations 2006 (SI 2006/3148)
+34 See reference 6 recommendation 2
+35 See reference 6 recommendations 9-13, 16-27 and 29-33
+36 Safer management of controlled drugs: private CD prescriptions and other changes to the
+prescribing and dispensing of CDs (Department of Health, July 2006)
+37 Initial changes were made in the Misuse of drugs and the misuse of drugs (supply to addicts)
+(amendment) regulations 2005 (SI 2005/2864), and the Government will make further changes to
+allow the electronic transmission of CD prescriptions once it is satisfied that the systems are
+secure.
+38 See reference 6 recommendation 28
+39 See the Medicines Guides website http://medguides.medicines.org.uk/
+40 See Achieving improvements through clinical governance: a progress report on implementation
+by NHS Trusts (National Audit Office, September 2003); reference 15; and chapter 2 of
+reference 25
+41 See reference 25 recommendation 34
+30 REFERENCES
+
+=== [page 33] ===
+42 See reference 25 recommendations 2 (GMC affiliates) and 4 (recorded concerns)
+43 See reference 25 recommendations 38 and 39, reflecting similar recommendations in the
+Shipman Inquiry’s fifth report (recommendations 40 and 45–7)
+44 Shipman Inquiry, fifth report, recommendation 1; Good doctors, safer patients
+recommendation 8
+45 Shipman Inquiry, fifth report, recommendation 3
+46 Shipman Inquiry, fifth report, recommendation 4; Good doctors, safer patients
+recommendation 35
+47 Good doctors, safer patients chapter 2, para 60
+48 Good doctors, safer patients recommendation 36
+49 See reference 7 recommendations 55 and 56; see also recommendation 16
+50 DH Press Release 2005/0344, Monday 10 October 2005
+51 Continuing professional development for dentists (General Dental Council, available on their
+website www.gdc-uk.org)
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 31
+
+=== [page 34] ===
+Abbreviation Meaning First reference 
+at paragraph
+CD Controlled Drug 2.12
+GMC General Medical Council 1.9
+MCCD Medical Certificate of the Cause of Death 2.4
+NCAS National Clinical Assessment Service 3.11
+PCT Primary Care Trust 1.6
+32 LIST OF ABBREVIATIONS
+List of abbreviations
+
+=== [page 35] ===
+Three inquiries into the activities of Richard Neale, Clifford Ayling, and William Kerr and Michael
+Haslam were announced on 13 July 2001 by Alan Milburn MP. The purpose of each inquiry was to
+consider the procedures in place in the NHS to enable patients and others to raise concerns or
+complaints against health service professionals. 
+Richard Neale
+Richard Neale was a consultant obstetrician and gynaecologist practising mainly in Yorkshire from
+1984 until 1996. He was struck off by the GMC in July 2000. One focus of the Neale Inquiry was
+on the way that Richard Neale was appointed in the UK, having been the subject of disciplinary
+proceedings in Canada that eventually led to him being struck off the Canadian medical register,
+as well as how complaints about him were handled by the NHS. 
+The inquiry found that he had misled his employers on a number of occasions, including in his
+applications for appointments. The inquiry questioned his judgement and reliability and the failure
+of his employers to recognise or address concerns about his conduct.
+The recommendations cover the need for coherent guidance on all aspects of the appointment and
+employment of doctors, including careful checking of information offered during the appointment
+process and declarations about criminal cautions or convictions and other matters known to the
+applicant; information for patients; complaints handling and the patient advice and liaison service
+(PALS); and reporting of adverse events.
+Clifford Ayling
+Clifford Ayling was a GP and part-time clinical assistant practising in Folkestone from 1981 until
+2000, when he was found guilty on a number of charges of indecent assault against former
+patients. The Ayling Inquiry focused on what it referred to as “sexualised behaviour”. This is defined
+by the inquiry as overtly sexual behaviour that broke the boundaries of trust and integrity that
+patients have the right to expect from their doctor. This behaviour was mainly inappropriate
+touching or examination of women patients. Other concerns raised included his manner – being
+overly intimate, being unprofessional and failing to treat patients with dignity.
+The inquiry’s recommendations cover the need for guidance and training on the issue of sexualised
+behaviour for health professionals and organisations; improved training for staff in the patient
+advice and liaison service and the independent complaints advocacy service; better tracking of the
+employment and performance of health professionals; and systematic analysis of individual
+complaints and trends. The report also recommends support programmes for single-handed
+practitioners, the development of policies on chaperones, clarity around the roles of local medical
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 33
+Annex A
+The “three inquiries”: Ayling, Neale, andKerr
+and Haslam
+
+=== [page 36] ===
+committees, and the development of protocols with other agencies and professional bodies for
+handling complaints in the NHS.
+William Kerr and Michael Haslam
+William Kerr and Michael Haslam were psychiatrists working in the NHS in Yorkshire. Complaints
+were made against both of them concerning inappropriate behaviour towards their patients.
+Following police investigations, William Kerr was found, on a “trial of the facts” in December 2000,
+to have indecently assaulted a highly vulnerable psychiatric patient. He was placed on the sex
+offenders register. Michael Haslam was found guilty on four charges of indecent assault and one
+charge of rape against former patients, with the conviction for rape being found unsafe on appeal.
+His total sentence was three years on the outstanding charges of indecent assault, and he was
+released from prison on 14 June 2006. Both men sought voluntary erasure from the medical
+register.
+The recommendations include improvements to appointment procedures; the monitoring of mental
+health therapies; guidance on the reporting of sexualised behaviour; handling of complaints,
+including record management; guidance on boundaries in long-term therapeutic relationships;
+professional training; and keeping and sharing information.
+34 ANNEX A THE “THREE INQUIRIES”: AYLING, NEALE, AND KERR AND HASLAM
+
+=== [page 37] ===
+Death certification and the coroners’ system (Shipman Inquiry third report) 
+Coroner reform: the Government’s draft bill – improving death investigation in England and Wales
+(Department for Constitutional Affairs, June 2006)
+A consultation paper on reform of the system of death certification will follow shortly
+Safeguards on controlled drugs (Shipman Inquiry fourth report) 
+Safer management of controlled drugs: the Government’s response to the fourth report of the
+Shipman Inquiry (TSO, December 2004)
+Section 3 of the Health Act 2006 
+Safer management of controlled drugs: guidance on strengthened governance arrangements
+(Department of Health, updated January 2007)
+Monitoring of professional performance, complaints, and discipline
+(Shipman Inquiry fifth report)
+Safeguarding patients: The Government’s response to the recommendations of the Shipman
+Inquiry’s Fifth Report and to the recommendations of the Ayling, Neale and Kerr-Haslam Inquiries
+(TSO, February 2007)
+Trust, assurance and safety: the regulation of health professionals in the 21st century (TSO,
+February 2007)
+A consultation paper on reform of the complaints system for NHS and social services will follow
+shortly
+LEARNING FROM TRAGEDY, KEEPING PATIENTS SAFE 35
+Annex B
+Publications setting out further detail of the
+Government’s action programme
+Printed in the UK for The Stationery Office Limited
+on behalf of the Controller of Her Majesty’s Stationery Office
+ID5501493 02/07
+Printed on Paper containing 75% fibre content minimum.
+
+=== [page 38] ===
+
+
+=== [page 39] ===
+
+
+=== [page 40] ===

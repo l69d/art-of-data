@@ -1,0 +1,15 @@
+20010826193303 http://www.the-shipman-inquiry.org.uk:80/archive.asp
+20010906190447 http://www.the-shipman-inquiry.org.uk:80/archive_documents.asp
+20010906203523 http://www.the-shipman-inquiry.org.uk:80/archive_mediainfo.asp
+20011105213534 http://www.the-shipman-inquiry.org.uk:80/archive_statements.asp
+20020809091200 http://www.the-shipman-inquiry.org.uk:80/archive_transcripts.asp
+20010906204113 http://www.the-shipman-inquiry.org.uk:80/archive_witness.asp
+20010623091137 http://www.the-shipman-inquiry.org.uk:80/backgroundinfo.asp
+20010926060917 http://www.the-shipman-inquiry.org.uk:80/bg_chronology.asp
+20021213202545 http://www.the-shipman-inquiry.org.uk:80/bg_inquiryteam.asp
+20011211221824 http://www.the-shipman-inquiry.org.uk:80/bg_legalrep.asp
+20020629031851 http://www.the-shipman-inquiry.org.uk:80/bg_minstat.asp
+20011123033802 http://www.the-shipman-inquiry.org.uk:80/bg_minstat_doh.asp
+20011123034944 http://www.the-shipman-inquiry.org.uk:80/bg_minstat_hansard.asp
+20020425154930 http://www.the-shipman-inquiry.org.uk:80/bg_proceduralmeetings.asp
+20010926144218 http://www.the-shipman-inquiry.org.uk:80/bg_termsofref.asp
