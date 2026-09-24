@@ -94,6 +94,27 @@ input[type=range] { width: 100%; accent-color: var(--guess); height: 28px; }
 .hero .fine { font-size: 15px; margin-top: 20px; }
 
 .stage canvas { border-radius: 14px; }
+
+/* two-panel room */
+.duo { grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr auto; gap: 20px 32px; }
+.duo-head, .duo-foot { grid-column: 1 / -1; }
+.duo-head h2 { font: 600 clamp(30px, 3.2vw, 44px)/1.05 var(--display); margin: 8px 0 6px; }
+.duo-head p { margin: 0; color: var(--ink-2); }
+.duo-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; }
+.duo-foot .verdict { flex: 1 1 480px; margin: 0; }
+.duo-foot .src { flex-basis: 100%; }
+.panel { display: flex; flex-direction: column; gap: 12px; background: var(--surface); border-radius: 16px; padding: 20px 22px; }
+.panel .badge { align-self: start; }
+.panel h3 { font: 600 26px/1.1 var(--display); margin: 0; }
+.panel .ask { margin: 0; max-width: 52ch; }
+.panel .verdict { margin: 0; }
+.panel svg { width: 100%; height: auto; max-height: 40vh; touch-action: none; }
+.guess.row { display: flex; align-items: center; gap: 16px; }
+.guess.row output { font-size: 32px; min-width: 4.2em; }
+.guess.row input { flex: 1; }
+.axis line { stroke: var(--line); }
+.halo { paint-order: stroke; stroke: var(--surface); stroke-width: 5px; stroke-linejoin: round; }
+@media (max-width: 900px) { .duo { grid-template-columns: 1fr; } }
 svg text { font: 500 15px var(--display); fill: var(--ink-2); }
 #tip {
   position: fixed; z-index: 9; pointer-events: none; display: none;
@@ -152,7 +173,35 @@ svg text { font: 500 15px var(--display); fill: var(--ink-2); }
       <svg id="st-bar" style="top:auto;height:96px" role="img" aria-label="Share of the stadium's total"></svg>
     </div>
   </section>
-  <section class="room split" data-room="turkey"></section>
+  <section class="room duo" data-room="turkey">
+    <header class="duo-head">
+      <h2>Galton's sons and the turkey</h2>
+      <p>Two long runs of data. One is a fair guide to tomorrow. The other is not.</p>
+    </header>
+    <article class="panel">
+      <span class="badge med"><i></i>Mediocristan</span>
+      <h3>Fathers and sons, 1886</h3>
+      <p class="ask">This father is 199 cm tall. The average father is 175 cm. How tall is his son? Drag on the chart to guess.</p>
+      <div class="guess row"><output id="gal-out" for="gal-in"></output><input type="range" id="gal-in" min="150" max="205" step="0.5" aria-label="Son's height in cm"></div>
+      <svg id="gal-svg" viewBox="0 0 600 400" role="img" aria-label="Scatter of 481 fathers' and sons' heights"></svg>
+      <p class="verdict" id="gal-v" hidden></p>
+      <button class="btn" id="gal-go">Reveal</button>
+    </article>
+    <article class="panel">
+      <span class="badge ext"><i></i>Extremistan</span>
+      <h3>A thousand and one days</h3>
+      <p class="ask">A turkey is fed every day for 1,000 days. Each day adds to its evidence. How sure should it be that it gets fed on day 1,001?</p>
+      <div class="guess row"><output id="tur-out" for="tur-in"></output><input type="range" id="tur-in" min="0" max="100" step="1" aria-label="Confidence in percent"></div>
+      <svg id="tur-svg" viewBox="0 0 600 400" role="img" aria-label="The turkey's weight over 1,001 days"></svg>
+      <p class="verdict" id="tur-v" hidden></p>
+      <button class="btn" id="tur-go">Reveal</button>
+    </article>
+    <footer class="duo-foot">
+      <p class="verdict" id="duo-recap" hidden>In Mediocristan, extremes fade back toward the average, so the past is a fair guide. In Extremistan, the one day that matters was never in the data.</p>
+      <button class="btn ghost" id="duo-next" hidden>Next room</button>
+      <p class="src">Spiegelhalter, <cite>The Art of Statistics</cite>, ch. 5 (Galton's family heights, 481 sons). Taleb, <cite>The Black Swan</cite>, ch. 4; the turkey is simulated.</p>
+    </footer>
+  </section>
   <section class="room split" data-room="test"></section>
   <section class="room" data-room="shipman"></section>
 </main>
@@ -370,6 +419,111 @@ rooms.stadium = (() => {
     },
   };
   go.onclick = () => api.primary();
+  return api;
+})();
+
+// charts drawn in a fixed 600×400 viewBox
+const VW = 600, VH = 400, M = { l: 54, r: 18, t: 18, b: 46 };
+const lin = (d0, d1, r0, r1) => v => r0 + (v - d0) / (d1 - d0) * (r1 - r0);
+function axes(svg, x, y, xt, yt, xl, yl, fx = v => v, fy = v => v) {
+  const g = svgEl("g", { class: "axis" }, svg);
+  yt.forEach(v => { svgEl("line", { x1: M.l, x2: VW - M.r, y1: y(v), y2: y(v) }, g); svgEl("text", { x: M.l - 8, y: y(v) + 5, "text-anchor": "end" }, g, fy(v)); });
+  xt.forEach(v => svgEl("text", { x: x(v), y: VH - M.b + 20, "text-anchor": "middle" }, g, fx(v)));
+  svgEl("text", { x: VW - M.r, y: VH - 6, "text-anchor": "end" }, g, xl);
+  svgEl("text", { x: M.l, y: M.t - 4 }, g, yl);
+}
+function svgPoint(svg, e) { const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+
+rooms.turkey = (() => {
+  // --- Galton ---
+  const gs = $("#gal-svg"), gin = $("#gal-in"), gout = $("#gal-out"), ggo = $("#gal-go");
+  const F = GALTON.map(p => p[0] * 2.54), SN = GALTON.map(p => p[1] * 2.54), FIT = fit(F, SN);
+  const DAD = 78.5 * 2.54, PRED = FIT.intercept + FIT.slope * DAD;
+  const gx = lin(155, 205, M.l, VW - M.r), gy = lin(150, 205, VH - M.b, M.t);
+  let gPhase, gGuess, guessDot;
+  function galton(k) {
+    gs.innerHTML = "";
+    axes(gs, gx, gy, [160, 170, 180, 190, 200], [160, 170, 180, 190, 200], "father's height, cm", "son's height, cm");
+    svgEl("line", { x1: gx(DAD), x2: gx(DAD), y1: gy(150), y2: gy(205), stroke: C.ink2, "stroke-dasharray": "3 5" }, gs);
+    if (k > 0) {
+      const pts = svgEl("g", { opacity: k }, gs);
+      F.forEach((f, i) => { const c = svgEl("circle", { cx: gx(f), cy: gy(SN[i]), r: 3.4, fill: C.med, "fill-opacity": .7 }, pts); c.dataset.t = `Father ${Math.round(f)} cm, son ${Math.round(SN[i])} cm`; });
+      svgEl("line", { x1: gx(155), y1: gy(155), x2: gx(203), y2: gy(203), stroke: C.ink2, "stroke-width": 2, "stroke-dasharray": "6 6", opacity: k }, gs);
+      svgEl("text", { x: gx(203), y: gy(203) - 8, "text-anchor": "end", opacity: k }, gs, "if sons matched fathers");
+      svgEl("line", { x1: gx(157), y1: gy(FIT.intercept + FIT.slope * 157), x2: gx(203), y2: gy(FIT.intercept + FIT.slope * 203), stroke: C.ink, "stroke-width": 2, opacity: k }, gs);
+      svgEl("text", { x: gx(157), y: gy(FIT.intercept + FIT.slope * 157) + 26, opacity: k, class: "halo", style: "fill:" + C.ink }, gs, "what sons actually average");
+      svgEl("circle", { cx: gx(DAD), cy: gy(PRED), r: 8, fill: "none", stroke: C.ink, "stroke-width": 2.5, opacity: k }, gs);
+    }
+    guessDot = svgEl("circle", { cx: gx(DAD), cy: gy(gGuess), r: 9, fill: C.guess, stroke: C.bg, "stroke-width": 2 }, gs);
+  }
+  function setGuess(v) { gGuess = Math.min(205, Math.max(150, v)); gin.value = gGuess; gout.value = Math.round(gGuess) + " cm"; if (guessDot) guessDot.setAttribute("cy", gy(gGuess)); }
+  gin.oninput = () => setGuess(+gin.value);
+  gs.onpointerdown = e => { if (gPhase === "ask") { gs.setPointerCapture(e.pointerId); setGuess(lin(VH - M.b, M.t, 150, 205)(svgPoint(gs, e).y)); } };
+  gs.onpointermove = e => {
+    if (gPhase === "ask" && e.buttons) return setGuess(lin(VH - M.b, M.t, 150, 205)(svgPoint(gs, e).y));
+    tip(e, e.target.dataset?.t || null);
+  };
+  gs.onpointerleave = () => tip(null);
+  function revealGalton() {
+    gPhase = "anim"; gin.disabled = true;
+    tween(900, k => { galton(k); }, () => {
+      gPhase = "shown"; ggo.hidden = true;
+      const d = Math.round(gGuess - PRED);
+      $("#gal-v").textContent = `You guessed ${Math.round(gGuess)} cm. Sons of fathers this tall average ${Math.round(PRED)} cm: still tall, but pulled back toward the middle. ${d > 3 ? "Most people guess too high." : ""}`;
+      $("#gal-v").hidden = false; done();
+    });
+  }
+
+  // --- Turkey ---
+  const ts = $("#tur-svg"), tin = $("#tur-in"), tout = $("#tur-out"), tgo = $("#tur-go"), T = turkey();
+  const tx = lin(0, 1060, M.l, VW - M.r), ty = lin(0, 22, VH - M.b, M.t);
+  let tPhase, tGuess, days = 0, drop = 0;
+  function tur() {
+    ts.innerHTML = "";
+    axes(ts, tx, ty, [0, 250, 500, 750, 1000], [0, 5, 10, 15, 20], "day", "weight, kg", v => v.toLocaleString());
+    const n = Math.round(days);
+    if (n > 1) svgEl("path", { d: "M" + T.weight.slice(0, n).map((w, i) => `${tx(i + 1).toFixed(1)},${ty(w).toFixed(1)}`).join("L"), fill: "none", stroke: C.ink, "stroke-width": 2 }, ts);
+    if (n) svgEl("text", { x: tx(40), y: ty(1.4), style: "fill:" + C.ink + ";font-size:19px" }, ts, `Day ${n.toLocaleString()}: ${pct(T.confidence[n - 1])} sure of tomorrow`);
+    if (drop > 0) {
+      const y0 = ty(T.weight[999]), y1 = y0 + (ty(0) - y0) * drop;
+      svgEl("line", { x1: tx(1000), y1: y0, x2: tx(1001), y2: y1, stroke: C.ext, "stroke-width": 3 }, ts);
+      svgEl("circle", { cx: tx(1001), cy: y1, r: 6, fill: C.ext }, ts);
+      if (drop >= 1) svgEl("text", { x: tx(1001) - 10, y: ty(0) - 14, "text-anchor": "end", style: "fill:" + C.ink }, ts, "Day 1,001: Thanksgiving");
+    }
+  }
+  tin.oninput = () => { tGuess = +tin.value / 100; tout.value = pct(tGuess, 0); };
+  ts.onpointermove = e => {
+    const d = Math.round(lin(M.l, VW - M.r, 0, 1060)(svgPoint(ts, e).x));
+    tip(e, d >= 1 && d <= Math.min(1000, days) ? `Day ${d.toLocaleString()}: ${T.weight[d - 1].toFixed(1)} kg, ${pct(T.confidence[d - 1])} sure of tomorrow` : null);
+  };
+  ts.onpointerleave = () => tip(null);
+  function revealTurkey() {
+    tPhase = "anim"; tin.disabled = true;
+    tween(1200, k => { drop = ease(k); tur(); }, () => {
+      tPhase = "shown"; tgo.hidden = true;
+      $("#tur-v").textContent = `You said ${pct(tGuess, 0)}. By its own data the turkey was ${pct(T.confidence[999])} sure, and never surer than on its last day. Every fed day made it more confident; none of them could warn it.`;
+      $("#tur-v").hidden = false; done();
+    });
+  }
+
+  function done() { if (gPhase === "shown" && tPhase === "shown") { $("#duo-recap").hidden = false; $("#duo-next").hidden = false; } }
+  const api = {
+    enter() {
+      gPhase = tPhase = "ask"; gin.disabled = tin.disabled = false; ggo.hidden = tgo.hidden = false;
+      ["#gal-v", "#tur-v", "#duo-recap", "#duo-next"].forEach(s => $(s).hidden = true);
+      setGuess(DAD); galton(0);
+      tGuess = .5; tin.value = 50; tout.value = "50%"; drop = 0; days = 0;
+      tween(2600, k => { days = Math.max(days, 1000 * k); tur(); });
+    },
+    primary() {
+      if (gPhase === "ask") revealGalton();
+      else if (tPhase === "ask" && gPhase === "shown") revealTurkey();
+      else if (gPhase === "shown" && tPhase === "shown") location.hash = "#test";
+    },
+  };
+  ggo.onclick = () => gPhase === "ask" && revealGalton();
+  tgo.onclick = () => { if (tPhase === "ask") { days = 1000; revealTurkey(); } };
+  $("#duo-next").onclick = () => (location.hash = "#test");
   return api;
 })();
 
