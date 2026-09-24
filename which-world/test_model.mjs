@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 const html = readFileSync(new URL("./index.html", import.meta.url), "utf8");
 const src = html.match(/<script id="model">([\s\S]*?)<\/script>/)[1];
-const m = new Function(src + "; return {crowd, share, screen, fit, turkey, bombers, HEAVIEST_KG, RICHEST_USD, survivors, lasted, districts, limit, BACON, DINO, dinoRow};")();
+const m = new Function(src + "; return {crowd, share, screen, fit, turkey, bombers, bomberCounts, HEAVIEST_KG, RICHEST_USD, BACON, DINO, dinoRow};")();
 
 const c = m.crowd();
 assert.equal(c.weight.length, 1000);
@@ -19,21 +19,7 @@ assert.ok(Number.isFinite(m.screen(1000, 0.001).ppv) && Number.isFinite(m.screen
 const t = m.turkey();
 assert.equal(t.confidence.length, 1000);
 assert.ok(t.confidence[999] > 0.99 && t.confidence[0] < 0.7);
-// Plate III: 1,024 managers, one per possible 10-year record
-assert.equal(m.survivors(0).length, 1024);
-for (let y = 1; y <= 10; y++) assert.equal(m.survivors(y).length, 1024 >> y);
-assert.deepEqual(m.survivors(10), [1023]);
-assert.equal(m.lasted(1023), 10); assert.equal(m.lasted(0), 0);
-
-// Plate V: the top of the league table is noise, the real outlier ranked lower
-const ds = m.districts(), top = [...ds].sort((a, b) => b.rate - a.rate)[0], out = ds.find(d => d.id === 0);
-assert.equal(ds.length, 380);
-assert.notEqual(top.id, 0, "top of the table must not be the real outlier");
-assert.ok(top.rate < m.limit(top.pop, 3.09), "top of the table inside 99.8%");
-assert.ok(out.rate > m.limit(out.pop, 3.09), "outlier outside 99.8%");
-assert.equal(ds.filter(d => d.rate > m.limit(d.pop, 3.09)).length, 1, "only one district above 99.8%");
-
-// Plate VI: bacon's 18% headline is 6 -> 7 in 100
+// Plate V: bacon's 18% headline is 6 -> 7 in 100
 assert.equal(Math.round(m.BACON.base * (1 + m.BACON.rel)), 7);
 
 // Plate IV: inlined Datasaurus sets match the CSV and share their means
@@ -46,10 +32,15 @@ for (const k of ["dino", "star", "circle", "bullseye", "x_shape"]) {
 // Plate IV's table must show identical figures in every row, as the plate claims
 const rows = ["dino", "star", "circle", "bullseye", "x_shape"].map(k => m.dinoRow(k).join(" "));
 assert.ok(rows.every(r => r === rows[0]), "Datasaurus table rows differ: " + rows.join(" | "));
-// Plate III act 1: Wald's bombers. Returning planes hide the engine hits that brought the others down
+// Plate I: Wald's bombers. Returning planes hide the engine hits that brought the others down
 const B = m.bombers(), share = hs => hs.filter(h => h.zone === "engines").length / hs.length;
 assert.equal(B.returned + B.lost, 200);
 const back = B.hits.filter(h => !h.lost), gone = B.hits.filter(h => h.lost);
 assert.ok(share(back) < .6 * share(B.hits), `engine share on returners ${share(back)} vs all ${share(B.hits)}`);
 assert.ok(share(gone) > share(back));
+// the bullet count: per plane, engines are hit far more on the planes that never came back; elsewhere the two groups match
+const K = m.bomberCounts(m.bombers());
+assert.ok(K.engines.lost > 3 * K.engines.back, `engines ${K.engines.back} vs ${K.engines.lost}`);
+for (const z of ["fuselage", "rest"]) assert.ok(K[z].lost / K[z].back > .8 && K[z].lost / K[z].back < 1.25, z);
+assert.equal(K.engines.back.toFixed(1), "0.2"); assert.equal(K.engines.lost.toFixed(1), "1.0");
 console.log("model ok");
