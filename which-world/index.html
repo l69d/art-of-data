@@ -1247,25 +1247,61 @@ plates.dino = (() => {
     document.querySelectorAll("#dn-table tbody tr").forEach((tr, i) => tr.classList.toggle("on", i === j));
     document.querySelectorAll("#dn-tabs button").forEach((b, i) => b.setAttribute("aria-pressed", i === j));
   }
+  // five report sheets on the desk; each prints its 142 numbers as rows of ink dots
+  let fan = 0, stage = "desk";
+  function sheet(k) {
+    const b = box(fig), sw = Math.min(b.w * .2, b.h * .32), sh = sw * 1.4, cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+    const e = ease(fan), x = cx + (k - 2) * sw * .92 * e, y = cy + Math.abs(k - 2) * sh * .06 * e, z = -Math.abs(k - 2) * sw * .35 * e + k * 2;
+    return { x, y, z, sw, sh };
+  }
+  function sheetTargets() {
+    const t = [];
+    for (let k = 0; k < 5; k++) {
+      const S = sheet(k);
+      for (let j = 0; j < N; j++) {
+        const col = j % 10, row = Math.floor(j / 10);
+        t[k * N + j] = { x: S.x - S.sw * .38 + col * S.sw * .084, y: S.y - S.sh * .3 + row * S.sh * .045, z: S.z + 1, r: 1.3, c: k === 0 && j === 0 ? 2 : 3, a: stage === "desk" ? 0 : .8 };
+      }
+    }
+    return t;
+  }
+  function sheets() {
+    for (let k = 0; k < 5; k++) {
+      const S = sheet(k), x0 = S.x - S.sw / 2, x1 = S.x + S.sw / 2, y0 = S.y - S.sh / 2, y1 = S.y + S.sh / 2;
+      hairline([[x0, y0, S.z], [x1, y0, S.z], [x1, y1, S.z], [x0, y1, S.z]], { loop: true, opacity: .55 });
+      hairline([[x0 + S.sw * .1, y0 + S.sh * .1, S.z], [x0 + S.sw * .5, y0 + S.sh * .1, S.z]], { opacity: .5 });
+    }
+  }
+  const scenery = () => { if (stage === "desk" || stage === "sheets") sheets(); };
   async function story() {
-    const s = storyOf("dino");
-    set = 0; flat = false; auto = false; ov.innerHTML = "";
-    ink.to(targets(), 1600); ink.pose(orbit(fig, { dist: 1.25, elev: .35, speed: .12, phase: 1.2 }), 2000);
+    const s = storyOf("dino", 8);
+    set = 0; flat = false; auto = false; fan = 0; stage = "desk"; ov.innerHTML = "";
+    ink.to(sheetTargets(), 900); setProps(scenery); ink.pose(orbit(fig, { dist: 1.5, elev: .45, speed: .02, phase: .15 }), 2000);
     s.cap("Fig. 4. The Datasaurus Dozen (Matejka and Fitzmaurice, 2017): five of its thirteen sets, as cited by Spiegelhalter, ch. 2.");
-    s.say("You are an analyst. Five regional branches have sent in their figures, 142 numbers each, and your boss only ever reads the summary table.");
+    s.card("You are an analyst for a chain of five regional branches. Their quarterly figures have just landed on your desk: 142 pairs of numbers each.", "Monday, 9:00 am");
+    await s.cont("Open the reports"); if (!s.alive()) return;
+    stage = "sheets";
+    await tween(1600, k => { fan = k; ink.set(sheetTargets()); setProps(scenery); }); if (!s.alive()) return;
+    s.card("You summarise each branch the way the board likes it: an average, a spread and a correlation for each column.", "9:20 am");
     s.el("table", `<thead><tr><th>branch</th><th>mean x</th><th>mean y</th><th>SD x</th><th>SD y</th><th>r</th></tr></thead><tbody>${SETS.map(([k], j) => `<tr><td>${L[j]}</td>${dinoRow(k).map(v => `<td>${v}</td>`).join("")}</tr>`).join("")}</tbody>`, "stats").id = "dn-table";
-    s.say("Your boss says: <em>“Same averages, same spread, same correlation. They're the same kind of branch. One strategy for all five.”</em>");
-    s.ask("What do you do?");
+    s.say("Identical, all five, to one decimal place.", "note");
+    await s.cont("Take it to the boss"); if (!s.alive()) return;
+    s.card("Your boss has five minutes and one question: <em>“They're the same kind of branch, so one strategy for all five. Agreed?”</em>", "10:00 am, the boss's office");
+    s.ask("What do you say?");
     const c = await s.choose([
-      { label: "Agree. The numbers are identical", right: false, reply: "Identical numbers, completely different branches. The table could never have told you." },
-      { label: "Ask to see them drawn first", right: true, reply: "Right. One chart and the “same” branches fall apart." },
+      { label: "Agreed. The numbers are identical", right: false, reply: "Identical numbers, completely different branches. The table could never have told you." },
+      { label: "Not until I've drawn them", right: true, reply: "Right. One chart and the “same” branches fall apart." },
     ]);
     if (!s.alive()) return;
-    s.say("Here is branch A as a cloud of 142 points. Now flatten it onto the page.");
-    await sleep(1200); if (!s.alive()) return;
+    s.card("Back at your desk, you lift branch A's numbers off the page, a cloud of 142 points, and turn them over.", "10:05 am");
+    stage = "cloud"; setProps(null);
+    ink.to(targets(), 1800); ink.pose(orbit(fig, { dist: 1.25, elev: .35, speed: .12, phase: 1.2 }), 2000);
+    await sleep(2600); if (!s.alive()) return;
+    s.say("Now flatten it onto the page.", "note");
+    await s.cont("Flatten it"); if (!s.alive()) return;
     flat = true; ink.flat(1800); ink.to(targets(), 2000); await sleep(2000); if (!s.alive()) return;
     axes(); pick(0);
-    s.say("A dinosaur. And the other four branches, with exactly the same numbers:");
+    s.card("A dinosaur. And the other four branches, with exactly the same numbers:", "10:07 am");
     const tabs = s.el("div", SETS.map((_, j) => `<button class="btn ghost">${L[j]}</button>`).join(""), "btns"); if (tabs) tabs.id = "dn-tabs";
     tabs?.querySelectorAll("button").forEach((b, j) => b.onclick = e => { auto = false; pick(j); if (e.detail) b.blur(); });
     tabs?.querySelectorAll("button")[0].setAttribute("aria-pressed", true);
@@ -1273,6 +1309,7 @@ plates.dino = (() => {
     onRaf(t => { if (auto && t - last > 3000) { last = t; pick((set + 1) % SETS.length); } });
     s.say(c.reply, "reply");
     s.note("dino", "Five branches, one summary", c.label, c.right, "drawn better");
+    await s.cont(); if (!s.alive()) return;
     s.moral("Numbers that match can hide data that doesn't. Never trust a summary you haven't seen drawn.");
     await s.cont("Next plate"); if (!s.alive()) return;
     next();
@@ -1280,8 +1317,8 @@ plates.dino = (() => {
   return {
     enter() { story(); },
     leave() { ov.innerHTML = ""; auto = false; },
-    resize() { ink.retarget(targets()); axes(); },
-    label: i => i < N ? `(${DINO[SETS[set][0]][i].map(v => v.toFixed(1)).join(", ")})` : null,
+    resize() { ink.retarget(stage === "cloud" ? targets() : sheetTargets()); axes(); },
+    label: i => stage !== "cloud" ? (i < 5 * N ? `Branch ${L[Math.floor(i / N)]}, row ${i % N + 1}` : null) : i < N ? `(${DINO[SETS[set][0]][i].map(v => v.toFixed(1)).join(", ")})` : null,
   };
 })();
 
