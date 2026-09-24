@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Which World Are You In?</title>
 <link rel="icon" href="data:,">
-<meta name="description" content="Seven short stories about data. Take the seat, make the call, watch it play out. After Taleb's The Black Swan and Spiegelhalter's The Art of Statistics.">
+<meta name="description" content="Six short stories about data. Take the seat, make the call, watch it play out. After Taleb's The Black Swan and Spiegelhalter's The Art of Statistics.">
 <style>
 :root {
   color-scheme: light;
@@ -70,6 +70,16 @@ a { color: var(--ink); }
 .holes td { padding: 3px 0; border-bottom: 1px solid var(--hair); }
 .holes td + td { text-align: right; padding-left: 24px; }
 .holes caption { text-align: left; font-style: italic; color: var(--ink-2); font-size: 15px; padding-bottom: 4px; }
+.stats { border-collapse: collapse; font-size: 15px; font-variant-numeric: lining-nums tabular-nums; animation: in .6s ease both; }
+.stats th { font-weight: 400; font-style: italic; color: var(--ink-2); text-align: right; padding: 0 0 4px 12px; border-bottom: 1px solid var(--hair); }
+.stats td { text-align: right; padding: 3px 0 3px 12px; }
+.stats th:first-child, .stats td:first-child { text-align: left; padding-left: 0; }
+.stats tr.on td { color: var(--madder); }
+.rec { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.rec li { display: grid; grid-template-columns: 1.6em 1fr; gap: 2px 10px; padding-bottom: 10px; border-bottom: 1px solid var(--hair); animation: in .6s ease both; }
+.rec b { grid-row: span 2; font: 400 22px/1 var(--serif); }
+.rec b.ok { color: var(--ink); } .rec b.no { color: var(--madder); } .rec b.na { color: var(--ink-2); }
+.rec span { font-size: 16px; } .rec small { font-style: italic; color: var(--ink-2); font-size: 15px; }
 .cap { font-style: italic; color: var(--ink-2); font-size: 15px; margin-top: auto !important; padding-top: 16px; }
 .big { font: 400 clamp(48px, 5vw, 76px)/.9 var(--serif); margin: 0; font-variant-numeric: lining-nums tabular-nums; }
 .big.madder { color: var(--madder); }
@@ -123,16 +133,19 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
   <a class="mark" href="#home">Which world are you in?</a>
   <nav class="rail" aria-label="Plates">
     <a href="#stadium" aria-label="Plate I, the stadium"><i>I</i><span>The stadium</span></a>
+    <a href="#turkey" aria-label="Plate II, the turkey"><i>II</i><span>The turkey</span></a>
     <a href="#graveyard" aria-label="Plate III, the graveyard"><i>III</i><span>The graveyard</span></a>
+    <a href="#dino" aria-label="Plate IV, the Datasaurus"><i>IV</i><span>The Datasaurus</span></a>
     <a href="#funnel" aria-label="Plate V, the league table"><i>V</i><span>The league table</span></a>
     <a href="#test" aria-label="Plate VI, the positive test"><i>VI</i><span>The positive test</span></a>
+    <a href="#record" aria-label="Your record"><i>VII</i><span>Your record</span></a>
   </nav>
 </header>
 
 <main>
   <section class="plate" data-plate="home">
     <div class="margin">
-      <p class="label">Seven short stories about data</p>
+      <p class="label">Six short stories about data</p>
       <h1>Which world are you in?</h1>
       <p class="sub">Take the seat. Make the call. Watch what happens.</p>
       <div class="btns"><button class="btn go" id="start">Begin</button></div>
@@ -146,9 +159,19 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
     <div class="fig" id="st-fig"><svg class="ov" aria-hidden="true"></svg></div>
   </section>
 
+  <section class="plate" data-plate="turkey">
+    <div class="margin"><p class="label">Plate II</p><h2>The turkey</h2><div class="story"></div><p class="cap"></p></div>
+    <div class="fig" id="tk-fig"><svg class="ov" aria-hidden="true"></svg></div>
+  </section>
+
   <section class="plate" data-plate="graveyard">
     <div class="margin"><p class="label">Plate III</p><h2>The graveyard</h2><div class="story"></div><p class="cap"></p></div>
     <div class="fig" id="gy-fig"><svg class="ov" aria-hidden="true"></svg></div>
+  </section>
+
+  <section class="plate" data-plate="dino">
+    <div class="margin"><p class="label">Plate IV</p><h2>The Datasaurus</h2><div class="story"></div><p class="cap"></p></div>
+    <div class="fig" id="dn-fig"><svg class="ov" aria-hidden="true"></svg></div>
   </section>
 
   <section class="plate" data-plate="funnel">
@@ -159,6 +182,10 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
   <section class="plate" data-plate="test">
     <div class="margin"><p class="label">Plate VI</p><h2>The positive test</h2><div class="story"></div><p class="cap"></p></div>
     <div class="fig" id="ts-fig"><svg class="ov" aria-hidden="true"></svg></div>
+  </section>
+  <section class="plate" data-plate="record">
+    <div class="margin"><p class="label">Plate VII</p><h2>Your record</h2><div class="story"></div><p class="cap"></p></div>
+    <div class="fig" id="rc-fig"></div>
   </section>
 </main>
 <div id="tip" role="tooltip"></div>
@@ -935,6 +962,169 @@ plates.test = (() => {
       const p = people[i]; return phase === "cloud" ? "A patient" : `Patient ${i + 1}: ${k1 ? (p.ill ? "has it" : "doesn't have it") : "not yet tested"}${k2 ? (p.pos ? ", tested positive" : ", tested negative") : ""}`;
     },
   };
+})();
+
+// ---------- Plate II: the turkey ----------
+// 1,000 fed days wind up a spiral tower; the camera rides up it. Day 1,001 falls the whole height.
+plates.turkey = (() => {
+  const fig = $("#tk-fig"), T = turkey(), DAYS = 1000, LAST = DAYS; // dot 1,000 is day 1,001
+  let shown = 0, fallen = 0, doom = false;
+  const tower = () => { const b = box(fig), R = Math.min(b.w, b.h) * .26, Ht = b.h * 1.5; return { b, R, Ht, cx: b.x + b.w / 2, base: b.y + b.h * .92 }; };
+  function targets() {
+    const { R, Ht, cx, base } = tower(), t = [];
+    for (let d = 0; d < DAYS; d++) {
+      const th = d / DAYS * Math.PI * 2 * 14;
+      t[d] = d < shown ? { x: cx + R * Math.cos(th), y: base - Ht * d / DAYS, z: R * Math.sin(th), r: 1.6 + 1.4 * T.weight[d] / 20, c: d === 400 ? 2 : 0, a: .9 } : { x: cx + R * Math.cos(th), y: base - Ht * d / DAYS, z: R * Math.sin(th), r: 0, a: 0 };
+    }
+    const th = DAYS / DAYS * Math.PI * 2 * 14;
+    t[LAST] = doom ? { x: cx + R * Math.cos(th), y: lerp(base - Ht, base, fallen), z: R * Math.sin(th), r: 4.5, c: 1 } : { x: cx, y: base - Ht, z: 0, r: 0, a: 0 };
+    return t;
+  }
+  const ride = k => { const { b, Ht } = tower(); return orbit(fig, { dist: 1.3, elev: .22, speed: .09, lift: -b.h * .42 + Ht * k }); };
+  async function story() {
+    const s = storyOf("turkey");
+    shown = 0; fallen = 0; doom = false;
+    ink.to(targets(), 600); ink.pose(ride(0), 1800);
+    s.cap("Fig. 2. A thousand and one days (Taleb, The Black Swan, ch. 4). The turkey's confidence is Laplace's rule of succession; the turkey is simulated.");
+    s.say("You are a turkey. Every morning for as long as you can remember, a kind farmer has brought you food.");
+    s.say("Each day you are fed, you grow a little more certain he means you well.");
+    const line = s.say("Day 1: fed.");
+    await sleep(1400); if (!s.alive()) return;
+    let rider = 0;
+    ink.pose(t => ride(rider)(t), 400);
+    await tween(7000, k => {
+      shown = Math.round(DAYS * k); rider = k; ink.retarget(targets());
+      if (line && shown) line.textContent = `Day ${shown.toLocaleString()}: fed. You are ${pct(T.confidence[shown - 1])} sure of tomorrow.`;
+    });
+    if (!s.alive()) return;
+    s.ask("It is the evening of day 1,000. Tomorrow is the fourth Thursday in November. What do you do?");
+    const c = await s.choose([
+      { label: "Relax. A thousand good days can't be wrong", right: false, reply: "A thousand good days were exactly what made it so sure, and so wrong." },
+      { label: "Stay alert", right: true, reply: "Right to be wary: nothing in a thousand days of data could have warned you." },
+      { label: "Run", right: true, reply: "Run. The one day that mattered was never in the data." },
+    ]);
+    if (!s.alive()) return;
+    doom = true; ink.retarget(targets()); await sleep(500); if (!s.alive()) return;
+    s.say("Day 1,001: Thanksgiving.");
+    // the last day falls the whole height of the tower, and the camera follows it down
+    ink.pose(t => ride(1 - fallen)(t), 300);
+    await tween(2600, k => { fallen = k * k; ink.retarget(targets()); });
+    if (!s.alive()) return;
+    s.say(`By its own data the turkey was ${pct(T.confidence[DAYS - 1])} sure it would be fed, and it was never surer than on its last evening.`);
+    s.say(c.reply, "reply");
+    s.note("turkey", "The turkey's thousandth evening", c.label, c.right, "Extremistan");
+    s.moral("A thousand calm days are not evidence of safety. In Extremistan the day that matters is not in the data, and your confidence can peak just when the risk does.");
+    await s.cont("Next plate"); if (!s.alive()) return;
+    next();
+  }
+  return {
+    enter() { story(); },
+    resize() { ink.retarget(targets()); },
+    label: i => i < DAYS && i < shown ? `Day ${i + 1}: fed, ${pct(T.confidence[i])} sure of tomorrow` : i === LAST && doom ? "Day 1,001" : null,
+  };
+})();
+
+// ---------- Plate IV: the Datasaurus ----------
+plates.dino = (() => {
+  const fig = $("#dn-fig"), ov = $("[data-plate=dino] svg.ov"), N = 142;
+  const SETS = [["dino", "a dinosaur"], ["star", "a star"], ["circle", "a circle"], ["bullseye", "a bullseye"], ["x_shape", "an X"]], L = "ABCDE";
+  let set = 0, flat = false, auto = false;
+  const Z = (() => { const r = rng(8); return Array.from({ length: N }, () => (r() - .5) * 2); })();
+  const plot = () => { const b = box(fig), sz = Math.min(b.w - 60, b.h - 90); return { b, x: b.x + (b.w - sz) / 2 + 20, y: b.y + (b.h - sz) / 2 - 10, s: sz }; };
+  function targets() {
+    const p = plot();
+    return DINO[SETS[set][0]].map(([x, y], i) => ({ x: p.x + p.s * x / 100, y: p.y + p.s * (1 - y / 100), z: flat ? 0 : Z[i] * p.s * .9, r: 3.2, c: i === 0 ? 2 : 0 }));
+  }
+  function axes() {
+    ov.innerHTML = "";
+    if (!flat) return;
+    const p = plot(), X = v => p.x - p.b.x + p.s * v / 100, Y = v => p.y - p.b.y + p.s * (1 - v / 100);
+    svgEl("line", { x1: X(0), x2: X(100), y1: Y(0), y2: Y(0), class: "ink" }, ov);
+    svgEl("line", { x1: X(0), x2: X(0), y1: Y(0), y2: Y(100), class: "ink" }, ov);
+    [0, 20, 40, 60, 80, 100].forEach(v => {
+      svgEl("line", { x1: X(v), x2: X(v), y1: Y(0), y2: Y(0) + 5, class: "ink" }, ov); svgEl("text", { x: X(v), y: Y(0) + 22, "text-anchor": "middle" }, ov, v);
+      svgEl("line", { x1: X(0) - 5, x2: X(0), y1: Y(v), y2: Y(v), class: "ink" }, ov); svgEl("text", { x: X(0) - 10, y: Y(v) + 5, "text-anchor": "end" }, ov, v);
+    });
+    svgEl("text", { x: X(100), y: Y(100) - 6, "text-anchor": "end", style: "fill:" + C.madder }, ov, `branch ${L[set]}: ${SETS[set][1]}`);
+  }
+  function pick(j) {
+    set = j; ink.to(targets(), 1300); axes();
+    document.querySelectorAll("#dn-table tbody tr").forEach((tr, i) => tr.classList.toggle("on", i === j));
+    document.querySelectorAll("#dn-tabs button").forEach((b, i) => b.setAttribute("aria-pressed", i === j));
+  }
+  async function story() {
+    const s = storyOf("dino");
+    set = 0; flat = false; auto = false; ov.innerHTML = "";
+    ink.to(targets(), 1600); ink.pose(orbit(fig, { dist: 1.25, elev: .35, speed: .12, phase: 1.2 }), 2000);
+    s.cap("Fig. 4. The Datasaurus Dozen (Matejka and Fitzmaurice, 2017): five of its thirteen sets, as cited by Spiegelhalter, ch. 2.");
+    s.say("You are an analyst. Five regional branches have sent in their figures, 142 numbers each, and your boss only ever reads the summary table.");
+    s.el("table", `<thead><tr><th>branch</th><th>mean x</th><th>mean y</th><th>SD x</th><th>SD y</th><th>r</th></tr></thead><tbody>${SETS.map(([k], j) => `<tr><td>${L[j]}</td>${dinoRow(k).map(v => `<td>${v}</td>`).join("")}</tr>`).join("")}</tbody>`, "stats").id = "dn-table";
+    s.say("Your boss says: <em>“Same averages, same spread, same correlation. They're the same kind of branch. One strategy for all five.”</em>");
+    s.ask("What do you do?");
+    const c = await s.choose([
+      { label: "Agree. The numbers are identical", right: false, reply: "Identical numbers, completely different branches. The table could never have told you." },
+      { label: "Ask to see them drawn first", right: true, reply: "Right. One chart and the “same” branches fall apart." },
+    ]);
+    if (!s.alive()) return;
+    s.say("Here is branch A as a cloud of 142 points. Now flatten it onto the page.");
+    await sleep(1200); if (!s.alive()) return;
+    flat = true; ink.flat(1800); ink.to(targets(), 2000); await sleep(2000); if (!s.alive()) return;
+    axes(); pick(0);
+    s.say("A dinosaur. And the other four branches, with exactly the same numbers:");
+    const tabs = s.el("div", SETS.map((_, j) => `<button class="btn ghost">${L[j]}</button>`).join(""), "btns"); if (tabs) tabs.id = "dn-tabs";
+    tabs?.querySelectorAll("button").forEach((b, j) => b.onclick = () => { auto = false; pick(j); });
+    tabs?.querySelectorAll("button")[0].setAttribute("aria-pressed", true);
+    auto = !reduced; let last = performance.now();
+    onRaf(t => { if (auto && t - last > 3000) { last = t; pick((set + 1) % SETS.length); } });
+    s.say(c.reply, "reply");
+    s.note("dino", "Five branches, one summary", c.label, c.right, "drawn better");
+    s.moral("Numbers that match can hide data that doesn't. Never trust a summary you haven't seen drawn.");
+    await s.cont("Next plate"); if (!s.alive()) return;
+    next();
+  }
+  return {
+    enter() { story(); },
+    leave() { ov.innerHTML = ""; auto = false; },
+    resize() { ink.retarget(targets()); axes(); },
+    label: i => i < N ? `(${DINO[SETS[set][0]][i].map(v => v.toFixed(1)).join(", ")})` : null,
+  };
+})();
+
+// ---------- Plate VII: your record ----------
+plates.record = (() => {
+  const fig = $("#rc-fig");
+  const ORDER = ["weight", "wealth", "turkey", "bomber", "manager", "dino", "minister", "gp", "press", "headline"];
+  // the crowd as a slowly turning globe of ink
+  function globe() {
+    const b = box(fig), R = Math.min(b.w, b.h) * .36, cx = b.x + b.w / 2, cy = b.y + b.h / 2, n = INK, ga = Math.PI * (3 - Math.sqrt(5));
+    const wrong = Object.values(record).filter(r => r.right === false).length;
+    return Array.from({ length: n }, (_, i) => {
+      const y = 1 - 2 * (i + .5) / n, rr = Math.sqrt(1 - y * y), th = ga * i;
+      return { x: cx + R * rr * Math.cos(th), y: cy - R * y, z: R * rr * Math.sin(th), r: 2, c: i === 512 ? 2 : i % 97 < wrong ? 1 : 0, a: .85 };
+    });
+  }
+  async function story() {
+    const s = storyOf("record");
+    ink.to(globe(), 2000); ink.pose(orbit(fig, { dist: 1.35, elev: .3, speed: .08 }), 2000);
+    s.cap("Every decision you made tonight, and the world it belonged to.");
+    const rows = ORDER.filter(k => record[k]);
+    if (!rows.length) { s.say("You haven't made any decisions yet. Take a seat in any plate and come back here."); await s.cont("Begin"); if (s.alive()) location.hash = "#stadium"; return; }
+    const scored = rows.filter(k => record[k].right !== null), right = scored.filter(k => record[k].right).length;
+    s.el("ol", rows.map(k => { const r = record[k], m = r.right === null ? ["na", "~"] : r.right ? ["ok", "✓"] : ["no", "✗"]; const lesson = { Mediocristan: "Mediocristan: no one moves the total", Extremistan: "Extremistan: one can be everything", survivors: "The survivors' trap: count the graveyard", "drawn better": "A better picture", framing: "A choice of words: both are true" }[r.world];
+      return `<li><b class="${m[0]}">${m[1]}</b><span>${r.q}</span><small>You chose “${r.choice.replace(/^“|”$/g, "")}”. ${lesson}.</small></li>`; }).join(""), "rec");
+    if (scored.length) s.el("p", `${right} of ${scored.length}`, "big");
+    const fooled = rows.filter(k => record[k].right === false).map(k => record[k].world);
+    const verdict = !scored.length ? "" : !fooled.length ? "Your gut knew which world it was in every time. Few people manage that."
+      : fooled.includes("Extremistan") ? "Your gut was trained in Mediocristan, where the average is a fair guide. Out in Extremistan it trusted the past and the crowd a little too much. Most people's does."
+      : fooled.includes("survivors") ? "The survivors fooled you. Next time, ask where the graveyard is."
+      : "Your gut read the world well, but the picture fooled it. Ask for it to be drawn better.";
+    if (verdict) s.say(verdict);
+    s.moral("Which world you are in, and how you draw it, decide half the answer.");
+    await s.cont("Start again"); if (!s.alive()) return;
+    for (const k in record) delete record[k];
+    location.hash = "#home";
+  }
+  return { enter() { story(); }, resize() { ink.retarget(globe()); }, label: () => null };
 })();
 
 // ---------- router, keys, idle ----------
