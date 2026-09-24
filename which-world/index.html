@@ -55,6 +55,7 @@ a { color: var(--ink); }
 .q h2 { font: 600 clamp(30px, 3.2vw, 44px)/1.05 var(--display); margin: 0; letter-spacing: -.01em; }
 .q p { margin: 0; color: var(--ink-2); max-width: 36ch; }
 .q .ask { color: var(--ink); font-size: 20px; }
+.q .big, .q .verdict { color: var(--ink); }
 .stage { position: relative; min-height: 460px; }
 .stage canvas, .stage svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .src { font-size: 14px; color: var(--ink-2); margin-top: auto; }
@@ -113,6 +114,9 @@ input[type=range] { width: 100%; accent-color: var(--guess); height: 28px; }
 .guess.row output { font-size: 32px; min-width: 4.2em; }
 .guess.row input { flex: 1; }
 .axis line { stroke: var(--line); }
+.legend { margin: 0; font: 500 16px/1 var(--display); color: var(--ink-2); display: flex; align-items: center; gap: 8px; }
+.legend i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.legend i.ext { background: var(--ext); } .legend i.med { background: var(--med); margin-left: 12px; }
 .halo { paint-order: stroke; stroke: var(--surface); stroke-width: 5px; stroke-linejoin: round; }
 @media (max-width: 900px) { .duo { grid-template-columns: 1fr; } }
 svg text { font: 500 15px var(--display); fill: var(--ink-2); }
@@ -202,7 +206,24 @@ svg text { font: 500 15px var(--display); fill: var(--ink-2); }
       <p class="src">Spiegelhalter, <cite>The Art of Statistics</cite>, ch. 5 (Galton's family heights, 481 sons). Taleb, <cite>The Black Swan</cite>, ch. 4; the turkey is simulated.</p>
     </footer>
   </section>
-  <section class="room split" data-room="test"></section>
+  <section class="room split" data-room="test">
+    <div class="q">
+      <h2>The positive test</h2>
+      <p id="ts-lead"></p>
+      <p class="ask">The test is 90% accurate, and you test positive. What's the chance you actually have the disease?</p>
+      <div class="guess" id="ts-guess"><label for="ts-in">Your guess</label><output id="ts-out" for="ts-in"></output><input type="range" id="ts-in" min="0" max="100" step="1"></div>
+      <div id="ts-res" hidden>
+        <p class="big" id="ts-big"></p>
+        <p id="ts-sub"></p>
+        <p class="verdict" id="ts-v"></p>
+      </div>
+      <p class="legend" id="ts-legend" hidden><i class="ext"></i>has the disease <i class="med"></i>doesn't</p>
+      <div class="guess" id="ts-prev-box" hidden><label for="ts-prev">Now change how common the disease is</label><output id="ts-prev-out" for="ts-prev"></output><input type="range" id="ts-prev" min="0" max="7" step="1"></div>
+      <button class="btn" id="ts-go"></button>
+      <p class="src">Spiegelhalter, <cite>The Art of Statistics</cite>, ch. 8: screening 1,000 people.</p>
+    </div>
+    <div class="stage"><canvas id="ts-c"></canvas></div>
+  </section>
   <section class="room" data-room="shipman"></section>
 </main>
 <div id="tip" role="tooltip"></div>
@@ -524,6 +545,103 @@ rooms.turkey = (() => {
   ggo.onclick = () => gPhase === "ask" && revealGalton();
   tgo.onclick = () => { if (tPhase === "ask") { days = 1000; revealTurkey(); } };
   $("#duo-next").onclick = () => (location.hash = "#test");
+  return api;
+})();
+
+rooms.test = (() => {
+  const cv = $("#ts-c"), inp = $("#ts-in"), out = $("#ts-out"), go = $("#ts-go"), pin = $("#ts-prev"), pout = $("#ts-prev-out");
+  const PREVS = [.001, .005, .01, .02, .05, .1, .2, .5];
+  let COLS = 40, ROWS = 25;
+  const perm = (() => { const r = rng(11), a = [...Array(CROWD).keys()]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; })();
+  let phase, g, prev, res, people, S, k1 = 0, k2 = 0;
+  const inN = p => { const n = Math.round(1 / p); return n >= 2 ? `1 in ${n.toLocaleString()}` : pct(p, 0); };
+  function assign() {
+    res = screen(CROWD, prev);
+    people = Array.from({ length: CROWD }, () => ({ ill: false, pos: false }));
+    perm.slice(0, res.ill).forEach((p, i) => { people[p].ill = true; people[p].pos = i < res.tp; });
+    perm.slice(res.ill, res.ill + res.fp).forEach(p => { people[p].pos = true; });
+    // positives line up in the box: true cases first
+    const L = people.map((p, i) => i).filter(i => people[i].pos).sort((a, b) => people[b].ill - people[a].ill);
+    L.forEach((i, j) => { people[i].slot = j; });
+    S && boxLayout(L.length);
+  }
+  function layout() {
+    S = sized(cv); const { W, H } = S, gw = W * .6;
+    // grid shape follows the stage's aspect so the 1,000 fill it
+    COLS = Math.min(50, Math.max(20, Math.round(Math.sqrt(CROWD * gw / (H - 80))))); ROWS = Math.ceil(CROWD / COLS);
+    S.cell = Math.min(gw / COLS, (H - 80) / ROWS); S.top = 46;
+    S.box = { x: gw + S.cell * 2, y: S.top, w: W - gw - S.cell * 2, h: ROWS * S.cell };
+    boxLayout(res.pos);
+  }
+  function boxLayout(n) {
+    const b = S.box, pad = 12, c = Math.min(S.cell, Math.sqrt((b.w - 2 * pad) * (b.h - 2 * pad) / Math.max(n, 1)) * .95);
+    S.bc = c; S.bcols = Math.max(1, Math.floor((b.w - 2 * pad) / c)); S.bpad = pad;
+    b.h = Math.min(ROWS * S.cell, Math.ceil(Math.max(n, 1) / S.bcols) * c + 2 * pad); // box hugs its dots
+  }
+  const home = i => [(i % COLS + .5) * S.cell, S.top + (Math.floor(i / COLS) + .5) * S.cell];
+  const slot = j => [S.box.x + S.bpad + (j % S.bcols + .5) * S.bc, S.box.y + S.bpad + (Math.floor(j / S.bcols) + .5) * S.bc];
+  function where(i) {
+    const p = people[i], h = home(i);
+    if (!p.pos || k2 === 0) return h;
+    const s = slot(p.slot); return [h[0] + (s[0] - h[0]) * k2, h[1] + (s[1] - h[1]) * k2];
+  }
+  function draw() {
+    const { ctx, W, H, box } = S; ctx.clearRect(0, 0, W, H);
+    ctx.font = `500 16px ${css("--display")}`; ctx.fillStyle = C.ink2; ctx.textAlign = "left";
+    ctx.fillText("1,000 people tested", 0, 26);
+    ctx.globalAlpha = k2; ctx.strokeStyle = C.line; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.roundRect(box.x, box.y, box.w, box.h, 12); ctx.stroke();
+    ctx.fillStyle = C.ink; ctx.fillText(`Tested positive: ${res.pos}`, box.x, 26);
+    ctx.globalAlpha = 1;
+    for (let i = 0; i < CROWD; i++) {
+      const p = people[i], [x, y] = where(i), inBox = p.pos && k2 > 0;
+      const r = (inBox ? S.cell + (S.bc - S.cell) * k2 : S.cell) * .34;
+      ctx.globalAlpha = !p.pos && k2 > 0 ? 1 - .7 * k2 : 1;
+      dot(ctx, x, y, r, "rgba(169,179,199,.45)");
+      if (k1 > 0) { ctx.globalAlpha *= k1; dot(ctx, x, y, r, p.ill ? C.ext : C.med); }
+    }
+    ctx.globalAlpha = 1;
+    if (k2 >= 1) {
+      ctx.fillStyle = C.ink; ctx.textAlign = "left";
+      ctx.fillText(`${res.tp} have it`, box.x, box.y + box.h + 24);
+      ctx.textAlign = "right"; ctx.fillText(`${res.fp} don't`, box.x + box.w, box.y + box.h + 24);
+    }
+  }
+  function results() {
+    $("#ts-big").textContent = res.pos ? pct(res.ppv, 0) : "–";
+    $("#ts-sub").textContent = res.pos ? `${res.ppv < .5 ? "Only " : ""}${res.tp} of the ${res.pos} people who tested positive actually have it.` : "No one tested positive.";
+    $("#ts-lead").textContent = `${inN(prev)} people have a disease. A test catches 90% of those who have it, and wrongly flags 10% of those who don't.`;
+  }
+  function reveal() {
+    phase = "anim"; inp.disabled = true; $("#ts-legend").hidden = false;
+    tween(900, k => { k1 = k; draw(); }, () => tween(1700, k => { k2 = ease(k); draw(); }, () => {
+      phase = "shown"; results();
+      $("#ts-v").textContent = `You guessed ${pct(g, 0)}. Most people say about 90%. When a disease is rare, false alarms from the healthy majority swamp the real cases.`;
+      $("#ts-res").hidden = false; $("#ts-prev-box").hidden = false; $("#ts-guess").hidden = true; go.textContent = "Next room";
+    }));
+  }
+  inp.oninput = () => { g = inp.value / 100; out.value = pct(g, 0); };
+  pin.oninput = () => { prev = PREVS[+pin.value]; pout.value = inN(prev); assign(); results(); draw(); };
+  cv.onpointermove = e => {
+    if (!S || k1 === 0) return tip(null);
+    const b = cv.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top;
+    let best = -1, bd = (S.cell * .8) ** 2;
+    for (let i = 0; i < CROWD; i++) { const [px, py] = where(i), d = (px - x) ** 2 + (py - y) ** 2; if (d < bd) { bd = d; best = i; } }
+    const p = people[best];
+    tip(e, best < 0 ? null : `Person ${best + 1}: ${p.ill ? "has it" : "doesn't have it"}${k2 ? (p.pos ? ", tested positive" : ", tested negative") : ""}`);
+  };
+  cv.onpointerleave = () => tip(null);
+  const api = {
+    enter() {
+      phase = "ask"; k1 = k2 = 0; g = .5; inp.value = 50; out.value = "50%"; inp.disabled = false;
+      prev = .01; pin.value = 2; pout.value = inN(prev);
+      ["#ts-res", "#ts-legend", "#ts-prev-box"].forEach(s => $(s).hidden = true); $("#ts-guess").hidden = false;
+      go.textContent = "Reveal"; assign(); results(); layout(); draw();
+    },
+    resize() { layout(); draw(); },
+    primary() { if (phase === "ask") reveal(); else if (phase === "shown") location.hash = "#shipman"; },
+  };
+  go.onclick = () => api.primary();
   return api;
 })();
 
