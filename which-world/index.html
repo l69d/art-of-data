@@ -21,6 +21,7 @@
   --body: "Iowan Old Style", Charter, Georgia, serif;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { margin: 0; height: 100%; }
 body {
   background: var(--bg); color: var(--ink);
@@ -92,6 +93,8 @@ input[type=range] { width: 100%; accent-color: var(--guess); height: 28px; }
 .hero p { font-size: 22px; margin: 0 0 24px; max-width: 34ch; color: var(--ink-2); }
 .hero .fine { font-size: 15px; margin-top: 20px; }
 
+.stage canvas { border-radius: 14px; }
+svg text { font: 500 15px var(--display); fill: var(--ink-2); }
 #tip {
   position: fixed; z-index: 9; pointer-events: none; display: none;
   background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
@@ -130,7 +133,25 @@ input[type=range] { width: 100%; accent-color: var(--guess); height: 28px; }
     </div>
   </section>
 
-  <section class="room split" data-room="stadium"></section>
+  <section class="room split" data-room="stadium">
+    <div class="q">
+      <h2>The stadium</h2>
+      <p>1,000 random people fill a stadium. Then one more walks onto the pitch.</p>
+      <p class="ask" id="st-ask"></p>
+      <div class="guess"><label for="st-in">Your guess</label><output id="st-out" for="st-in"></output><input type="range" id="st-in" min="0" max="100" step="0.5"></div>
+      <div id="st-res" hidden><p class="big" id="st-big"></p><p class="verdict" id="st-verdict"></p></div>
+      <div class="badges" id="st-badges" hidden>
+        <span class="badge med"><i></i>Weight lives in Mediocristan</span>
+        <span class="badge ext" id="st-ext"><i></i>Wealth lives in Extremistan</span>
+      </div>
+      <button class="btn" id="st-go"></button>
+      <p class="src">Taleb, <cite>The Black Swan</cite>, ch. 3. Wealth figures as published in 2007; the crowd is simulated.</p>
+    </div>
+    <div class="stage">
+      <canvas id="st-c" style="height:calc(100% - 112px)"></canvas>
+      <svg id="st-bar" style="top:auto;height:96px" role="img" aria-label="Share of the stadium's total"></svg>
+    </div>
+  </section>
   <section class="room split" data-room="turkey"></section>
   <section class="room split" data-room="test"></section>
   <section class="room" data-room="shipman"></section>
@@ -249,6 +270,108 @@ rooms.home = {
   primary() { location.hash = "#stadium"; },
 };
 $("#start").onclick = () => rooms.home.primary();
+
+const NS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs, parent, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const a in attrs) e.setAttribute(a, attrs[a]);
+  if (text != null) e.textContent = text;
+  parent && parent.appendChild(e); return e;
+}
+const anchor = (x, W) => x < W * .15 ? "start" : x > W * .85 ? "end" : "middle";
+
+// one bar = the whole stadium; orange = the newcomer's share, white tick = the visitor's guess
+function shareBar(svg, truth, k, guess, who) {
+  svg.innerHTML = ""; const W = svg.clientWidth, y = 30, h = 22;
+  if (!W || k <= 0) return;
+  const x = f => Math.min(W - 1, Math.max(1, f * W)), xs = Math.max(3, truth * k * W);
+  svgEl("rect", { x: 0, y, width: xs, height: h, rx: 3, fill: C.ext }, svg);
+  if (W - xs > 4) svgEl("rect", { x: xs + 2, y, width: W - xs - 2, height: h, rx: 3, fill: C.med }, svg);
+  const gx = x(guess);
+  svgEl("line", { x1: gx, x2: gx, y1: y - 8, y2: y + h + 6, stroke: C.guess, "stroke-width": 2 }, svg);
+  svgEl("text", { x: gx, y: y - 13, "text-anchor": anchor(gx, W), style: "fill:" + C.ink }, svg, "your guess " + pct(guess));
+  if (k >= 1) {
+    svgEl("text", { x: 0, y: y + h + 24 }, svg, `${who}: ${pct(truth)}`);
+    svgEl("text", { x: W, y: y + h + 24, "text-anchor": "end" }, svg, `the other 1,000 together: ${pct(1 - truth)}`);
+  }
+}
+
+const CR = crowd();
+rooms.stadium = (() => {
+  const cv = $("#st-c"), bar = $("#st-bar"), inp = $("#st-in"), out = $("#st-out"), go = $("#st-go");
+  const R = {
+    weight: {
+      arr: CR.weight, extra: HEAVIEST_KG, who: "the heaviest person",
+      ask: "The heaviest person imaginable walks on. What share of the stadium's total weight is theirs?",
+      fmt: v => Math.round(v) + " kg", star: "Heaviest human imaginable: 400 kg",
+      verdict: (g, t) => Math.abs(g - t) < .01 ? "Spot on." : g > t ? "Too high. Even the heaviest body can't outweigh a crowd." : "Close to nothing, and you knew it.",
+    },
+    wealth: {
+      arr: CR.wealth, extra: RICHEST_USD, who: "the richest person",
+      ask: "Swap them for the richest person on Earth. What share of the stadium's total wealth is theirs?",
+      fmt: v => "$" + Math.round(v / 1000).toLocaleString() + "k", star: "Richest person on Earth: $80 billion",
+      verdict: (g, t) => Math.abs(g - t) < .01 ? "Spot on. You already live in Extremistan." : "One person holds nearly everything. The other 1,000 barely register.",
+    },
+  };
+  let mode, phase, k, S, g;
+  const m = () => R[mode];
+  function layout() { S = sized(cv); S.st = stands(CROWD, S.W, S.H); S.mean = sum(m().arr) / CROWD; }
+  function draw() {
+    const { ctx, W, H, st } = S; ctx.clearRect(0, 0, W, H);
+    ctx.beginPath(); ctx.ellipse(st.cx, st.cy, st.a * .45, st.b * .45, 0, 0, 7); ctx.strokeStyle = C.line; ctx.lineWidth = 1.5; ctx.stroke();
+    // the newcomer grows geometrically from an average person to their true size
+    const target = st.r0 * Math.sqrt(m().extra / S.mean), r = st.r0 * Math.pow(target / st.r0, k);
+    dot(ctx, st.cx, st.cy, r, C.ext);
+    st.pts.forEach((p, i) => dot(ctx, p[0], p[1], st.r0 * Math.sqrt(m().arr[i] / S.mean), "rgba(57,135,229,.85)"));
+    if (k >= 1 && mode === "weight") {
+      ctx.font = `500 15px ${css("--display")}`; ctx.fillStyle = C.ink2; ctx.textAlign = "center";
+      ctx.fillText("the heaviest person imaginable", st.cx, st.cy + r + 20);
+    }
+    if (k >= 1 && mode === "wealth") {
+      ctx.fillStyle = C.bg; ctx.textAlign = "center";
+      ctx.font = `700 ${Math.min(64, W / 12)}px ${css("--display")}`; ctx.fillText("One person.", W / 2, H / 2 - 8);
+      ctx.font = `500 ${Math.min(26, W / 28)}px ${css("--display")}`; ctx.fillText("99.9% of the stadium's wealth.", W / 2, H / 2 + 30);
+    }
+  }
+  const truth = () => share(m().extra, m().arr);
+  function setMode(md) {
+    mode = md; phase = "ask"; k = 0; g = .1;
+    inp.value = 10; out.value = "10%"; inp.disabled = false;
+    $("#st-ask").textContent = m().ask; $("#st-res").hidden = true; $("#st-badges").hidden = true;
+    go.textContent = "Reveal"; layout(); draw(); shareBar(bar, 0, 0);
+  }
+  function reveal() {
+    phase = "anim"; inp.disabled = true;
+    const t = truth();
+    tween(mode === "wealth" ? 3400 : 1400, kk => { k = ease(kk); draw(); shareBar(bar, t, k, g, m().who); }, () => {
+      phase = "shown";
+      $("#st-big").textContent = pct(t); $("#st-big").style.color = mode === "wealth" ? C.ext : C.ink;
+      $("#st-verdict").textContent = `You guessed ${pct(g)}. ${m().verdict(g, t)}`;
+      $("#st-res").hidden = false; $("#st-badges").hidden = false; $("#st-ext").hidden = mode !== "wealth";
+      go.textContent = mode === "weight" ? "Now try wealth" : "Next room";
+    });
+  }
+  inp.oninput = () => { g = inp.value / 100; out.value = pct(g); };
+  cv.onpointermove = e => {
+    if (!S) return; const b = cv.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top, st = S.st;
+    let best = -1, bd = (st.r0 * 2.5) ** 2;
+    st.pts.forEach((p, i) => { const d = (p[0] - x) ** 2 + (p[1] - y) ** 2; if (d < bd) { bd = d; best = i; } });
+    if (best >= 0) return tip(e, `Person ${best + 1}: ${m().fmt(m().arr[best])}`);
+    const r = st.r0 * Math.pow(st.r0 * Math.sqrt(m().extra / S.mean) / st.r0, k);
+    tip(e, (x - st.cx) ** 2 + (y - st.cy) ** 2 < r * r ? (k ? m().star : "Who is this?") : null);
+  };
+  cv.onpointerleave = () => tip(null);
+  const api = {
+    enter() { setMode("weight"); },
+    resize() { layout(); draw(); if (phase === "shown") shareBar(bar, truth(), 1, g, m().who); },
+    primary() {
+      if (phase === "ask") reveal();
+      else if (phase === "shown") mode === "weight" ? setMode("wealth") : (location.hash = "#turkey");
+    },
+  };
+  go.onclick = () => api.primary();
+  return api;
+})();
 
 // ---------- router, keys, idle ----------
 const order = ["home", "stadium", "turkey", "test", "shipman"];
