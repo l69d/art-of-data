@@ -11,8 +11,11 @@ the data needs 3D, scale, or motion.
 | piece | dataset | built with |
 |---|---|---|
 | [Shipman deaths by age](https://l69d.github.io/art-of-data/shipman-data/age_by_year.html) | [Shipman Inquiry case decisions](shipman-data/) — 531 deaths, 1974–1998 | SVG + vanilla JS |
+| [Which world are you in?](https://l69d.github.io/art-of-data/which-world/) | [Galton's family heights + figures from *The Black Swan* and *The Art of Statistics*](which-world/) — four guess-then-reveal rooms | canvas + SVG + vanilla JS, offline |
 
 ![Shipman deaths by age](shipman-data/shipman-scatter.png)
+
+![Which world are you in? The stadium, wealth round](which-world/stadium.png)
 
 ## Layout
 
@@ -43,3 +46,7 @@ One folder per dataset. Each one holds:
   and the Sixth Report death tables.
 - **2026-09-11** — Shipman: dropped 23 MB of unused evidence-catalogue pages and
   added `test_parse.py`. Created this repo and turned on GitHub Pages.
+- **2026-09-24** — Which world are you in?: a four-room walk-up exhibit for the Claude
+  community event (stadium, Galton vs the turkey, positive test, Shipman), with Galton's
+  1886 heights fetched to `which-world/derived/`, `test_galton.py`, `test_model.mjs`
+  and a talk outline.
