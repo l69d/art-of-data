@@ -125,6 +125,7 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
     <a href="#stadium" aria-label="Plate I, the stadium"><i>I</i><span>The stadium</span></a>
     <a href="#graveyard" aria-label="Plate III, the graveyard"><i>III</i><span>The graveyard</span></a>
     <a href="#funnel" aria-label="Plate V, the league table"><i>V</i><span>The league table</span></a>
+    <a href="#test" aria-label="Plate VI, the positive test"><i>VI</i><span>The positive test</span></a>
   </nav>
 </header>
 
@@ -153,6 +154,11 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
   <section class="plate" data-plate="funnel">
     <div class="margin"><p class="label">Plate V</p><h2>The league table</h2><div class="story"></div><p class="cap"></p></div>
     <div class="fig" id="fn-fig"><svg class="ov" aria-hidden="true"></svg></div>
+  </section>
+
+  <section class="plate" data-plate="test">
+    <div class="margin"><p class="label">Plate VI</p><h2>The positive test</h2><div class="story"></div><p class="cap"></p></div>
+    <div class="fig" id="ts-fig"><svg class="ov" aria-hidden="true"></svg></div>
   </section>
 </main>
 <div id="tip" role="tooltip"></div>
@@ -788,6 +794,146 @@ plates.funnel = (() => {
     leave() { ov.innerHTML = ""; },
     resize() { if (phase === "funnel") { ink.retarget(funnelTargets()); axes(); } else ink.retarget(tableTargets()); },
     label: i => i < DS.length ? `${name(DS[i])}: ${DS[i].deaths} deaths in ${DS[i].pop.toLocaleString()} people, ${DS[i].rate.toFixed(1)} per 100,000` : null,
+  };
+})();
+
+// ---------- Plate VI: the positive test, then framing ----------
+plates.test = (() => {
+  const fig = $("#ts-fig"), ov = $("[data-plate=test] svg.ov");
+  const PREVS = [.001, .005, .01, .02, .05, .1, .2, .5];
+  const perm = (() => { const r = rng(11), a = [...Array(CROWD).keys()]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; })();
+  const inN = p => { const n = Math.round(1 / p); return n >= 2 ? `1 in ${n.toLocaleString()}` : pct(p, 0); };
+  let phase = "cloud", prev = .01, res, people, k1 = 0, k2 = 0, fa = null, fb = null;
+  function assign() {
+    res = screen(CROWD, prev);
+    people = Array.from({ length: CROWD }, () => ({ ill: false, pos: false }));
+    perm.slice(0, res.ill).forEach((p, i) => { people[p].ill = true; people[p].pos = i < res.tp; });
+    perm.slice(res.ill, res.ill + res.fp).forEach(p => { people[p].pos = true; });
+    people.map((p, i) => i).filter(i => people[i].pos).sort((a, b) => people[b].ill - people[a].ill).forEach((i, j) => { people[i].slot = j; });
+  }
+  // 1,000 people on the left; everyone who tests positive files into the box on the right
+  function layout() {
+    const b = box(fig), gw = b.w * .58, H = b.h - 80, cols = clamp(Math.round(Math.sqrt(CROWD * gw / H)), 20, 50), rows = Math.ceil(CROWD / cols);
+    const cell = Math.min(gw / cols, H / rows), bx = b.x + gw + cell * 3, bw = b.x + b.w - bx, pad = 12, full = rows * cell;
+    const bc = Math.min(cell, Math.sqrt((bw - 2 * pad) * (full - 2 * pad) / Math.max(res.pos, 1)) * .95), bcols = Math.max(1, Math.floor((bw - 2 * pad) / bc));
+    return { b, cols, cell, top: b.y + 46, box: { x: bx, y: b.y + 46, w: bw, h: Math.min(full, Math.ceil(Math.max(res.pos, 1) / bcols) * bc + 2 * pad) }, bc, bcols, pad };
+  }
+  // before the test: the patients drift as a cloud above the figure
+  function cloudTargets() {
+    const b = box(fig), r = rng(4);
+    return Array.from({ length: CROWD }, (_, i) => ({ x: b.x + b.w * (.1 + .8 * r()), y: b.y + b.h * (.1 + .6 * r()), z: (r() - .5) * b.w * .9, r: 2.4, c: i === 777 ? 2 : 3, a: i === 777 ? 1 : .55 }));
+  }
+  function testTargets() {
+    const Lo = layout();
+    return people.map((p, i) => {
+      const hx = Lo.b.x + (i % Lo.cols + .5) * Lo.cell, hy = Lo.top + (Math.floor(i / Lo.cols) + .5) * Lo.cell;
+      const c = k1 ? (p.ill ? 1 : 0) : 3, a = k1 ? (k2 && !p.pos ? .25 : 1) : .45, r = Lo.cell * .32;
+      if (!(p.pos && k2)) return { x: hx, y: hy, r, c: i === 777 ? 2 : c, a: i === 777 ? 1 : a };
+      const j = p.slot, sx = Lo.box.x + Lo.pad + (j % Lo.bcols + .5) * Lo.bc, sy = Lo.box.y + Lo.pad + (Math.floor(j / Lo.bcols) + .5) * Lo.bc;
+      return { x: sx, y: sy, r: Lo.bc * .32, c, a: 1 };
+    });
+  }
+  function testLabels() {
+    ov.innerHTML = "";
+    if (phase !== "grid") return;
+    const Lo = layout(), X = v => v - Lo.b.x, Y = v => v - Lo.b.y;
+    svgEl("text", { x: 0, y: 24 }, ov, "1,000 people tested");
+    if (!k2) return;
+    svgEl("rect", { x: X(Lo.box.x), y: Y(Lo.box.y), width: Lo.box.w, height: Lo.box.h, class: "ink", rx: 2 }, ov);
+    svgEl("text", { x: X(Lo.box.x), y: 24, style: "fill:" + C.ink }, ov, `tested positive: ${res.pos}`);
+    svgEl("text", { x: X(Lo.box.x), y: Y(Lo.box.y + Lo.box.h) + 24, style: "fill:" + C.madder }, ov, `${res.tp} have it`);
+    svgEl("text", { x: X(Lo.box.x + Lo.box.w), y: Y(Lo.box.y + Lo.box.h) + 24, "text-anchor": "end" }, ov, `${res.fp} don't`);
+  }
+  // two 10 x 10 arrays: the same facts, framed two ways
+  const frameBox = () => { const r = fig.getBoundingClientRect(), sp = Math.min(r.width * .34 / 10, (r.height - 240) / 10); return { sp, top: (r.height - 10 * sp) / 2 + 20 }; };
+  function frameTargets() {
+    const b = box(fig), { sp, top } = frameBox(), t = [];
+    const at = (cx, i) => ({ x: cx + ((i % 10) - 4.5) * sp, y: b.y + top + (Math.floor(i / 10) + .5) * sp, r: sp * .24 });
+    for (let i = 0; i < 100; i++) {
+      const dies = i >= 95; // the heart-surgery array: 5 of 100
+      if (fa) t[i] = { ...at(b.x + b.w * .25, i), c: dies ? 1 : 0, a: fa === "die" ? (dies ? 1 : .18) : (dies ? .18 : 1) };
+      const ill = i >= 93, extra = i === 93; // the bacon array: 6 get it anyway, 1 more with bacon
+      if (fb) t[100 + i] = { ...at(b.x + b.w * .75, i), c: ill ? 1 : 0, a: fb === "rel" ? .12 : ill ? 1 : .35, r: sp * (extra && fb === "abs" ? .38 : .24) };
+    }
+    if (fa) t[3] = { ...t[3], c: 2, a: 1 };
+    return t;
+  }
+  function frameLabels() {
+    ov.innerHTML = "";
+    const b = fig.getBoundingClientRect(), { sp, top } = frameBox(), q = s => `“${s}”`;
+    if (fa) {
+      svgEl("text", { x: b.width * .25, y: top - 62, "text-anchor": "middle", style: "font-size:24px;fill:" + C.ink }, ov, fa === "die" ? q("5% of children die") : q("95% of children survive"));
+      svgEl("text", { x: b.width * .25, y: top - 34, "text-anchor": "middle" }, ov, "after heart surgery");
+    }
+    if (fb) {
+      svgEl("text", { x: b.width * .75, y: top - 62, "text-anchor": "middle", style: "font-size:24px;fill:" + C.ink }, ov, fb === "rel" ? q("Bacon raises your cancer risk by 18%") : q("One extra case in every 100 bacon eaters"));
+      svgEl("text", { x: b.width * .75, y: top - 34, "text-anchor": "middle" }, ov, "lifetime risk of bowel cancer");
+      if (fb === "rel") svgEl("text", { x: b.width * .75, y: top + sp * 5 + sp * 1.3, "text-anchor": "middle", style: `font:400 ${sp * 4}px var(--serif);fill:${C.madder}` }, ov, "+18%");
+    }
+  }
+  const draw = () => { if (phase === "frame") { ink.retarget(frameTargets()); frameLabels(); } else if (phase === "grid") { ink.retarget(testTargets()); testLabels(); } else ink.retarget(cloudTargets()); };
+  async function story() {
+    const s = storyOf("test");
+    phase = "cloud"; prev = .01; k1 = k2 = 0; fa = fb = null; assign(); ov.innerHTML = "";
+    ink.to(cloudTargets(), 1600); ink.pose(orbit(fig, { dist: 1.5, elev: .35, speed: .05 }), 2000);
+    s.cap("Fig. 6a. Screening 1,000 people (Spiegelhalter, ch. 8).");
+    s.say("You are a GP. The disease you screen for is rare: 1 person in 100 has it. The test catches 90% of real cases, and wrongly flags 10% of healthy people.");
+    s.say("Your patient's result has come back positive. They look at you: <em>“Doctor, how worried should I be?”</em>");
+    s.ask("What do you tell them?");
+    const c = await s.choose([
+      { label: "“It's 90% likely you have it”", right: false, reply: "You've just frightened a patient who is probably healthy." },
+      { label: "“It's about 50–50”", right: false, reply: "Still far too high. Most positives are false alarms." },
+      { label: "“Probably not. Let's do a second test”", right: true, reply: "Right. A positive here is far more likely to be a false alarm than the disease." },
+    ]);
+    if (!s.alive()) return;
+    s.say("Watch a thousand patients take the same test.");
+    phase = "grid"; ink.flat(1600); ink.to(testTargets(), 1800); testLabels();
+    await sleep(1900); if (!s.alive()) return;
+    k1 = 1; ink.to(testTargets(), 900); await sleep(1100); if (!s.alive()) return;
+    k2 = 1; ink.to(testTargets(), 1700); testLabels(); await sleep(1800); if (!s.alive()) return;
+    s.el("p", pct(res.ppv, 0), "big");
+    s.say(`Only ${res.tp} of the ${res.pos} people who tested positive actually have the disease. The healthy 990 produce ${res.fp} false alarms, drowning the ${res.tp} real cases.`);
+    s.say(c.reply, "reply");
+    s.note("gp", "A positive screening test", c.label, c.right, "drawn better");
+    s.el("div", `<label for="ts-prev">Now change how common the disease is</label><output id="ts-prev-out" for="ts-prev">${inN(prev)}</output><input type="range" id="ts-prev" min="0" max="7" step="1" value="2">`, "guess");
+    const pin = $("#ts-prev"), pout = $("#ts-prev-out"), big = [...$("[data-plate=test] .story").querySelectorAll(".big")].pop();
+    if (pin) pin.oninput = () => { prev = PREVS[+pin.value]; pout.value = inN(prev); assign(); ink.retarget(testTargets()); testLabels(); if (big) big.textContent = pct(res.ppv, 0); };
+    await s.cont("Same facts, other words"); if (!s.alive()) return;
+
+    // framing: you pick the words, then see the other wording on the same dots
+    phase = "frame"; s.clear(); ink.to([], 900); ov.innerHTML = "";
+    s.cap("Fig. 6b. Framing: the numbers don't change, the words do (Spiegelhalter, ch. 1 and 2).");
+    s.say("Now you're the hospital's press officer. Last year, 5 in every 100 children who had heart surgery died.");
+    s.ask("Which line goes in the press release?");
+    const f1 = await s.choose([{ label: "“5% of children die”", v: "die" }, { label: "“95% of children survive”", v: "live" }]);
+    if (!s.alive()) return;
+    fa = f1.v; ink.to(frameTargets(), 900); frameLabels(); await sleep(2200); if (!s.alive()) return;
+    fa = fa === "die" ? "live" : "die"; ink.to(frameTargets(), 900); frameLabels();
+    s.say("Same hundred children, the other way round. Parents told “5% die” feel very differently from parents told “95% survive”.");
+    s.note("press", "The surgery press release", f1.label, null, "framing");
+    await sleep(900); if (!s.alive()) return;
+    s.say("And now you edit a newspaper. A study finds that eating bacon every day raises your lifetime risk of bowel cancer by 18%.");
+    s.ask("Which headline do you print?");
+    const f2 = await s.choose([{ label: "“Bacon raises your cancer risk by 18%”", v: "rel" }, { label: "“One extra case in every 100 bacon eaters”", v: "abs" }]);
+    if (!s.alive()) return;
+    fb = f2.v; ink.to(frameTargets(), 900); frameLabels(); await sleep(2200); if (!s.alive()) return;
+    fb = fb === "rel" ? "abs" : "rel"; ink.to(frameTargets(), 900); frameLabels(); await sleep(1600); if (!s.alive()) return;
+    fb = "abs"; ink.to(frameTargets(), 900); frameLabels();
+    s.say(`Same study. Out of 100 people, ${BACON.base} would get bowel cancer anyway; with bacon every day, ${Math.round(BACON.base * (1 + BACON.rel))}. That is the whole “18%”.`);
+    s.note("headline", "The bacon headline", f2.label, null, "framing");
+    s.moral("When something is rare, most alarms are false. And the same fact can frighten or reassure. Ask for the count out of 100 before you feel anything.");
+    await s.cont("See your record"); if (!s.alive()) return;
+    next();
+  }
+  return {
+    enter() { story(); },
+    leave() { ov.innerHTML = ""; },
+    resize() { draw(); },
+    label: i => {
+      if (phase === "frame") return i < 100 ? (i >= 95 ? "A child who died" : "A child who survived") : i < 200 ? (i === 193 ? "The one extra case from bacon" : i >= 194 ? "Would get bowel cancer anyway" : "Won't get bowel cancer") : null;
+      if (i >= CROWD) return null;
+      const p = people[i]; return phase === "cloud" ? "A patient" : `Patient ${i + 1}: ${k1 ? (p.ill ? "has it" : "doesn't have it") : "not yet tested"}${k2 ? (p.pos ? ", tested positive" : ", tested negative") : ""}`;
+    },
   };
 })();
 
