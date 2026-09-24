@@ -111,6 +111,7 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
   <a class="mark" href="#home">Which world are you in?</a>
   <nav class="rail" aria-label="Plates">
     <a href="#stadium"><i>I</i><span>The stadium</span></a>
+    <a href="#turkey"><i>II</i><span>Galton and the turkey</span></a>
     <a href="#graveyard"><i>III</i><span>The graveyard</span></a>
     <a href="#dino"><i>IV</i><span>The Datasaurus</span></a>
     <a href="#funnel"><i>V</i><span>The league table</span></a>
@@ -142,6 +143,29 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
       <p class="cap" id="st-cap"></p>
     </div>
     <div class="fig" id="st-fig"><svg class="ov" id="st-ov" aria-hidden="true"></svg></div>
+  </section>
+
+  <section class="plate" data-plate="turkey">
+    <div class="margin">
+      <p class="label">Plate II</p>
+      <h2>Galton's sons and the turkey</h2>
+      <p class="note">Two long runs of data. One is a fair guide to tomorrow. The other is not.</p>
+      <div id="tk-q1">
+        <p class="label">In Mediocristan</p>
+        <p class="ask">This father is 199 cm tall; the average father is 176 cm. How tall is his son?</p>
+        <div class="guess"><label for="tk-gin">Your guess</label><output id="tk-gout" for="tk-gin"></output><input type="range" id="tk-gin" min="150" max="205" step="0.5"></div>
+      </div>
+      <p id="tk-v1" hidden></p>
+      <div id="tk-q2" hidden>
+        <p class="label">In Extremistan</p>
+        <p class="ask">A turkey is fed every day for 1,000 days, and each day adds to its evidence. How sure should it be of being fed on day 1,001?</p>
+        <div class="guess"><label for="tk-tin">Your guess</label><output id="tk-tout" for="tk-tin"></output><input type="range" id="tk-tin" min="0" max="100" step="1"></div>
+      </div>
+      <p id="tk-v2" hidden></p>
+      <div class="btns"><button class="btn" id="tk-go"></button></div>
+      <p class="cap">Fig. 2. Left: Galton's 1886 family heights, 481 sons (Spiegelhalter, ch. 5). Right: Taleb's turkey (ch. 4), simulated.</p>
+    </div>
+    <div class="fig" id="tk-fig"><svg class="ov" id="tk-ov" aria-hidden="true"></svg></div>
   </section>
 
   <section class="plate" data-plate="graveyard">
@@ -536,6 +560,106 @@ plates.stadium = (() => {
     label: i => i === NEW ? (k ? m().star : "Who is this?") : i < CROWD ? (phase === "log" ? "" : "Person " + (i + 1) + ": ") + m().fmt(m().arr[i]) : null,
   };
   go.onclick = () => api.primary();
+  return api;
+})();
+
+// ---------- Plate II: Galton's sons and the turkey ----------
+plates.turkey = (() => {
+  const fig = $("#tk-fig"), ov = $("#tk-ov"), gin = $("#tk-gin"), gout = $("#tk-gout"), tin = $("#tk-tin"), tout = $("#tk-tout"), go = $("#tk-go");
+  const F = GALTON.map(p => p[0] * 2.54), SN = GALTON.map(p => p[1] * 2.54), FIT = fit(F, SN), DAD = 78.5 * 2.54, PRED = FIT.intercept + FIT.slope * DAD, T = turkey();
+  const M = { l: 50, r: 12, t: 34, b: 46 };
+  let phase, gg, tg, days, drop;
+  // two panels: Galton on the left, the turkey on the right (stacked on narrow screens)
+  const panels = () => {
+    const b = box(fig), side = b.w > 820, pw = side ? (b.w - 56) / 2 : b.w, ph = side ? Math.min(pw * .9, b.h - 40) : (b.h - 60) / 2;
+    const A = { x: b.x, y: b.y + (side ? (b.h - ph) / 2 : 0), w: pw, h: ph };
+    return { b, A, B: side ? { ...A, x: b.x + pw + 56 } : { ...A, y: A.y + ph + 60 } };
+  };
+  const sx = (P, lo, hi) => v => P.x + M.l + (P.w - M.l - M.r) * (v - lo) / (hi - lo);
+  const sy = (P, lo, hi) => v => P.y + P.h - M.b - (P.h - M.t - M.b) * (v - lo) / (hi - lo);
+  function targets() {
+    if (phase === "g-ask") return [];
+    const { A } = panels(), X = sx(A, 155, 205), Y = sy(A, 150, 205);
+    return F.map((f, i) => ({ x: X(f), y: Y(SN[i]), r: 2.3, c: i === 40 ? 2 : 0, a: .85 }));
+  }
+  // axes span the whole domain (xd, yd), ticks only where labelled
+  function frame(P, X, Y, xd, yd, xt, yt, xl, yl, b) {
+    const x = v => X(v) - b.x, y = v => Y(v) - b.y, x0 = x(xd[0]) - 8, y0 = y(yd[0]) + 8;
+    svgEl("line", { x1: x0, x2: x(xd[1]), y1: y0, y2: y0, class: "ink" }, ov);
+    svgEl("line", { x1: x0, x2: x0, y1: y0, y2: y(yd[1]), class: "ink" }, ov);
+    xt.forEach(v => { svgEl("line", { x1: x(v), x2: x(v), y1: y0, y2: y0 + 5, class: "ink" }, ov); svgEl("text", { x: x(v), y: y0 + 22, "text-anchor": "middle" }, ov, v.toLocaleString()); });
+    yt.forEach(v => { svgEl("line", { x1: x0 - 5, x2: x0, y1: y(v), y2: y(v), class: "ink" }, ov); svgEl("text", { x: x0 - 9, y: y(v) + 5, "text-anchor": "end" }, ov, v); });
+    svgEl("text", { x: x(xd[1]), y: y0 + 44, "text-anchor": "end" }, ov, xl);
+    svgEl("text", { x: x0, y: P.y - b.y + 16 }, ov, yl);
+    return { x, y };
+  }
+  function draw() {
+    ov.innerHTML = "";
+    const { b, A, B } = panels();
+    // Galton
+    const G = frame(A, sx(A, 155, 205), sy(A, 150, 205), [155, 205], [150, 205], [160, 170, 180, 190, 200], [160, 170, 180, 190, 200], "father's height, cm", "son's height, cm", b);
+    svgEl("line", { x1: G.x(DAD), x2: G.x(DAD), y1: G.y(150), y2: G.y(205), class: "hair", "stroke-dasharray": "2 4" }, ov);
+    if (phase !== "g-ask") {
+      svgEl("line", { x1: G.x(155), y1: G.y(155), x2: G.x(204), y2: G.y(204), class: "ink", "stroke-dasharray": "5 5", opacity: .6 }, ov);
+      svgEl("text", { x: G.x(204), y: G.y(204) - 8, "text-anchor": "end", class: "halo" }, ov, "if sons matched fathers");
+      const ry = f => FIT.intercept + FIT.slope * f;
+      svgEl("line", { x1: G.x(157), y1: G.y(ry(157)), x2: G.x(204), y2: G.y(ry(204)), stroke: C.madder, "stroke-width": 1.6 }, ov);
+      svgEl("text", { x: G.x(158), y: G.y(ry(158)) + 24, class: "halo", style: "fill:" + C.madder }, ov, "what sons actually average");
+      svgEl("circle", { cx: G.x(DAD), cy: G.y(PRED), r: 7, fill: "none", stroke: C.madder, "stroke-width": 2 }, ov);
+    }
+    svgEl("circle", { cx: G.x(DAD), cy: G.y(gg), r: 7, fill: C.paper, stroke: C.ink, "stroke-width": 2 }, ov);
+    svgEl("text", { x: G.x(DAD) - 12, y: G.y(gg) + 5, "text-anchor": "end", class: "halo" }, ov, "your guess");
+    // the turkey
+    const tx = sx(B, 0, 1060), ty = sy(B, 0, 22), K = frame(B, tx, ty, [0, 1060], [0, 22], [0, 250, 500, 750, 1000], [0, 5, 10, 15, 20], "day", "the turkey's weight, kg", b);
+    const n = Math.round(days);
+    if (n > 1) svgEl("path", { d: "M" + T.weight.slice(0, n).map((w, i) => `${K.x(i + 1).toFixed(1)},${K.y(w).toFixed(1)}`).join("L"), class: "ink", "stroke-width": 1.6 }, ov);
+    if (n) svgEl("text", { x: K.x(60), y: K.y(21), style: "fill:" + C.ink }, ov, `day ${n.toLocaleString()}: ${pct(T.confidence[n - 1])} sure of tomorrow`);
+    if (drop > 0) {
+      const y0 = K.y(T.weight[999]), y1 = y0 + (K.y(0) - y0) * drop;
+      svgEl("line", { x1: K.x(1000), y1: y0, x2: K.x(1001), y2: y1, stroke: C.madder, "stroke-width": 2.5 }, ov);
+      if (drop >= 1) svgEl("text", { x: K.x(1001) - 10, y: K.y(0) - 12, "text-anchor": "end", class: "halo", style: "fill:" + C.madder }, ov, "day 1,001: Thanksgiving");
+    }
+  }
+  function revealGalton() {
+    phase = "anim"; gin.disabled = true; ink.to(targets(), 1500); draw();
+    setTimeout(() => {
+      if (cur !== "turkey") return;
+      phase = "g-shown"; go.textContent = "Now the turkey";
+      $("#tk-v1").textContent = `You guessed ${Math.round(gg)} cm. Sons of fathers this tall average ${Math.round(PRED)} cm: still tall, but pulled back toward the middle. In Mediocristan, extremes fade.`;
+      $("#tk-v1").hidden = false; $("#tk-q1").hidden = true;
+    }, reduced ? 0 : 1500);
+  }
+  function startTurkey() {
+    phase = "t-ask"; $("#tk-q2").hidden = false; go.textContent = "Reveal";
+    tween(2600, k => { days = Math.max(days, 1000 * k); draw(); });
+  }
+  function revealTurkey() {
+    phase = "anim"; tin.disabled = true; days = 1000;
+    tween(1200, k => { drop = ease(k); draw(); }, () => {
+      phase = "t-shown"; go.textContent = "Next plate"; $("#tk-q2").hidden = true;
+      $("#tk-v2").textContent = `You said ${pct(tg, 0)}. By its own data the turkey was ${pct(T.confidence[999])} sure, and never surer than on its last day. In Extremistan, the one day that matters was never in the data.`;
+      $("#tk-v2").hidden = false;
+    });
+  }
+  gin.oninput = () => { gg = +gin.value; gout.value = Math.round(gg) + " cm"; draw(); };
+  tin.oninput = () => { tg = tin.value / 100; tout.value = pct(tg, 0); };
+  go.onclick = () => api.primary();
+  const api = {
+    enter() {
+      phase = "g-ask"; days = 0; drop = 0; gg = DAD; tg = .5;
+      gin.value = gg; gout.value = Math.round(gg) + " cm"; tin.value = 50; tout.value = "50%"; gin.disabled = tin.disabled = false;
+      $("#tk-q1").hidden = false; ["#tk-q2", "#tk-v1", "#tk-v2"].forEach(s => $(s).hidden = true); go.textContent = "Reveal";
+      ink.to([], 900); draw();
+    },
+    resize() { ink.set(targets()); draw(); },
+    primary() {
+      if (phase === "g-ask") revealGalton();
+      else if (phase === "g-shown") startTurkey();
+      else if (phase === "t-ask") revealTurkey();
+      else if (phase === "t-shown") next();
+    },
+    label: i => i < F.length && phase !== "g-ask" ? `Father ${Math.round(F[i])} cm, son ${Math.round(SN[i])} cm` : null,
+  };
   return api;
 })();
 
