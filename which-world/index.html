@@ -613,18 +613,31 @@ plates.stadium = (() => {
       lamp.commit();
     });
   }
-  // every fortune as a column over its seat; the richest guest's column climbs out of the sky
+  // every fortune as a column over its seat, and the richest guest's column: built once, then grown in place
+  let SC = null;
   function columns() {
     unit = B.a * .03 / MED;
-    if (cols > 0) {
-      const pts = [];
-      B.seats.forEach((p, i) => { pts.push(new THREE.Vector3(p[0], -p[1], p[2]), new THREE.Vector3(p[0], -p[1] + CR.wealth[i] * unit * cols, p[2])); });
-      ink.props.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: .45, depthWrite: false })));
-    }
-    if (towerK > 0) {
-      const tower = new THREE.Mesh(new THREE.CylinderGeometry(B.r0 * 2.2, B.r0 * 2.2, 1, 24), new THREE.MeshBasicMaterial({ color: C.madder }));
-      tower.scale.y = Math.max(.001, towerK); tower.position.set(B.cx, -B.cy + tower.scale.y / 2, 0); ink.props.add(tower);
-    }
+    const P = new Float32Array(CROWD * 6), geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(P, 3));
+    const lines = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: .45, depthWrite: false }));
+    const tower = new THREE.Mesh(new THREE.CylinderGeometry(B.r0 * 2.2, B.r0 * 2.2, 1, 24), new THREE.MeshBasicMaterial({ color: C.madder }));
+    const beam = ink.cloud(40, ink.props, true), lanterns = ink.cloud(70, ink.props, true);
+    ink.props.add(lines, tower);
+    SC = { P, geo, tower, beam, lanterns, LR: Array.from({ length: 70 }, (_, i) => [Math.sin(i * 7.1) * .5 + .5, Math.sin(i * 3.7) * .5 + .5, Math.sin(i * 5.3) * .5 + .5, Math.sin(i * 9.9) * .5 + .5]) };
+    raise();
+  }
+  function raise() {
+    if (!SC) return;
+    const { P, geo, tower, beam, lanterns, LR } = SC, t = reduced ? 0 : performance.now() / 1000;
+    B.seats.forEach((p, i) => { P.set([p[0], -p[1], p[2], p[0], -p[1] + CR.wealth[i] * unit * cols, p[2]], i * 6); });
+    geo.attributes.position.needsUpdate = true;
+    tower.visible = towerK > 0; tower.scale.y = Math.max(.001, towerK); tower.position.set(B.cx, -B.cy + tower.scale.y / 2, 0);
+    // a soft madder glow along the column, and paper lanterns rising over the gala
+    const red = new THREE.Color(C.madder), gold = new THREE.Color(C.gold);
+    for (let k = 0; k < 40; k++) beam.put(k, B.cx, B.cy - towerK * k / 40, 0, B.r0 * 9, red, towerK > 0 ? .18 : 0);
+    beam.commit();
+    LR.forEach(([a, b, c, d], k) => { const th = a * 6.283, rr = B.a * (.3 + 1.1 * b), h = ((c + t * .018 * (.5 + d)) % 1); lanterns.put(k, B.cx + rr * Math.cos(th), B.cy - B.a * (.1 + 1.6 * h), rr * .62 * Math.sin(th), B.r0 * (1.6 + 1.4 * d), gold, mode === "wealth" ? .55 * Math.sin(Math.PI * h) : 0); });
+    lanterns.commit();
   }
   const scenery = () => { if (phase === "log") return; bowlProps(B); floodlights(); columns(); };
   const LO = 2, HI = 11;
@@ -659,7 +672,7 @@ plates.stadium = (() => {
     const s = storyOf("stadium", 11), who = { weight: "the heaviest fan", wealth: "the richest guest" };
     mode = "weight"; phase = "bowl"; fill = 0; walk = 0; grow = 0; cols = 0; towerK = 0; ov.innerHTML = "";
     ink.to(bowlTargets(), 1400); setProps(scenery); ink.pose(orbit(fig, { dist: 1.75, elev: .62, speed: .04 }), 2200);
-    s.cap("Fig. 1a. One thousand fans, and one more. After Taleb, The Black Swan, ch. 3.");
+    s.cap("Fig. 2a. One thousand fans, and one more. After Taleb, The Black Swan, ch. 3.");
 
     s.card("You are the structural engineer for tonight's match. The stand you signed off holds a thousand people, with a margin.", "Saturday, 6:30 pm");
     s.say("The floodlights are warming up. The gates open at seven.", "note");
@@ -689,10 +702,11 @@ plates.stadium = (() => {
     await s.cont("Later that night"); if (!s.alive()) return;
 
     drawBar(0, 0); mode = "wealth"; walk = 0; grow = 0;
-    s.cap("Fig. 1b. The same thousand, and the richest person on Earth, at Taleb's 2007 figure of $80 billion.");
+    s.cap("Fig. 2b. The same thousand, and the richest person on Earth, at Taleb's 2007 figure of $80 billion.");
     s.card("The same thousand are now guests at your charity gala. You have one night to raise money for the children's hospital.", "Midnight");
     ink.to(bowlTargets(), 1400);
-    await tween(2600, k => { cols = ease(k); setProps(scenery); }); if (!s.alive()) return;
+    onRaf(() => raise());
+    await tween(2600, k => { cols = ease(k); }); if (!s.alive()) return;
     s.say("Over each seat stands a column: that guest's fortune. Most are modest. A few are tall.", "note");
     await s.cont(); if (!s.alive()) return;
 
@@ -708,7 +722,7 @@ plates.stadium = (() => {
     const tx = share(RICHEST_USD, CR.wealth), km = RICHEST_USD / MED / 1e5, b = box(fig), H = Math.min(RICHEST_USD * unit, 40 * b.h);
     s.card("Now raise their fortune beside the others, to the same scale.", "12:21 am");
     ink.pose(orbit(fig, { dist: 1.9, elev: .07, speed: .015, lift: b.h * .3 }), 2400);
-    await s.hold("Hold to raise it", 5200, k => { towerK = H * k * k; setProps(scenery); drawBar(tx, k, who.wealth); }); if (!s.alive()) return;
+    await s.hold("Hold to raise it", 5200, k => { towerK = H * k * k; }); if (!s.alive()) return;
     s.card(pct(tx), "12:22 am"); bigLine("big madder");
     s.say(`If a typical fortune in the room were a column one centimetre tall, this one would be ${Math.round(km)} kilometres tall. It left the sky some time ago.`);
     s.say(c2.reply, "reply");
@@ -718,7 +732,7 @@ plates.stadium = (() => {
     await s.cont("Draw it on a log scale"); if (!s.alive()) return;
 
     phase = "log"; drawBar(0, 0); setProps(null); ink.flat(1600); ink.to(logTargets().t, 1800); drawLogAxis();
-    s.cap("Fig. 1c. The same 1,001 fortunes on a logarithmic scale.");
+    s.cap("Fig. 2c. The same 1,001 fortunes on a logarithmic scale.");
     s.card(`On an ordinary scale the thousand vanish. On a logarithmic one, where each step is ten times the last, they come back: from ${money(Math.min(...CR.wealth))} to ${money(Math.max(...CR.wealth))}.`, "Drawn better");
     s.say(`And the richest guest sits alone, ${Math.round(RICHEST_USD / MED / 1e5) / 10} million times the typical fortune. Drawing it better is half the insight.`);
     await s.cont("Next plate"); if (!s.alive()) return;
@@ -954,7 +968,7 @@ plates.letter = (() => {
     const s = storyOf("letter", 11);
     phase = "cloud"; prev = .01; k1 = k2 = 0; fa = fb = null; assign(); ov.innerHTML = "";
     ink.to(cloudTargets(), 1600); ink.pose(orbit(fig, { dist: 1.5, elev: .35, speed: .05 }), 2000);
-    s.cap("Fig. 6a. Screening 1,000 people (Spiegelhalter, ch. 8). Sarah is invented; her odds are not.");
+    s.cap("Fig. 5a. Screening 1,000 people (Spiegelhalter, ch. 8). Sarah is invented; her odds are not.");
 
     s.card("You are a GP. Your next patient is Sarah, 52, a primary-school teacher. Last month she went for a routine screening test.", "Tuesday, 11:40 am");
     s.say("She was one of a thousand people screened that month. She's the red one.", "note");
@@ -989,7 +1003,7 @@ plates.letter = (() => {
 
     // framing: you pick the words, then see the other wording on the same dots
     phase = "frame"; ink.to([], 900); ov.innerHTML = "";
-    s.cap("Fig. 6b. Framing: the numbers don't change, the words do (Spiegelhalter, ch. 1 and 2).");
+    s.cap("Fig. 5b. Framing: the numbers don't change, the words do (Spiegelhalter, ch. 1 and 2).");
     s.card("That afternoon you're asked to help the hospital's press office. Last year, 5 in every 100 children who had heart surgery here died.", "3:00 pm");
     s.ask("Which line goes in the press release?");
     const f1 = await s.choose([{ label: "“5% of children die”", v: "die" }, { label: "“95% of children survive”", v: "live" }]);
@@ -1043,22 +1057,26 @@ plates.turkey = (() => {
     return t;
   }
   const ride = k => { const { b, Ht } = tower(); return orbit(fig, { dist: 1.3, elev: .22, speed: .09, lift: -b.h * .42 + Ht * k }); };
-  // the farm at dawn: a horizon on the ground and a sun that climbs as the days pass
-  let sunK = 0;
+  // the farm at dawn: a horizon on the ground and a glowing, hatched sun that climbs as the days pass
+  let sunK = 0, SUN = null;
   function farm() {
-    const { R, Ht, cx, base } = tower(), pts = [], sun = [];
+    const { R, Ht, cx, base } = tower(), pts = [], ring = [], sr = R * .35;
     for (let i = 0; i < 96; i++) { const a = i / 96 * Math.PI * 2; pts.push([cx + R * 2.6 * Math.cos(a), base + 4, R * 2.6 * Math.sin(a)]); }
     hairline(pts, { loop: true, opacity: .3 });
-    const sy = base - Ht * (.1 + .95 * sunK), sr = R * .35;
-    for (let i = 0; i < 48; i++) { const a = i / 48 * Math.PI * 2; sun.push([cx + R * 1.9 + sr * Math.cos(a), sy + sr * Math.sin(a), -R * 1.5]); }
-    hairline(sun, { loop: true, color: C.madder, opacity: .55 });
-    for (let k = -3; k <= 3; k++) { const yy = sy + k * sr / 4, half = Math.sqrt(Math.max(0, sr * sr - (k * sr / 4) ** 2)); hairline([[cx + R * 1.9 - half, yy, -R * 1.5], [cx + R * 1.9 + half, yy, -R * 1.5]], { color: C.madder, opacity: .3 }); }
+    SUN = new THREE.Group(); ink.props.add(SUN);
+    for (let i = 0; i < 48; i++) { const a = i / 48 * Math.PI * 2; ring.push([sr * Math.cos(a), sr * Math.sin(a), 0]); }
+    sketch(ring, { loop: true, color: C.madder, opacity: .6, parent: SUN });
+    for (let k = -3; k <= 3; k++) { const yy = k * sr / 4, half = Math.sqrt(Math.max(0, sr * sr - yy * yy)); sketch([[-half, yy, 0], [half, yy, 0]], { color: C.madder, opacity: .3, parent: SUN }); }
+    const glow = ink.cloud(1, SUN, true); glow.put(0, 0, 0, 0, sr * 1.6, new THREE.Color(C.gold), .55); glow.commit();
+    SUN.userData = { x: cx + R * 1.9, base, Ht, z: -R * 1.5 };
+    placeSun();
   }
+  function placeSun() { if (!SUN) return; const { x, base, Ht, z } = SUN.userData; SUN.position.set(x, -(base - Ht * (.1 + .95 * sunK)), z); }
   async function story() {
     const s = storyOf("turkey", 8);
     shown = 0; fallen = 0; doom = false; sunK = 0;
     ink.to(targets(), 600); setProps(farm); ink.pose(ride(0), 1800);
-    s.cap("Fig. 2. A thousand and one days (Taleb, The Black Swan, ch. 4). The turkey's confidence is Laplace's rule of succession; the turkey is simulated.");
+    s.cap("Fig. 3. A thousand and one days (Taleb, The Black Swan, ch. 4). The turkey's confidence is Laplace's rule of succession; the turkey is simulated.");
     s.card("You are a turkey. You hatched on a farm in Virginia. At dawn, the farmer comes out with a bucket of grain.", "Day 1, dawn");
     const line = s.say("Your belly is empty.", "note");
     await s.taps("Eat", 3, i => {
@@ -1074,7 +1092,7 @@ plates.turkey = (() => {
     let rider = 0;
     ink.pose(t => ride(rider)(t), 400);
     await tween(9000, k => {
-      shown = Math.max(4, Math.round(DAYS * k)); rider = k; sunK = k; ink.retarget(targets()); setProps(farm);
+      shown = Math.max(4, Math.round(DAYS * k)); rider = k; sunK = k; ink.retarget(targets()); placeSun();
       if (when) when.textContent = `Day ${shown.toLocaleString()}`;
       const m = MILES.filter(([d]) => shown >= d).pop(); if (mile && m) mile.textContent = m[1];
     });
