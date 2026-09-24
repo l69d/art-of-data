@@ -110,6 +110,7 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
   <a class="mark" href="#home">Which world are you in?</a>
   <nav class="rail" aria-label="Plates">
     <a href="#stadium"><i>I</i><span>The stadium</span></a>
+    <a href="#graveyard"><i>III</i><span>The graveyard</span></a>
     <a href="#dino"><i>IV</i><span>The Datasaurus</span></a>
   </nav>
 </header>
@@ -138,6 +139,20 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
       <p class="cap" id="st-cap"></p>
     </div>
     <div class="fig" id="st-fig"><svg class="ov" id="st-ov" aria-hidden="true"></svg></div>
+  </section>
+
+  <section class="plate" data-plate="graveyard">
+    <div class="margin">
+      <p class="label">Plate III</p>
+      <h2>The graveyard</h2>
+      <p class="note">Meet a fund manager who has beaten the stock market ten years in a row.</p>
+      <p class="ask" id="gy-ask">Now suppose 1,024 managers just flip a coin each year: heads, they beat the market. After ten years, how many have a perfect record?</p>
+      <div class="guess" id="gy-guess"><label for="gy-in">Your guess</label><output id="gy-out" for="gy-in"></output><input type="range" id="gy-in" min="0" max="64" step="1"></div>
+      <div id="gy-res" hidden><p class="big madder" id="gy-big"></p><p id="gy-verdict"></p></div>
+      <div class="btns"><button class="btn" id="gy-go"></button></div>
+      <p class="cap" id="gy-cap"></p>
+    </div>
+    <div class="fig" id="gy-fig"><svg class="ov" id="gy-ov" aria-hidden="true"></svg></div>
   </section>
 
   <section class="plate" data-plate="dino">
@@ -482,6 +497,84 @@ plates.stadium = (() => {
     label: i => i === NEW ? (k ? m().star : "Who is this?") : i < CROWD ? (phase === "log" ? "" : "Person " + (i + 1) + ": ") + m().fmt(m().arr[i]) : null,
   };
   go.onclick = () => api.primary();
+  return api;
+})();
+
+// ---------- Plate III: the graveyard ----------
+plates.graveyard = (() => {
+  const fig = $("#gy-fig"), ov = $("#gy-ov"), inp = $("#gy-in"), out = $("#gy-out"), go = $("#gy-go");
+  const HERO = MANAGERS - 1, SWAN_I = 5, REC = [...Array(YEARS).keys()].map(y => MANAGERS - YEARS + y); // dots that draw the hero's record
+  let phase, year, g;
+  // each manager keeps one seat in a 32 x 32 grid, shuffled so the coin flips look like what they are
+  const SEAT = (() => { const r = rng(21), a = [...Array(MANAGERS).keys()]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; })();
+  const L = () => { const b = box(fig), sp = Math.min(b.w, b.h - 150) / 33; return { b, sp, cx: b.x + b.w / 2, cy: b.y + 90 + (b.h - 150) / 2 }; };
+  // the magazine chart: one manager, ten winning years
+  function recordTargets() {
+    const b = box(fig), t = [];
+    REC.forEach((i, y) => { t[i] = { x: b.x + b.w * (.12 + .76 * y / (YEARS - 1)), y: b.y + b.h * (.78 - .56 * y / (YEARS - 1)), r: 5, c: 1 }; });
+    return t;
+  }
+  // everyone at the end of year y: the unbeaten stay dark, the fired sink a little and fade to ghosts
+  function yearTargets(y) {
+    const { sp, cx, cy } = L();
+    return Array.from({ length: MANAGERS }, (_, i) => {
+      const x = cx + ((SEAT[i] % 32) - 15.5) * sp, yy = cy + (Math.floor(SEAT[i] / 32) - 15.5) * sp;
+      if (lasted(i) >= y) return i === HERO && y === YEARS ? { x, y: yy, r: sp * .55, c: 1 } : { x, y: yy, r: sp * .3, c: 0 };
+      return { x, y: yy + sp * .2, r: sp * .22, c: i === SWAN_I ? 2 : 3, a: i === SWAN_I ? 1 : .15 };
+    });
+  }
+  function labels() {
+    ov.innerHTML = "";
+    const { b } = L();
+    if (phase === "ask") {
+      svgEl("line", { x1: b.w * .08, x2: b.w * .92, y1: b.h * .84, y2: b.h * .84, class: "ink" }, ov);
+      for (let y = 1; y <= YEARS; y++) svgEl("text", { x: b.w * (.12 + .76 * (y - 1) / (YEARS - 1)), y: b.h * .84 + 22, "text-anchor": "middle" }, ov, y);
+      svgEl("text", { x: b.w * .08, y: b.h * .84 + 48 }, ov, "year");
+      svgEl("text", { x: b.w * .12, y: b.h * .14, style: "fill:" + C.madder }, ov, "Manager 1,024: beat the market ten years running");
+      svgEl("polyline", { points: REC.map((_, y) => `${b.w * (.12 + .76 * y / (YEARS - 1))},${b.h * (.78 - .56 * y / (YEARS - 1))}`).join(" "), fill: "none", stroke: C.madder, "stroke-width": 1 }, ov);
+      return;
+    }
+    // the halving, set as a line of type across the top of the plate
+    for (let y = 0; y <= YEARS; y++) {
+      const x = b.w * (.03 + .94 * y / YEARS), on = y <= year;
+      svgEl("text", { x, y: 26, "text-anchor": "middle", style: `font-style:normal;font-size:${y === YEARS ? 26 : 19}px;fill:${y === YEARS && on ? C.madder : on ? C.ink : "transparent"}` }, ov, (MANAGERS >> y).toLocaleString());
+      svgEl("text", { x, y: 50, "text-anchor": "middle", style: on ? "" : "fill:transparent" }, ov, y ? "year " + y : "start");
+    }
+    if (year >= 1) svgEl("text", { x: b.w / 2, y: b.h - 12, "text-anchor": "middle" }, ov, "every faint dot is a manager who was fired; nobody writes about them");
+  }
+  function run() {
+    phase = "anim"; year = 0; inp.disabled = true; go.hidden = true;
+    ink.to(yearTargets(0), 1400); labels();
+    $("#gy-cap").textContent = "Fig. 3b. All 1,024 managers, one for every possible run of ten coin flips. The faint ones are the silent evidence.";
+    let t0 = performance.now() + 1500;
+    onRaf(t => {
+      if (t < t0) return;
+      year++; t0 = t + 750; ink.to(yearTargets(year), 650); labels();
+      if (year < YEARS) return;
+      phase = "shown"; go.hidden = false; go.textContent = "Next plate";
+      $("#gy-big").textContent = "1";
+      $("#gy-verdict").textContent = `You guessed ${g}. Exactly one, every time: 1,024 is every possible run of ten coin flips, so one of them is always perfect. We only ever interview the survivor. The other 1,023 are in the graveyard.`;
+      $("#gy-res").hidden = false; $("#gy-guess").hidden = true;
+      return false;
+    });
+  }
+  inp.oninput = () => { g = +inp.value; out.value = g; };
+  go.onclick = () => api.primary();
+  const api = {
+    enter() {
+      phase = "ask"; year = -1; g = 10; inp.value = 10; out.value = "10"; inp.disabled = false;
+      $("#gy-guess").hidden = false; $("#gy-res").hidden = true; go.hidden = false; go.textContent = "Show everyone";
+      $("#gy-cap").textContent = "Fig. 3a. A perfect ten-year record, as the financial pages would show it.";
+      ink.to(recordTargets(), 1300); labels();
+    },
+    resize() { ink.set(phase === "ask" ? recordTargets() : yearTargets(Math.max(0, year))); labels(); },
+    primary() { if (phase === "ask") run(); else if (phase === "shown") next(); },
+    label: i => {
+      if (phase === "ask") { const y = REC.indexOf(i); return y >= 0 ? `Year ${y + 1}: beat the market` : null; }
+      const l = lasted(i);
+      return l >= Math.max(0, year) ? `Manager ${i + 1}: unbeaten for ${Math.max(0, year)} years` : `Manager ${i + 1}: fired after year ${l + 1}`;
+    },
+  };
   return api;
 })();
 
