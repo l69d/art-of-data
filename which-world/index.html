@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Which World Are You In?</title>
 <link rel="icon" href="data:,">
-<meta name="description" content="An atlas in six plates: guess first, then see the data, then see it drawn better. After Taleb's The Black Swan and Spiegelhalter's The Art of Statistics.">
+<meta name="description" content="Seven short stories about data. Take the seat, make the call, watch it play out. After Taleb's The Black Swan and Spiegelhalter's The Art of Statistics.">
 <style>
 :root {
   color-scheme: light;
@@ -22,9 +22,8 @@
 [hidden] { display: none !important; }
 html, body { margin: 0; }
 body {
-  background: var(--hatch), var(--paper); color: var(--ink);
-  font: 18px/1.55 var(--serif); overflow-x: hidden;
-  font-variant-numeric: lining-nums;
+  background: var(--hatch), var(--paper); background-attachment: fixed; color: var(--ink);
+  font: 18px/1.55 var(--serif); overflow-x: hidden; font-variant-numeric: lining-nums;
 }
 button, input { font: inherit; color: inherit; }
 a { color: var(--ink); }
@@ -35,7 +34,7 @@ a { color: var(--ink); }
 .top {
   position: fixed; inset: 0 0 auto 0; z-index: 5;
   display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
-  padding: 16px 36px 12px; background: var(--hatch), var(--paper);
+  padding: 16px 36px 12px; background: var(--hatch), var(--paper); background-attachment: fixed;
   border-bottom: 1px solid var(--hair);
 }
 .mark { font-style: italic; text-decoration: none; color: var(--ink-2); font-size: 16px; }
@@ -47,49 +46,57 @@ a { color: var(--ink); }
 /* plates */
 .plate {
   position: relative; z-index: 1; display: none; min-height: 100vh;
-  padding: 84px 36px 32px; grid-template-columns: minmax(290px, 360px) 1fr; gap: 44px;
+  padding: 84px 36px 32px; grid-template-columns: minmax(300px, 380px) 1fr; gap: 44px;
 }
 .plate.on { display: grid; }
-.margin { display: flex; flex-direction: column; gap: 14px; padding-top: 10px; }
+.margin {
+  display: flex; flex-direction: column; gap: 14px; padding: 10px 18px 0 0; margin-right: -18px;
+  background: var(--hatch), var(--paper); background-attachment: fixed; position: relative; z-index: 2;
+}
 .label { font-style: italic; color: var(--ink-2); margin: 0; }
 .margin h2 { font: 400 clamp(34px, 3.4vw, 50px)/1.04 var(--serif); margin: 0; letter-spacing: -.01em; }
-.margin p { margin: 0; max-width: 36ch; }
-.ask { font-size: 20px; }
-.note { color: var(--ink-2); }
-.cap { font-style: italic; color: var(--ink-2); font-size: 15px; margin-top: auto !important; }
-.big { font: 400 clamp(60px, 6.5vw, 96px)/.9 var(--serif); margin: 0; font-variant-numeric: lining-nums tabular-nums; }
+.margin p { margin: 0; max-width: 38ch; }
+.story { display: flex; flex-direction: column; gap: 12px; }
+.story p { animation: in .6s ease both; }
+.story .ask { font-size: 21px; }
+.story .reply { font-style: italic; }
+@keyframes in { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { .story p { animation: none; } }
+.moral { margin: 8px 0 0; padding: 14px 0 0; border-top: 1px solid var(--ink); animation: in .8s ease both; }
+.moral p:last-child { font-size: 22px; line-height: 1.35; margin-top: 4px; }
+.clip { border: 1px solid var(--hair); padding: 12px 14px; background: #f2f2ee; font: 700 22px/1.15 var(--serif); letter-spacing: -.01em; }
+.clip small { display: block; font: italic 400 14px var(--serif); color: var(--ink-2); margin-bottom: 6px; }
+.cap { font-style: italic; color: var(--ink-2); font-size: 15px; margin-top: auto !important; padding-top: 16px; }
+.big { font: 400 clamp(48px, 5vw, 76px)/.9 var(--serif); margin: 0; font-variant-numeric: lining-nums tabular-nums; }
 .big.madder { color: var(--madder); }
 .fig { position: relative; min-height: 520px; }
 .fig svg.ov { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 svg text { font: italic 15px var(--serif); fill: var(--ink-2); }
 svg .hair { stroke: var(--hair); stroke-width: 1; fill: none; }
-svg text.halo { paint-order: stroke; stroke: var(--paper); stroke-width: 5px; stroke-linejoin: round; }
 svg .ink { stroke: var(--ink); stroke-width: 1; fill: none; }
+svg text.halo { paint-order: stroke; stroke: var(--paper); stroke-width: 5px; stroke-linejoin: round; }
 
 /* controls */
 .guess { display: grid; gap: 4px; }
 .guess label { font-size: 15px; color: var(--ink-2); font-style: italic; }
-.guess output { font: 400 40px/1 var(--serif); font-variant-numeric: lining-nums tabular-nums; }
+.guess output { font: 400 34px/1 var(--serif); font-variant-numeric: lining-nums tabular-nums; }
 input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
 .btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.opts { flex-direction: column; align-items: stretch; animation: in .6s ease both; }
 .btn {
-  align-self: start; cursor: pointer; font: 600 16px/1 var(--ui); letter-spacing: .01em;
-  background: var(--ink); color: var(--paper); border: 1px solid var(--ink); border-radius: 3px; padding: 12px 20px;
+  align-self: start; cursor: pointer; font: 600 16px/1.2 var(--ui); letter-spacing: .01em; text-align: left;
+  background: var(--ink); color: var(--paper); border: 1px solid var(--ink); border-radius: 3px; padding: 12px 18px;
 }
 .btn.ghost { background: transparent; color: var(--ink); border-color: var(--hair); }
-.btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.opts .btn { align-self: stretch; font-weight: 500; }
+.opts .btn:hover:not(:disabled) { border-color: var(--ink); }
+.btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn:disabled:not([aria-pressed="true"]) { opacity: .45; cursor: default; }
 
 /* home */
-[data-plate=home] .margin { justify-content: flex-end; padding-bottom: 40px; }
+[data-plate=home] .margin { justify-content: flex-end; padding-bottom: 40px; background: none; }
 [data-plate=home] h1 { font: 400 clamp(58px, 7.4vw, 112px)/.92 var(--serif); margin: 0; letter-spacing: -.02em; }
 [data-plate=home] .sub { font-size: 21px; max-width: 30ch; }
-
-/* plate IV table */
-.stats { border-collapse: collapse; font-size: 15px; font-variant-numeric: lining-nums tabular-nums; }
-.stats th { font-weight: 400; font-style: italic; color: var(--ink-2); text-align: right; padding: 0 0 4px 12px; border-bottom: 1px solid var(--hair); }
-.stats td { text-align: right; padding: 3px 0 3px 12px; }
-.stats th:first-child, .stats td:first-child { text-align: left; padding-left: 0; }
-.stats tr.on td { color: var(--madder); }
 
 #tip {
   position: fixed; z-index: 9; pointer-events: none; display: none;
@@ -99,7 +106,8 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
 
 @media (max-width: 900px) {
   .plate { grid-template-columns: 1fr; padding: 72px 16px 24px; gap: 20px; }
-  .fig { min-height: 420px; }
+  .margin { margin-right: 0; padding-right: 0; }
+  .fig { min-height: 440px; }
   .top { padding: 12px 16px 10px; }
   .rail span { display: none; }
 }
@@ -111,131 +119,29 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
   <a class="mark" href="#home">Which world are you in?</a>
   <nav class="rail" aria-label="Plates">
     <a href="#stadium" aria-label="Plate I, the stadium"><i>I</i><span>The stadium</span></a>
-    <a href="#turkey" aria-label="Plate II, Galton and the turkey"><i>II</i><span>Galton and the turkey</span></a>
-    <a href="#graveyard" aria-label="Plate III, the graveyard"><i>III</i><span>The graveyard</span></a>
-    <a href="#dino" aria-label="Plate IV, the Datasaurus"><i>IV</i><span>The Datasaurus</span></a>
-    <a href="#funnel" aria-label="Plate V, the league table"><i>V</i><span>The league table</span></a>
-    <a href="#test" aria-label="Plate VI, the positive test"><i>VI</i><span>The positive test</span></a>
   </nav>
 </header>
 
 <main>
   <section class="plate" data-plate="home">
     <div class="margin">
-      <p class="label">An atlas in six plates</p>
+      <p class="label">Seven short stories about data</p>
       <h1>Which world are you in?</h1>
-      <p class="sub">Where your gut is right, where it fails, and how a better picture fixes it. Guess first, then look.</p>
-      <div class="btns"><button class="btn" id="start">Begin</button></div>
+      <p class="sub">Take the seat. Make the call. Watch what happens.</p>
+      <div class="btns"><button class="btn go" id="start">Begin</button></div>
       <p class="cap">After Nassim Taleb, <cite>The Black Swan</cite>, and David Spiegelhalter, <cite>The Art of Statistics</cite>.</p>
     </div>
     <div class="fig" id="home-fig"></div>
   </section>
 
   <section class="plate" data-plate="stadium">
-    <div class="margin">
-      <p class="label">Plate I</p>
-      <h2>The stadium</h2>
-      <p class="note">1,000 random people fill a stadium. Then one more walks onto the pitch.</p>
-      <p class="ask" id="st-ask"></p>
-      <div class="guess" id="st-guess"><label for="st-in">Your guess</label><output id="st-out" for="st-in"></output><input type="range" id="st-in" min="0" max="100" step="0.5"></div>
-      <div id="st-res" role="status" hidden><p class="big" id="st-big"></p><p id="st-verdict"></p></div>
-      <div class="btns"><button class="btn" id="st-go"></button></div>
-      <p class="cap" id="st-cap"></p>
-    </div>
-    <div class="fig" id="st-fig"><svg class="ov" id="st-ov" aria-hidden="true"></svg></div>
-  </section>
-
-  <section class="plate" data-plate="turkey">
-    <div class="margin">
-      <p class="label">Plate II</p>
-      <h2>Galton's sons and the turkey</h2>
-      <p class="note">Two long runs of data. One is a fair guide to tomorrow. The other is not.</p>
-      <div id="tk-q1">
-        <p class="label">In Mediocristan</p>
-        <p class="ask">This father is 199 cm tall; the average father is 176 cm. How tall is his son?</p>
-        <div class="guess"><label for="tk-gin">Your guess</label><output id="tk-gout" for="tk-gin"></output><input type="range" id="tk-gin" min="150" max="205" step="0.5"></div>
-      </div>
-      <p id="tk-v1" role="status" hidden></p>
-      <div id="tk-q2" hidden>
-        <p class="label">In Extremistan</p>
-        <p class="ask">A turkey is fed every day for 1,000 days, and each day adds to its evidence. How sure should it be of being fed on day 1,001?</p>
-        <div class="guess"><label for="tk-tin">Your guess</label><output id="tk-tout" for="tk-tin"></output><input type="range" id="tk-tin" min="0" max="100" step="1"></div>
-      </div>
-      <p id="tk-v2" role="status" hidden></p>
-      <div class="btns"><button class="btn" id="tk-go"></button></div>
-      <p class="cap">Fig. 2. Left: Galton's 1886 family heights, 481 sons (Spiegelhalter, ch. 5). Right: Taleb's turkey (ch. 4), simulated.</p>
-    </div>
-    <div class="fig" id="tk-fig"><svg class="ov" id="tk-ov" aria-hidden="true"></svg></div>
-  </section>
-
-  <section class="plate" data-plate="graveyard">
-    <div class="margin">
-      <p class="label">Plate III</p>
-      <h2>The graveyard</h2>
-      <p class="note">Meet a fund manager who has beaten the stock market ten years in a row.</p>
-      <p class="ask" id="gy-ask">Now suppose 1,024 managers just flip a coin each year: heads, they beat the market. After ten years, how many have a perfect record?</p>
-      <div class="guess" id="gy-guess"><label for="gy-in">Your guess</label><output id="gy-out" for="gy-in"></output><input type="range" id="gy-in" min="0" max="64" step="1"></div>
-      <div id="gy-res" role="status" hidden><p class="big madder" id="gy-big"></p><p id="gy-verdict"></p></div>
-      <div class="btns"><button class="btn" id="gy-go"></button></div>
-      <p class="cap" id="gy-cap"></p>
-    </div>
-    <div class="fig" id="gy-fig"><svg class="ov" id="gy-ov" aria-hidden="true"></svg></div>
-  </section>
-
-  <section class="plate" data-plate="dino">
-    <div class="margin">
-      <p class="label">Plate IV</p>
-      <h2>The Datasaurus</h2>
-      <p class="note">Five datasets of 142 points each. Here is what the usual summary says about them.</p>
-      <table class="stats" id="dn-table"><thead><tr><th>set</th><th>mean x</th><th>mean y</th><th>SD x</th><th>SD y</th><th>r</th></tr></thead><tbody></tbody></table>
-      <p class="ask" id="dn-ask">Same averages, same spreads, same correlation. Are the five datasets alike?</p>
-      <div class="btns" id="dn-guess"><button class="btn ghost" data-g="1">Pretty much</button><button class="btn ghost" data-g="0">Not necessarily</button></div>
-      <div id="dn-res" role="status" hidden><p id="dn-verdict"></p></div>
-      <div class="btns" id="dn-tabs" hidden></div>
-      <div class="btns"><button class="btn" id="dn-go" hidden>Next plate</button></div>
-      <p class="cap" id="dn-cap">Fig. 4. The Datasaurus Dozen (Matejka and Fitzmaurice, 2017): five of its thirteen sets.</p>
-    </div>
-    <div class="fig" id="dn-fig"><svg class="ov" id="dn-ov" aria-hidden="true"></svg></div>
-  </section>
-
-  <section class="plate" data-plate="funnel">
-    <div class="margin">
-      <p class="label">Plate V</p>
-      <h2>The league table</h2>
-      <p class="note">Bowel-cancer death rates in 380 districts, ranked from worst to best.</p>
-      <p class="ask" id="fn-ask"></p>
-      <div class="btns" id="fn-guess"><button class="btn ghost" data-g="1">Yes, investigate</button><button class="btn ghost" data-g="0">Not yet</button></div>
-      <div id="fn-res" role="status" hidden><p id="fn-verdict"></p></div>
-      <div class="btns"><button class="btn" id="fn-go" hidden>Next plate</button></div>
-      <p class="cap" id="fn-cap"></p>
-    </div>
-    <div class="fig" id="fn-fig"><svg class="ov" id="fn-ov" aria-hidden="true"></svg></div>
-  </section>
-
-  <section class="plate" data-plate="test">
-    <div class="margin">
-      <p class="label">Plate VI</p>
-      <h2 id="ts-title">The positive test</h2>
-      <p class="note" id="ts-lead"></p>
-      <p class="ask" id="ts-ask">The test is 90% accurate, and you test positive. What's the chance you actually have the disease?</p>
-      <div class="guess" id="ts-guess"><label for="ts-in">Your guess</label><output id="ts-out" for="ts-in"></output><input type="range" id="ts-in" min="0" max="100" step="1"></div>
-      <div id="ts-res" role="status" hidden><p class="big" id="ts-big"></p><p id="ts-sub"></p><p class="note" id="ts-v"></p></div>
-      <div class="guess" id="ts-prev-box" hidden><label for="ts-prev">Now change how common the disease is</label><output id="ts-prev-out" for="ts-prev"></output><input type="range" id="ts-prev" min="0" max="7" step="1"></div>
-      <div id="fr-box" hidden>
-        <p class="note">Say the heart-surgery figure as</p>
-        <div class="btns" id="fr-a"><button class="btn ghost" data-v="die">5% die</button><button class="btn ghost" data-v="live">95% survive</button></div>
-        <p class="note" style="margin-top:12px">Say the bacon figure as</p>
-        <div class="btns" id="fr-b"><button class="btn ghost" data-v="rel">+18% risk</button><button class="btn ghost" data-v="abs">out of 100 people</button></div>
-        <p class="ask" style="margin-top:18px">Which world you're in, and how you draw it, decide half the answer.</p>
-      </div>
-      <div class="btns"><button class="btn" id="ts-go"></button></div>
-      <p class="cap" id="ts-cap"></p>
-    </div>
-    <div class="fig" id="ts-fig"><svg class="ov" id="ts-ov" aria-hidden="true"></svg></div>
+    <div class="margin"><p class="label">Plate I</p><h2>The stadium</h2><div class="story"></div><p class="cap"></p></div>
+    <div class="fig" id="st-fig"><svg class="ov" aria-hidden="true"></svg></div>
   </section>
 </main>
 <div id="tip" role="tooltip"></div>
 
+<script src="three.min.js"></script>
 <script id="model">
 const CROWD = 1000, HEAVIEST_KG = 400, RICHEST_USD = 80e9;
 function rng(seed) { return () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
@@ -318,8 +224,9 @@ const C = { ink: css("--ink"), ink2: css("--ink-2"), madder: css("--madder"), pa
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const pct = (x, d = 1) => (x * 100).toFixed(d).replace(/\.0+$/, "") + "%";
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, k) => a + (b - a) * k;
 
-// animation frames and timers belong to the current plate; leaving it cancels them
+// animation frames belong to the current plate; leaving it cancels them
 let frames = new Set();
 function onRaf(fn) {
   const id = { v: 0 };
@@ -327,17 +234,10 @@ function onRaf(fn) {
   id.v = requestAnimationFrame(loop); frames.add(id); return id;
 }
 function stopAll() { frames.forEach(f => cancelAnimationFrame(f.v)); frames.clear(); }
-function tween(ms, fn, done) {
-  const t0 = performance.now();
-  onRaf(t => { const k = reduced ? 1 : Math.min(1, (t - t0) / ms); fn(k); if (k >= 1) { done && done(); return false; } });
+function tween(ms, fn) {
+  return new Promise(res => { const t0 = performance.now(); onRaf(t => { const k = reduced ? 1 : Math.min(1, (t - t0) / ms); fn(k); if (k >= 1) { res(); return false; } }); });
 }
-function sized(cv) {
-  const r = cv.getBoundingClientRect(), dpr = devicePixelRatio || 1;
-  cv.width = Math.max(1, Math.round(r.width * dpr)); cv.height = Math.max(1, Math.round(r.height * dpr));
-  const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  return { ctx, W: r.width, H: r.height };
-}
-// a figure's box in document coordinates (the ink canvas draws in these)
+// a figure's box in document coordinates
 function box(el) { const r = el.getBoundingClientRect(); return { x: r.left + scrollX, y: r.top + scrollY, w: r.width, h: r.height }; }
 
 const NS = "http://www.w3.org/2000/svg";
@@ -349,53 +249,154 @@ function svgEl(tag, attrs, parent, text) {
 }
 const anchor = (x, W) => x < W * .15 ? "start" : x > W * .85 ? "end" : "middle";
 
-// ---------- the ink: one crowd of 1,024 dots shared by every plate ----------
-// target = {x, y, r, c: 0 ink | 1 madder | 2 swan | 3 ink-2, a: 0..1, clip?: [x, y, w, h]}
+// ---------- the ink: 1,024 dots on WebGL, shared by every plate ----------
+// World coordinates are document pixels: (x, -y, z). The flat pose puts the camera where z = 0 maps
+// 1:1 onto CSS pixels, so dots land exactly on SVG axes; scene poses orbit a subject for the stories.
+// target = {x, y, z?, r, c: 0 ink | 1 madder | 2 swan | 3 ink-2, a}
 const INK = 1024;
 const ink = (() => {
-  const cv = $("#ink"), PAL = [C.ink, C.madder, "#000", C.ink2];
-  const D = Array.from({ length: INK }, () => ({ x: innerWidth * .6, y: innerHeight * .5, r: 0, c: 0, a: 0 }));
-  let from = D.map(d => ({ ...d })), to = D.map(d => ({ ...d })), t0 = 0, dur = 0, S;
-  // hand-inked grain: every dot keeps its own slight size and position wobble
-  const gr = rng(99), GRAIN = D.map(() => [.88 + .24 * gr(), (gr() - .5) * .8, (gr() - .5) * .8, .82 + .18 * gr()]);
-  const resize = () => { S = sized(cv); };
-  resize(); addEventListener("resize", resize);
-  const fill = targets => D.map((d, i) => targets[i] ? { r: 2.4, c: 0, a: 1, clip: null, ...targets[i] } : { ...d, a: 0, clip: null });
-  function blot(ctx, x, y, r) {
-    ctx.beginPath();
-    for (let a = 0; a <= 6.29; a += .03) { const rr = r * (1 + .03 * Math.sin(a * 3 + 1.3) + .022 * Math.sin(a * 7 + .4) + .014 * Math.sin(a * 17 + 2.1) + .007 * Math.sin(a * 41 + .7)); ctx.lineTo(x + rr * Math.cos(a), y + rr * Math.sin(a)); }
-    ctx.fill();
+  const renderer = new THREE.WebGLRenderer({ canvas: $("#ink"), antialias: true, alpha: true });
+  const DPR = Math.min(2, devicePixelRatio || 1); renderer.setPixelRatio(DPR);
+  const scene = new THREE.Scene(), FOV = 35, TAN = Math.tan(FOV * Math.PI / 360);
+  const camera = new THREE.PerspectiveCamera(FOV, 1, 1, 2e6);
+  let W = 1, H = 1, dFlat = 1;
+  const PAL = [C.ink, C.madder, "#000000", C.ink2].map(c => new THREE.Color(c));
+  const uniforms = { dpr: { value: DPR }, dFlat: { value: 1 }, paper: { value: new THREE.Color(C.paper) } };
+  const VERT = `attribute float size; attribute vec3 color; attribute float alpha; uniform float dpr; uniform float dFlat;
+    varying vec3 vC; varying float vA; varying float vF;
+    void main() { vec4 mv = modelViewMatrix * vec4(position, 1.); float d = -mv.z; gl_Position = projectionMatrix * mv;
+      gl_PointSize = max(1.5, 2. * size * dpr * dFlat / d); vC = color; vA = alpha; vF = clamp((d - dFlat * 1.15) / (dFlat * 3.), 0., .8); }`;
+  const FRAG = `uniform vec3 paper; varying vec3 vC; varying float vA; varying float vF;
+    void main() { vec2 p = gl_PointCoord * 2. - 1.; float r = length(p); if (r > 1.) discard;
+      vec3 c = mix(vC, paper, vF) * mix(.9, 1., r); gl_FragColor = vec4(c, vA * smoothstep(1., .78, r)); }`;
+  // a cloud of ink points; the crowd is one, props can make their own
+  function cloud(n, parent = scene) {
+    const g = new THREE.BufferGeometry(), P = new Float32Array(n * 3), S = new Float32Array(n), K = new Float32Array(n * 3), A = new Float32Array(n);
+    g.setAttribute("position", new THREE.BufferAttribute(P, 3)); g.setAttribute("size", new THREE.BufferAttribute(S, 1));
+    g.setAttribute("color", new THREE.BufferAttribute(K, 3)); g.setAttribute("alpha", new THREE.BufferAttribute(A, 1));
+    const pts = new THREE.Points(g, new THREE.ShaderMaterial({ uniforms, vertexShader: VERT, fragmentShader: FRAG, transparent: true, depthWrite: false }));
+    pts.frustumCulled = false; parent.add(pts);
+    return {
+      pts, n,
+      put(i, x, y, z, r, col, a) { P[i * 3] = x; P[i * 3 + 1] = -y; P[i * 3 + 2] = z; S[i] = r; K[i * 3] = col.r; K[i * 3 + 1] = col.g; K[i * 3 + 2] = col.b; A[i] = a; },
+      commit() { for (const k of ["position", "size", "color", "alpha"]) g.attributes[k].needsUpdate = true; },
+    };
   }
+  const crowd = cloud(INK);
+  // hand-inked grain: each dot keeps a slight size and alpha wobble
+  const gr = rng(99), GRAIN = Array.from({ length: INK }, () => [.88 + .24 * gr(), .82 + .18 * gr()]);
+  const D = Array.from({ length: INK }, () => ({ x: innerWidth * .6, y: innerHeight * .5, z: 0, r: 0, c: 0, a: 0 }));
+  let from = D.map(d => ({ ...d })), to = D.map(d => ({ ...d })), t0 = 0, dur = 0;
+  const fill = t => D.map((d, i) => t[i] ? { z: 0, r: 2.4, c: 0, a: 1, ...t[i] } : { ...d, a: 0 });
+  const col = new THREE.Color();
+
+  // camera poses: {p: [x, y, z], l: [x, y, z], shift} in world coordinates; shift moves the picture sideways
+  const flatPose = () => ({ p: [W / 2 + scrollX, -(H / 2 + scrollY), dFlat], l: [W / 2 + scrollX, -(H / 2 + scrollY), 0], shift: 0 });
+  let poseFn = flatPose, poseFrom = flatPose(), pt0 = 0, pdur = 0, cur = flatPose();
+  const props = new THREE.Group(); scene.add(props);
+
+  function resize() {
+    W = innerWidth; H = innerHeight; renderer.setSize(W, H, false);
+    camera.aspect = W / H; dFlat = H / (2 * TAN); uniforms.dFlat.value = dFlat; camera.updateProjectionMatrix();
+  }
+  resize(); addEventListener("resize", resize);
+
   (function frame(t) {
-    const k = dur ? ease(Math.min(1, (t - t0) / dur)) : 1, { ctx, W, H } = S;
-    ctx.clearRect(0, 0, W, H); ctx.save(); ctx.translate(-scrollX, -scrollY);
+    const k = dur ? ease(Math.min(1, (t - t0) / dur)) : 1;
     for (let i = 0; i < INK; i++) {
       const f = from[i], g = to[i], d = D[i];
-      d.x = f.x + (g.x - f.x) * k; d.y = f.y + (g.y - f.y) * k; d.r = f.r + (g.r - f.r) * k; d.a = f.a + (g.a - f.a) * k;
-      d.c = k < .5 ? f.c : g.c; d.clip = g.clip;
-      if (d.a < .01 || d.r <= 0) continue;
-      const [gs, gx, gy, ga] = GRAIN[i];
-      ctx.globalAlpha = d.a * (d.c === 0 ? ga : 1); ctx.fillStyle = PAL[d.c];
-      if (d.clip) { ctx.save(); ctx.beginPath(); ctx.rect(...d.clip); ctx.clip(); }
-      if (d.r > 24) blot(ctx, d.x, d.y, d.r); else { ctx.beginPath(); ctx.arc(d.x + gx, d.y + gy, d.r * gs, 0, 6.29); ctx.fill(); }
-      if (d.clip) ctx.restore();
+      d.x = lerp(f.x, g.x, k); d.y = lerp(f.y, g.y, k); d.z = lerp(f.z, g.z, k); d.r = lerp(f.r, g.r, k); d.a = lerp(f.a, g.a, k); d.c = k < .5 ? f.c : g.c;
+      col.copy(PAL[f.c]).lerp(PAL[g.c], k);
+      crowd.put(i, d.x, d.y, d.z, d.r * GRAIN[i][0], col, d.a * (g.c === 0 ? GRAIN[i][1] : 1));
     }
-    ctx.restore(); ctx.globalAlpha = 1;
+    crowd.commit();
+    const pk = pdur ? ease(Math.min(1, (t - pt0) / pdur)) : 1, target = poseFn(t);
+    cur = { p: target.p.map((v, j) => lerp(poseFrom.p[j], v, pk)), l: target.l.map((v, j) => lerp(poseFrom.l[j], v, pk)), shift: lerp(poseFrom.shift, target.shift, pk) };
+    camera.position.set(...cur.p); camera.lookAt(...cur.l);
+    if (Math.abs(cur.shift) > .5) camera.setViewOffset(W, H, -cur.shift, 0, W, H); else camera.clearViewOffset();
+    renderer.render(scene, camera);
     requestAnimationFrame(frame);
   })(performance.now());
+
+  const v = new THREE.Vector3();
   return {
-    D,
-    to(targets, ms = 1100) { from = D.map(d => ({ ...d })); to = fill(targets); t0 = performance.now(); dur = reduced ? 0 : ms; },
-    set(targets) { to = fill(targets); from = to.map(d => ({ ...d })); dur = 0; },
-    retarget(targets) { to = fill(targets); }, // layout changed: a running tween bends toward the new spots, a finished one moves at once
+    D, cloud, props, get dFlat() { return dFlat; },
+    to(t, ms = 1100) { from = D.map(d => ({ ...d })); to = fill(t); t0 = performance.now(); dur = reduced ? 0 : ms; },
+    set(t) { to = fill(t); from = to.map(d => ({ ...d })); dur = 0; },
+    retarget(t) { to = fill(t); }, // layout changed: a running tween bends toward the new spots, a finished one moves at once
     nudge(i, p) { Object.assign(to[i], p); Object.assign(from[i], p); },
+    // move the camera: fn(t) returns a pose each frame (orbits drift, the flat pose follows scroll)
+    pose(fn, ms = 1600) { poseFrom = { p: [...cur.p], l: [...cur.l], shift: cur.shift }; poseFn = fn; pt0 = performance.now(); pdur = reduced ? 0 : ms; },
+    flat(ms = 1400) { this.pose(flatPose, ms); },
+    clearProps() { props.children.slice().forEach(o => { props.remove(o); o.geometry?.dispose(); o.material?.dispose(); }); },
+    // screen position of a world point
+    screen(x, y, z) { v.set(x, -y, z).project(camera); return [(v.x + 1) / 2 * W, (1 - v.y) / 2 * H, camera.position.distanceTo(v.set(x, -y, z))]; },
     pick(cx, cy) {
-      const x = cx + scrollX, y = cy + scrollY; let best = -1, bd = Infinity;
-      D.forEach((d, i) => { if (d.a < .1) return; const q = (d.x - x) ** 2 + (d.y - y) ** 2; if (q < (Math.min(d.r, 24) + 4) ** 2 && q < bd) { bd = q; best = i; } });
+      let best = -1, bd = Infinity;
+      D.forEach((d, i) => {
+        if (d.a < .1) return;
+        const [sx, sy, dist] = this.screen(d.x, d.y, d.z), rr = Math.min(d.r * dFlat / dist, 24) + 4, q = (sx - cx) ** 2 + (sy - cy) ** 2;
+        if (q < rr * rr && q < bd) { bd = q; best = i; }
+      });
       return best;
     },
   };
 })();
+
+// an orbit around a subject centred on a figure: the camera circles slowly, the picture shifts to sit over the figure
+function orbit(fig, { dist = 2.4, elev = .5, speed = .05, phase = 0, lift = 0 } = {}) {
+  const t0 = performance.now();
+  return t => {
+    const b = box(fig), cx = b.x + b.w / 2, cy = -(b.y + b.h / 2) + lift, R = Math.max(b.w, b.h) * dist;
+    const th = phase + (reduced ? 0 : (t - t0) / 1000 * speed);
+    return { p: [cx + R * Math.cos(elev) * Math.sin(th), cy + R * Math.sin(elev), R * Math.cos(elev) * Math.cos(th)], l: [cx, cy, 0], shift: (b.x - scrollX + b.w / 2) - innerWidth / 2 };
+  };
+}
+// hairline props in world coordinates (points given as [x, y, z] in document pixels)
+function hairline(pts, { color = C.ink, opacity = .35, loop = false } = {}) {
+  const g = new THREE.BufferGeometry().setFromPoints(pts.map(([x, y, z]) => new THREE.Vector3(x, -y, z)));
+  const l = new (loop ? THREE.LineLoop : THREE.Line)(g, new THREE.LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false }));
+  ink.props.add(l); return l;
+}
+
+// ---------- the story runner ----------
+// Each plate's story is an async script. Leaving a plate bumps RUN, and every await checks it, so an old
+// script never touches the page again. Space presses the visible Continue button, never an option.
+let RUN = 0;
+const record = {};
+const sleep = ms => new Promise(res => setTimeout(res, reduced ? Math.min(ms, 60) : ms));
+function storyOf(plate) {
+  const host = $(`[data-plate=${plate}] .story`), run = RUN, alive = () => run === RUN && cur === plate;
+  const add = (tag, html, cls) => { if (!alive()) return null; const e = document.createElement(tag); if (cls) e.className = cls; e.innerHTML = html; host.appendChild(e); return e; };
+  return {
+    alive,
+    clear() { if (alive()) host.innerHTML = ""; },
+    say: (html, cls) => add("p", html, cls),
+    el: (tag, html, cls) => add(tag, html, cls),
+    ask: html => add("p", html, "ask"),
+    choose(opts) {
+      return new Promise(res => {
+        const g = add("div", "", "btns opts"); if (!g) return;
+        g.setAttribute("role", "group");
+        opts.forEach(o => {
+          const b = document.createElement("button"); b.className = "btn ghost"; b.textContent = o.label;
+          b.onclick = () => { g.querySelectorAll("button").forEach(x => { x.disabled = true; x.setAttribute("aria-pressed", x === b); if (x !== b) x.remove(); }); res(o); };
+          g.appendChild(b);
+        });
+      });
+    },
+    cont(label = "Continue") {
+      return new Promise(res => {
+        const g = add("div", "", "btns"); if (!g) return;
+        const b = document.createElement("button"); b.className = "btn go"; b.textContent = label;
+        b.onclick = () => { g.remove(); res(); }; g.appendChild(b);
+      });
+    },
+    moral: text => add("blockquote", `<p class="label">Moral of the story</p><p>${text}</p>`, "moral"),
+    cap(text) { if (alive()) $(`[data-plate=${plate}] .cap`).textContent = text; },
+    note(key, q, choice, right, world) { record[key] = { q, choice, right, world }; },
+  };
+}
 
 const tipEl = $("#tip");
 function tip(e, text) {
@@ -404,50 +405,37 @@ function tip(e, text) {
   tipEl.style.left = Math.min(e.clientX + 14, innerWidth - tipEl.offsetWidth - 8) + "px"; tipEl.style.top = (e.clientY + 16) + "px";
 }
 
-// seats on concentric ellipses around an empty oval pitch, inside box b
-function stands(n, b) {
-  const a = Math.min(b.w * .46, b.h * .46 * 1.55), bb = a / 1.55, R = 10, cx = b.x + b.w / 2, cy = b.y + b.h / 2;
-  const rings = [];
-  for (let k = 0; k < R; k++) {
-    const f = .52 + .48 * k / (R - 1), ra = a * f, rb = bb * f;
-    rings.push({ ra, rb, per: Math.PI * (3 * (ra + rb) - Math.sqrt((3 * ra + rb) * (ra + 3 * rb))) });
-  }
-  const tot = sum(rings.map(r => r.per)), pts = [];
-  let left = n;
-  rings.forEach((r, k) => {
-    const m = k === R - 1 ? left : Math.round(n * r.per / tot); left -= m;
-    for (let i = 0; i < m; i++) { const th = (i + (k % 2) * .5) / m * 2 * Math.PI; pts.push([cx + r.ra * Math.cos(th), cy + r.rb * Math.sin(th)]); }
-  });
-  return { pts, cx, cy, a, b: bb, r0: Math.min(a * .48 / (R - 1), tot / n) * .25 };
-}
-
 const plates = {};
 const SWAN = "A black swan.";
+
+// ---------- a stadium bowl in 3D: 1,000 seats on rising tiers around a pitch ----------
+function bowl(fig, n = CROWD) {
+  const b = box(fig), a = Math.min(b.w, b.h * 1.6) * .42, cx = b.x + b.w / 2, cy = b.y + b.h / 2, R = 10, seats = [];
+  const rings = []; for (let k = 0; k < R; k++) rings.push({ ra: a * (.55 + .45 * k / (R - 1)), up: k * a * .055 });
+  const per = rings.map(r => r.ra), tot = sum(per); let left = n;
+  rings.forEach((r, k) => {
+    const m = k === R - 1 ? left : Math.round(n * r.ra / tot); left -= m;
+    for (let i = 0; i < m; i++) { const th = (i + (k % 2) * .5) / m * 2 * Math.PI; seats.push([cx + r.ra * Math.cos(th), cy - r.up, r.ra * .62 * Math.sin(th)]); }
+  });
+  return { seats, cx, cy, a, rings, r0: a * 2 * Math.PI / (n / R) * .15 };
+}
+function bowlProps(B) {
+  [0, B.rings.length - 1].forEach(k => {
+    const r = B.rings[k], pts = []; for (let i = 0; i < 96; i++) { const th = i / 96 * 2 * Math.PI; pts.push([B.cx + r.ra * Math.cos(th), B.cy - r.up, r.ra * .62 * Math.sin(th)]); }
+    hairline(pts, { loop: true, opacity: .25 });
+  });
+  const pw = B.a * .42, pd = B.a * .2;
+  hairline([[B.cx - pw, B.cy, -pd], [B.cx + pw, B.cy, -pd], [B.cx + pw, B.cy, pd], [B.cx - pw, B.cy, pd]], { loop: true, opacity: .3 });
+  hairline([[B.cx, B.cy, -pd], [B.cx, B.cy, pd]], { opacity: .3 });
+}
 
 // ---------- home ----------
 plates.home = (() => {
   const fig = $("#home-fig");
-  let st, star = -1;
-  const targets = () => {
-    const b = box(fig); st = stands(CROWD, b);
-    return st.pts.map((p, i) => ({ x: p[0], y: p[1], r: st.r0, c: i === 137 ? 2 : 0 }));
-  };
+  let B;
+  const targets = () => { B = bowl(fig); return B.seats.map((p, i) => ({ x: p[0], y: p[1], z: p[2], r: B.r0, c: i === 137 ? 2 : 0 })); };
   return {
-    enter() {
-      ink.to(targets(), 1400);
-      const t0 = performance.now(), b = box(fig);
-      onRaf(t => {
-        if (reduced) return false;
-        const cyc = ((t - t0) / 6500) % 1;
-        if (cyc < .02 && star < 0) do star = 1 + Math.floor(Math.random() * 998); while (star === 137);
-        if (star >= 0) {
-          const k = Math.sin(Math.PI * Math.min(1, cyc / .8)) ** 2;
-          ink.nudge(star, { r: st.r0 + k * st.a * .5, c: k > .02 ? 1 : 0, a: 1, clip: [b.x, b.y, b.w, b.h] });
-          if (cyc > .95) { ink.nudge(star, { r: st.r0, c: 0 }); star = -1; }
-        }
-      });
-    },
-    leave() { star = -1; },
+    enter() { ink.to(targets(), 1600); bowlProps(B); ink.pose(orbit(fig, { dist: 1.75, elev: .5, speed: .06 }), 2000); },
     resize() { ink.retarget(targets()); },
     primary() { location.hash = "#stadium"; },
     label: i => i < CROWD ? "One of a thousand people" : null,
@@ -460,65 +448,34 @@ const CR = crowd();
 const MED = [...CR.wealth].sort((a, b) => a - b)[CROWD / 2];
 const money = v => v >= 1e6 ? "$" + (v / 1e6).toFixed(1).replace(/\.0$/, "") + " million" : "$" + (Math.round(v / 100) * 100).toLocaleString();
 plates.stadium = (() => {
-  const fig = $("#st-fig"), ov = $("#st-ov"), inp = $("#st-in"), out = $("#st-out"), go = $("#st-go");
-  const NEW = CROWD; // the newcomer is dot 1,000
-  const R = {
-    weight: {
-      arr: CR.weight, extra: HEAVIEST_KG, who: "the heaviest person",
-      ask: "The heaviest person imaginable walks on. What share of the stadium's total weight is theirs?",
-      fmt: v => Math.round(v) + " kg", star: "The heaviest person imaginable: 400 kg",
-      verdict: (g, t) => Math.abs(g - t) < .01 ? "Spot on." : g > t ? "Too high. Even the heaviest body can't outweigh a crowd." : "Next to nothing, as you guessed.",
-    },
-    wealth: {
-      arr: CR.wealth, extra: RICHEST_USD, who: "the richest person",
-      ask: "Swap them for the richest person on Earth. What share of the stadium's total wealth is theirs?",
-      fmt: v => "$" + Math.round(v).toLocaleString(), star: "The richest person on Earth: $80 billion",
-      verdict: (g, t) => Math.abs(g - t) < .01 ? "Spot on. You already live in Extremistan." : "One person holds nearly everything. The other 1,000 barely register.",
-    },
-  };
-  let mode, phase, g, k = 0;
-  const m = () => R[mode];
-  const truth = () => share(m().extra, m().arr);
-  const figBox = () => { const b = box(fig); return { ...b, h: b.h - 120 }; }; // bottom strip holds the share bar
-  function standTargets() {
-    const b = figBox(), st = stands(CROWD, b), mean = sum(m().arr) / CROWD;
-    const t = st.pts.map((p, i) => ({ x: p[0], y: p[1], r: st.r0 * Math.sqrt(m().arr[i] / mean), c: i === 137 ? 2 : 0 }));
-    // area follows the data until the ink drop fills the plate; the bar and the number carry the exact share
-    const full = Math.min(st.r0 * Math.sqrt(m().extra / mean), Math.min(b.w, b.h) * .47);
-    t[NEW] = { x: st.cx, y: st.cy, r: st.r0 * Math.pow(full / st.r0, k), c: 1 };
-    return { t, st, full };
+  const fig = $("#st-fig"), ov = $("[data-plate=stadium] svg.ov"), NEW = CROWD;
+  let B, mode = "weight", k = 0, phase = "bowl";
+  const W8 = CR.weight, mean = a => sum(a) / CROWD;
+  function bowlTargets() {
+    B = bowl(fig);
+    const arr = mode === "weight" ? W8 : CR.wealth, mu = mean(arr), t = B.seats.map((p, i) => ({ x: p[0], y: p[1], z: p[2], r: B.r0 * Math.sqrt(arr[i] / mu), c: i === 137 ? 2 : 0 }));
+    t[NEW] = { x: B.cx, y: B.cy - 4, z: 0, r: B.r0 * (mode === "weight" ? Math.sqrt(1 + 4 * k) : 1.4), c: 1 };
+    return t;
   }
-  // the same fortunes as a dot histogram on a log axis, $100 .. $100bn
+  // the fortunes as a dot histogram on a log axis ($100 .. $100bn), drawn flat
   const LO = 2, HI = 11;
   function logTargets() {
     const b = box(fig), base = b.y + b.h - 170, x = v => b.x + b.w * (Math.log10(v) - LO) / (HI - LO), bins = {};
-    const t = CR.wealth.map((v, i) => {
-      const bin = Math.floor(Math.log10(v) / .05), n = bins[bin] = (bins[bin] || 0) + 1;
-      return { x: x(10 ** ((bin + .5) * .05)), y: base - (n - .5) * 5.2, r: 2.1, c: i === 137 ? 2 : 0 };
-    });
+    const t = CR.wealth.map((v, i) => { const bin = Math.floor(Math.log10(v) / .05), n = bins[bin] = (bins[bin] || 0) + 1; return { x: x(10 ** ((bin + .5) * .05)), y: base - (n - .5) * 5.2, r: 2.1, c: i === 137 ? 2 : 0 }; });
     t[NEW] = { x: x(RICHEST_USD), y: base - 2.6, r: 4, c: 1 };
     return { t, b, base, x, peak: Math.max(...Object.values(bins)) };
   }
-  function drawBar(truthV, kk) {
+  function drawBar(truthV, kk, g, who) {
     ov.querySelectorAll(".bar").forEach(e => e.remove());
     if (kk <= 0) return;
-    const b = fig.getBoundingClientRect(), W = b.width, y = b.height - 76, h = 16, gg = svgEl("g", { class: "bar" }, ov);
-    const xs = Math.max(2, truthV * kk * W), gx = clamp(g * W, 1, W - 1);
+    const b = fig.getBoundingClientRect(), W = b.width, y = 8, h = 14, gg = svgEl("g", { class: "bar" }, ov);
+    const xs = Math.max(2, truthV * kk * W);
     svgEl("rect", { x: 0, y, width: xs, height: h, fill: C.madder }, gg);
     if (W - xs > 3) svgEl("rect", { x: xs + 2, y, width: W - xs - 2, height: h, fill: "none", stroke: C.ink, "stroke-width": 1 }, gg);
-    svgEl("line", { x1: gx, x2: gx, y1: y - 8, y2: y + h + 6, stroke: C.ink, "stroke-width": 2 }, gg);
-    svgEl("text", { x: gx, y: y - 13, "text-anchor": anchor(gx, W) }, gg, "your guess, " + pct(g));
     if (kk >= 1) {
-      svgEl("text", { x: 0, y: y + h + 22 }, gg, `${m().who}: ${pct(truthV)}`);
+      svgEl("text", { x: 0, y: y + h + 22 }, gg, `${who}: ${pct(truthV)}`);
       svgEl("text", { x: W, y: y + h + 22, "text-anchor": "end" }, gg, `the other 1,000 together: ${pct(1 - truthV)}`);
     }
-  }
-  function drawBlotWords() {
-    ov.querySelectorAll(".words").forEach(e => e.remove());
-    if (!(mode === "wealth" && k >= 1 && phase !== "log")) return;
-    const b = fig.getBoundingClientRect(), gg = svgEl("g", { class: "words" }, ov), cy = (b.height - 120) / 2;
-    svgEl("text", { x: b.width / 2, y: cy, "text-anchor": "middle", style: `font:400 ${Math.min(64, b.width / 11)}px var(--serif);fill:${C.paper}` }, gg, "One person.");
-    svgEl("text", { x: b.width / 2, y: cy + 36, "text-anchor": "middle", style: `font:italic 22px var(--serif);fill:${C.paper}` }, gg, "99.9% of the stadium's wealth.");
   }
   function drawLogAxis() {
     ov.querySelectorAll(".log").forEach(e => e.remove());
@@ -526,496 +483,84 @@ plates.stadium = (() => {
     const { b, base, x, peak } = logTargets(), gg = svgEl("g", { class: "log" }, ov), X = v => x(v) - b.x, Y = base - b.y + 6;
     svgEl("line", { x1: 0, x2: b.w, y1: Y, y2: Y, class: "ink" }, gg);
     [[1e2, "$100"], [1e4, "$10,000"], [1e6, "$1 million"], [1e8, "$100 million"], [1e10, "$10 billion"]].forEach(([v, l]) => {
-      svgEl("line", { x1: X(v), x2: X(v), y1: Y, y2: Y + 6, class: "ink" }, gg);
-      svgEl("text", { x: X(v), y: Y + 24, "text-anchor": "middle" }, gg, l);
+      svgEl("line", { x1: X(v), x2: X(v), y1: Y, y2: Y + 6, class: "ink" }, gg); svgEl("text", { x: X(v), y: Y + 24, "text-anchor": "middle" }, gg, l);
     });
     svgEl("text", { x: 0, y: Y + 50 }, gg, "net worth, logarithmic scale: each step is ten times the last");
     svgEl("text", { x: X(RICHEST_USD), y: Y - 22, "text-anchor": "end", style: "fill:" + C.madder }, gg, "the richest person");
     svgEl("text", { x: X(MED), y: Y - 6 - peak * 5.2 - 14, "text-anchor": "middle" }, gg, "the other 1,000");
   }
-  function setMode(md) {
-    mode = md; phase = "ask"; k = 0; g = .1;
-    inp.value = 10; out.value = "10%"; inp.disabled = false; $("#st-guess").hidden = false;
-    $("#st-ask").textContent = m().ask; $("#st-res").hidden = true;
-    $("#st-cap").textContent = mode === "weight" ? "Fig. 1a. One thousand people, and the heaviest person imaginable." : "Fig. 1b. The same thousand, and the richest person on Earth.";
-    go.textContent = "Reveal"; drawBar(0, 0); drawBlotWords(); drawLogAxis();
-    ink.to(standTargets().t, 1200);
+  // every fortune as a column over its seat; the richest person's column climbs out of the sky
+  let tower;
+  function columns(scaleTop) {
+    ink.clearProps(); bowlProps(B);
+    const unit = B.a * .03 / MED, pts = [];
+    B.seats.forEach((p, i) => { pts.push(new THREE.Vector3(p[0], -p[1], p[2]), new THREE.Vector3(p[0], -p[1] + CR.wealth[i] * unit, p[2])); });
+    ink.props.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: .45, depthWrite: false })));
+    tower = new THREE.Mesh(new THREE.CylinderGeometry(B.r0 * 2.2, B.r0 * 2.2, 1, 24), new THREE.MeshBasicMaterial({ color: C.madder }));
+    tower.position.set(B.cx, -B.cy, 0); tower.scale.y = .001; ink.props.add(tower);
+    return unit;
   }
-  function reveal() {
-    phase = "anim"; inp.disabled = true;
-    const t = truth(), { st, full } = standTargets();
-    tween(mode === "wealth" ? 3600 : 1400, kk => {
-      k = ease(kk); ink.nudge(NEW, { r: st.r0 * Math.pow(full / st.r0, k) }); drawBar(t, k);
-    }, () => {
-      phase = "shown";
-      $("#st-big").textContent = pct(t); $("#st-big").className = "big" + (mode === "wealth" ? " madder" : "");
-      $("#st-verdict").textContent = `You guessed ${pct(g)}. ${m().verdict(g, t)}`;
-      $("#st-res").hidden = false; drawBlotWords();
-      go.textContent = mode === "weight" ? "Now try wealth" : "Draw it on a log scale";
-    });
-  }
-  function toLog() {
-    phase = "log"; drawBar(0, 0); drawBlotWords(); $("#st-guess").hidden = true;
-    ink.to(logTargets().t, 1800); drawLogAxis();
-    $("#st-ask").textContent = "The same fortunes again, drawn so that every step along the axis is ten times the last.";
-    $("#st-verdict").textContent = `On an ordinary scale the thousand vanish. On a logarithmic one they come back, from ${money(Math.min(...CR.wealth))} to ${money(Math.max(...CR.wealth))}, and the richest person sits alone at ${Math.round(RICHEST_USD / MED / 1e5) / 10} million times the typical fortune.`;
-    $("#st-cap").textContent = "Fig. 1c. The same 1,001 fortunes on a logarithmic scale.";
-    go.textContent = "Next plate";
-  }
-  inp.oninput = () => { g = inp.value / 100; out.value = pct(g); };
-  const api = {
-    enter() { setMode("weight"); },
-    resize() {
-      if (phase === "log") { ink.retarget(logTargets().t); drawLogAxis(); return; }
-      ink.retarget(standTargets().t); if (phase === "shown") { drawBar(truth(), 1); drawBlotWords(); }
-    },
-    primary() {
-      if (phase === "ask") reveal();
-      else if (phase === "shown") mode === "weight" ? setMode("wealth") : toLog();
-      else if (phase === "log") next();
-    },
-    label: i => i === NEW ? (k ? m().star : "Who is this?") : i < CROWD ? (phase === "log" ? "" : "Person " + (i + 1) + ": ") + m().fmt(m().arr[i]) : null,
-  };
-  go.onclick = () => api.primary();
-  return api;
-})();
+  async function story() {
+    const s = storyOf("stadium"), who = { weight: "the heaviest fan", wealth: "the richest guest" };
+    phase = "bowl"; mode = "weight"; k = 0; ov.innerHTML = "";
+    ink.to(bowlTargets(), 1600); bowlProps(B); ink.pose(orbit(fig, { dist: 1.7, elev: .5, speed: .05 }), 1800);
+    s.cap("Fig. 1a. One thousand fans, and one more. After Taleb, The Black Swan, ch. 3.");
+    s.say("You are the structural engineer for tonight's match. A thousand fans have tickets, and the stand is rated for their combined weight, with a margin.");
+    s.say("An hour before kick-off, the last ticket is bought by the heaviest person you can imagine. They are walking onto the pitch now.");
+    s.ask("What do you do?");
+    const c1 = await s.choose([
+      { label: "Reinforce the stand", right: false, reply: "You spent the evening bracing steel for half a percent." },
+      { label: "Refuse them entry", right: false, reply: "You turned a fan away to save half a percent of the load." },
+      { label: "Nothing. Let them in", right: true, reply: "Right. The stand never noticed." },
+    ]);
+    if (!s.alive()) return;
+    const tw = share(HEAVIEST_KG, W8);
+    await tween(1400, kk => { k = ease(kk); ink.nudge(NEW, { r: B.r0 * Math.sqrt(1 + 4 * k) }); drawBar(tw, k, 0, who.weight); });
+    if (!s.alive()) return;
+    s.el("p", pct(tw), "big"); s.say(`The heaviest person imaginable adds ${pct(tw)} to the stadium's weight.`); s.say(c1.reply, "reply");
+    s.note("weight", "The heaviest fan walks in", c1.label, c1.right, "Mediocristan");
+    await s.cont("Later that night"); if (!s.alive()) return;
 
-// ---------- Plate II: Galton's sons and the turkey ----------
-plates.turkey = (() => {
-  const fig = $("#tk-fig"), ov = $("#tk-ov"), gin = $("#tk-gin"), gout = $("#tk-gout"), tin = $("#tk-tin"), tout = $("#tk-tout"), go = $("#tk-go");
-  const F = GALTON.map(p => p[0] * 2.54), SN = GALTON.map(p => p[1] * 2.54), FIT = fit(F, SN), DAD = 78.5 * 2.54, PRED = FIT.intercept + FIT.slope * DAD, T = turkey();
-  const M = { l: 50, r: 12, t: 34, b: 46 };
-  let phase, gg, tg, days, drop;
-  // two panels: Galton on the left, the turkey on the right (stacked on narrow screens)
-  const panels = () => {
-    const b = box(fig), side = b.w > 820, pw = side ? (b.w - 56) / 2 : b.w, ph = side ? Math.min(pw * .9, b.h - 40) : (b.h - 60) / 2;
-    const A = { x: b.x, y: b.y + (side ? (b.h - ph) / 2 : 0), w: pw, h: ph };
-    return { b, A, B: side ? { ...A, x: b.x + pw + 56 } : { ...A, y: A.y + ph + 60 } };
-  };
-  const sx = (P, lo, hi) => v => P.x + M.l + (P.w - M.l - M.r) * (v - lo) / (hi - lo);
-  const sy = (P, lo, hi) => v => P.y + P.h - M.b - (P.h - M.t - M.b) * (v - lo) / (hi - lo);
-  function targets() {
-    if (phase === "g-ask") return [];
-    const { A } = panels(), X = sx(A, 155, 205), Y = sy(A, 150, 205);
-    return F.map((f, i) => ({ x: X(f), y: Y(SN[i]), r: 2.3, c: i === 40 ? 2 : 0, a: .85 }));
-  }
-  // axes span the whole domain (xd, yd), ticks only where labelled
-  function frame(P, X, Y, xd, yd, xt, yt, xl, yl, b) {
-    const x = v => X(v) - b.x, y = v => Y(v) - b.y, x0 = x(xd[0]) - 8, y0 = y(yd[0]) + 8;
-    svgEl("line", { x1: x0, x2: x(xd[1]), y1: y0, y2: y0, class: "ink" }, ov);
-    svgEl("line", { x1: x0, x2: x0, y1: y0, y2: y(yd[1]), class: "ink" }, ov);
-    xt.forEach(v => { svgEl("line", { x1: x(v), x2: x(v), y1: y0, y2: y0 + 5, class: "ink" }, ov); svgEl("text", { x: x(v), y: y0 + 22, "text-anchor": "middle" }, ov, v.toLocaleString()); });
-    yt.forEach(v => { svgEl("line", { x1: x0 - 5, x2: x0, y1: y(v), y2: y(v), class: "ink" }, ov); svgEl("text", { x: x0 - 9, y: y(v) + 5, "text-anchor": "end" }, ov, v); });
-    svgEl("text", { x: x(xd[1]), y: y0 + 44, "text-anchor": "end" }, ov, xl);
-    svgEl("text", { x: x0, y: P.y - b.y + 16 }, ov, yl);
-    return { x, y };
-  }
-  function draw() {
-    ov.innerHTML = "";
-    const { b, A, B } = panels();
-    // Galton
-    const G = frame(A, sx(A, 155, 205), sy(A, 150, 205), [155, 205], [150, 205], [160, 170, 180, 190, 200], [160, 170, 180, 190, 200], "father's height, cm", "son's height, cm", b);
-    svgEl("line", { x1: G.x(DAD), x2: G.x(DAD), y1: G.y(150), y2: G.y(205), class: "hair", "stroke-dasharray": "2 4" }, ov);
-    if (phase !== "g-ask") {
-      svgEl("line", { x1: G.x(155), y1: G.y(155), x2: G.x(204), y2: G.y(204), class: "ink", "stroke-dasharray": "5 5", opacity: .6 }, ov);
-      svgEl("text", { x: G.x(204), y: G.y(204) - 8, "text-anchor": "end", class: "halo" }, ov, "if sons matched fathers");
-      const ry = f => FIT.intercept + FIT.slope * f;
-      svgEl("line", { x1: G.x(157), y1: G.y(ry(157)), x2: G.x(204), y2: G.y(ry(204)), stroke: C.madder, "stroke-width": 1.6 }, ov);
-      svgEl("text", { x: G.x(158), y: G.y(ry(158)) + 24, class: "halo", style: "fill:" + C.madder }, ov, "what sons actually average");
-      svgEl("circle", { cx: G.x(DAD), cy: G.y(PRED), r: 7, fill: "none", stroke: C.madder, "stroke-width": 2 }, ov);
-    }
-    svgEl("circle", { cx: G.x(DAD), cy: G.y(gg), r: 7, fill: C.paper, stroke: C.ink, "stroke-width": 2 }, ov);
-    svgEl("text", { x: G.x(DAD) - 12, y: G.y(gg) + 5, "text-anchor": "end", class: "halo" }, ov, "your guess");
-    // the turkey
-    const tx = sx(B, 0, 1060), ty = sy(B, 0, 22), K = frame(B, tx, ty, [0, 1060], [0, 22], [0, 250, 500, 750, 1000], [0, 5, 10, 15, 20], "day", "the turkey's weight, kg", b);
-    const n = Math.round(days);
-    if (n > 1) svgEl("path", { d: "M" + T.weight.slice(0, n).map((w, i) => `${K.x(i + 1).toFixed(1)},${K.y(w).toFixed(1)}`).join("L"), class: "ink", "stroke-width": 1.6 }, ov);
-    if (n) svgEl("text", { x: K.x(60), y: K.y(21), style: "fill:" + C.ink }, ov, `day ${n.toLocaleString()}: ${pct(T.confidence[n - 1])} sure of tomorrow`);
-    if (drop > 0) {
-      const y0 = K.y(T.weight[999]), y1 = y0 + (K.y(0) - y0) * drop;
-      svgEl("line", { x1: K.x(1000), y1: y0, x2: K.x(1001), y2: y1, stroke: C.madder, "stroke-width": 2.5 }, ov);
-      if (drop >= 1) svgEl("text", { x: K.x(1001) - 10, y: K.y(0) - 12, "text-anchor": "end", class: "halo", style: "fill:" + C.madder }, ov, "day 1,001: Thanksgiving");
-    }
-  }
-  function revealGalton() {
-    phase = "anim"; gin.disabled = true; ink.to(targets(), 1500); draw();
-    setTimeout(() => {
-      if (cur !== "turkey" || phase !== "anim") return;
-      phase = "g-shown"; go.textContent = "Now the turkey";
-      $("#tk-v1").textContent = `You guessed ${Math.round(gg)} cm. Sons of fathers this tall average ${Math.round(PRED)} cm: still tall, but pulled back toward the middle. In Mediocristan, extremes fade.`;
-      $("#tk-v1").hidden = false; $("#tk-q1").hidden = true;
-    }, reduced ? 0 : 1500);
-  }
-  function startTurkey() {
-    phase = "t-ask"; $("#tk-q2").hidden = false; go.textContent = "Reveal";
-    tween(2600, k => { days = Math.max(days, 1000 * k); draw(); });
-  }
-  function revealTurkey() {
-    phase = "anim"; tin.disabled = true; days = 1000;
-    tween(1200, k => { drop = ease(k); draw(); }, () => {
-      phase = "t-shown"; go.textContent = "Next plate"; $("#tk-q2").hidden = true;
-      $("#tk-v2").textContent = `You said ${pct(tg, 0)}. By its own data the turkey was ${pct(T.confidence[999])} sure, and never surer than on its last day. In Extremistan, the one day that matters was never in the data.`;
-      $("#tk-v2").hidden = false;
-    });
-  }
-  gin.oninput = () => { gg = +gin.value; gout.value = Math.round(gg) + " cm"; draw(); };
-  tin.oninput = () => { tg = tin.value / 100; tout.value = pct(tg, 0); };
-  go.onclick = () => api.primary();
-  const api = {
-    enter() {
-      phase = "g-ask"; days = 0; drop = 0; gg = DAD; tg = .5;
-      gin.value = gg; gout.value = Math.round(gg) + " cm"; tin.value = 50; tout.value = "50%"; gin.disabled = tin.disabled = false;
-      $("#tk-q1").hidden = false; ["#tk-q2", "#tk-v1", "#tk-v2"].forEach(s => $(s).hidden = true); go.textContent = "Reveal";
-      ink.to([], 900); draw();
-    },
-    resize() { ink.retarget(targets()); draw(); },
-    primary() {
-      if (phase === "g-ask") revealGalton();
-      else if (phase === "g-shown") startTurkey();
-      else if (phase === "t-ask") revealTurkey();
-      else if (phase === "t-shown") next();
-    },
-    label: i => i < F.length && phase !== "g-ask" ? `Father ${Math.round(F[i])} cm, son ${Math.round(SN[i])} cm` : null,
-  };
-  return api;
-})();
+    s.clear(); drawBar(0, 0); mode = "wealth"; k = 0;
+    ink.to(bowlTargets(), 1200);
+    s.cap("Fig. 1b. The same thousand, and the richest person on Earth.");
+    s.say("The same thousand people are now guests at your charity gala. You have one evening to raise money for the hospital.");
+    s.say("Then the richest person on Earth walks in.");
+    s.ask("Where do you spend your evening?");
+    const c2 = await s.choose([
+      { label: "Working the room: a thousand small cheques add up", right: false, reply: "The whole room together holds a tenth of a percent of the wealth. The person you walked past holds the rest." },
+      { label: "With the one person", right: true, reply: "Right. One conversation is worth more than the other thousand put together." },
+      { label: "Split my time evenly", right: false, reply: "Even time is wildly uneven value: one guest holds almost everything." },
+    ]);
+    if (!s.alive()) return;
+    const unit = columns(), tx = share(RICHEST_USD, CR.wealth), km = RICHEST_USD / MED / 1e5, top = RICHEST_USD * unit;
+    const b = box(fig), baseY = -B.cy, H = Math.min(top, 40 * b.h);
+    // pull back to a low angle with the stadium at the foot of the frame, then tilt up as the column climbs
+    ink.pose(orbit(fig, { dist: 1.9, elev: .07, speed: .015, lift: b.h * .3 }), 2400);
+    await sleep(2400); if (!s.alive()) return;
+    await tween(5200, kk => { const e = ease(kk); tower.scale.y = Math.max(.001, H * e * e); tower.position.y = baseY + tower.scale.y / 2; drawBar(tx, e, 0, who.wealth); });
+    if (!s.alive()) return;
+    s.el("p", pct(tx), "big madder");
+    s.say(`If a typical fortune in the room were a column one centimetre tall, the richest guest's would be ${Math.round(km)} kilometres tall.`);
+    s.say(c2.reply, "reply");
+    s.note("wealth", "The richest guest walks in", c2.label, c2.right, "Extremistan");
+    s.moral("In Mediocristan, no single person can move the total. In Extremistan, one person <em>is</em> the total. Before you plan, ask which world you are counting in.");
+    await s.cont("Draw it on a log scale"); if (!s.alive()) return;
 
-// ---------- Plate III: the graveyard ----------
-plates.graveyard = (() => {
-  const fig = $("#gy-fig"), ov = $("#gy-ov"), inp = $("#gy-in"), out = $("#gy-out"), go = $("#gy-go");
-  const HERO = MANAGERS - 1, SWAN_I = 5, REC = [...Array(YEARS).keys()].map(y => MANAGERS - YEARS + y); // dots that draw the hero's record
-  let phase, year, g;
-  // each manager keeps one seat in a 32 x 32 grid, shuffled so the coin flips look like what they are
-  const SEAT = (() => { const r = rng(21), a = [...Array(MANAGERS).keys()]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; })();
-  const L = () => { const b = box(fig), sp = Math.min(b.w, b.h - 150) / 33; return { b, sp, cx: b.x + b.w / 2, cy: b.y + 90 + (b.h - 150) / 2 }; };
-  // the magazine chart: one manager, ten winning years
-  function recordTargets() {
-    const b = box(fig), t = [];
-    REC.forEach((i, y) => { t[i] = { x: b.x + b.w * (.12 + .76 * y / (YEARS - 1)), y: b.y + b.h * (.78 - .56 * y / (YEARS - 1)), r: 5, c: 1 }; });
-    return t;
+    // drawn better: the same fortunes, flat, on a logarithmic axis
+    phase = "log"; drawBar(0, 0); ink.clearProps(); ink.flat(1600); ink.to(logTargets().t, 1800); drawLogAxis();
+    s.clear(); s.cap("Fig. 1c. The same 1,001 fortunes on a logarithmic scale.");
+    s.say(`On an ordinary scale the thousand vanish. On a logarithmic one, where each step is ten times the last, they come back: from ${money(Math.min(...CR.wealth))} to ${money(Math.max(...CR.wealth))}.`);
+    s.say(`And the richest guest sits alone, ${Math.round(RICHEST_USD / MED / 1e5) / 10} million times the typical fortune. Drawing it better is half the insight.`);
+    await s.cont("Next plate"); if (!s.alive()) return;
+    next();
   }
-  // everyone at the end of year y: the unbeaten stay dark, the fired sink a little and fade to ghosts
-  function yearTargets(y) {
-    const { sp, cx, cy } = L();
-    return Array.from({ length: MANAGERS }, (_, i) => {
-      const x = cx + ((SEAT[i] % 32) - 15.5) * sp, yy = cy + (Math.floor(SEAT[i] / 32) - 15.5) * sp;
-      if (lasted(i) >= y) return i === HERO && y === YEARS ? { x, y: yy, r: sp * .55, c: 1 } : { x, y: yy, r: sp * .3, c: 0 };
-      return { x, y: yy + sp * .2, r: sp * .22, c: i === SWAN_I ? 2 : 3, a: i === SWAN_I ? 1 : .15 };
-    });
-  }
-  function labels() {
-    ov.innerHTML = "";
-    const { b } = L();
-    if (phase === "ask") {
-      svgEl("line", { x1: b.w * .08, x2: b.w * .92, y1: b.h * .84, y2: b.h * .84, class: "ink" }, ov);
-      for (let y = 1; y <= YEARS; y++) svgEl("text", { x: b.w * (.12 + .76 * (y - 1) / (YEARS - 1)), y: b.h * .84 + 22, "text-anchor": "middle" }, ov, y);
-      svgEl("text", { x: b.w * .08, y: b.h * .84 + 48 }, ov, "year");
-      svgEl("text", { x: b.w * .12, y: b.h * .14, style: "fill:" + C.madder }, ov, "Manager 1,024: beat the market ten years running");
-      svgEl("polyline", { points: REC.map((_, y) => `${b.w * (.12 + .76 * y / (YEARS - 1))},${b.h * (.78 - .56 * y / (YEARS - 1))}`).join(" "), fill: "none", stroke: C.madder, "stroke-width": 1 }, ov);
-      return;
-    }
-    // the halving, set as a line of type across the top of the plate
-    for (let y = 0; y <= YEARS; y++) {
-      const x = b.w * (.03 + .94 * y / YEARS), on = y <= year;
-      svgEl("text", { x, y: 26, "text-anchor": "middle", style: `font-style:normal;font-size:${y === YEARS ? 26 : 19}px;fill:${y === YEARS && on ? C.madder : on ? C.ink : "transparent"}` }, ov, (MANAGERS >> y).toLocaleString());
-      svgEl("text", { x, y: 50, "text-anchor": "middle", style: on ? "" : "fill:transparent" }, ov, y ? "year " + y : "start");
-    }
-    if (year >= 1) svgEl("text", { x: b.w / 2, y: b.h - 12, "text-anchor": "middle" }, ov, "every faint dot is a manager who was fired; nobody writes about them");
-  }
-  function run() {
-    phase = "anim"; year = 0; inp.disabled = true; go.hidden = true;
-    ink.to(yearTargets(0), 1400); labels();
-    $("#gy-cap").textContent = "Fig. 3b. All 1,024 managers, one for every possible run of ten coin flips. The faint ones are the silent evidence.";
-    let t0 = performance.now() + (reduced ? 0 : 1500);
-    onRaf(t => {
-      if (t < t0) return;
-      year = reduced ? YEARS : year + 1; t0 = t + 750; ink.to(yearTargets(year), 650); labels();
-      if (year < YEARS) return;
-      phase = "shown"; go.hidden = false; go.textContent = "Next plate";
-      $("#gy-big").textContent = "1";
-      $("#gy-verdict").textContent = `You guessed ${g}. Exactly one, every time: 1,024 is every possible run of ten coin flips, so one of them is always perfect. We only ever interview the survivor. The other 1,023 are in the graveyard.`;
-      $("#gy-res").hidden = false; $("#gy-guess").hidden = true;
-      return false;
-    });
-  }
-  inp.oninput = () => { g = +inp.value; out.value = g; };
-  go.onclick = () => api.primary();
-  const api = {
-    enter() {
-      phase = "ask"; year = -1; g = 10; inp.value = 10; out.value = "10"; inp.disabled = false;
-      $("#gy-guess").hidden = false; $("#gy-res").hidden = true; go.hidden = false; go.textContent = "Show everyone";
-      $("#gy-cap").textContent = "Fig. 3a. A perfect ten-year record, as the financial pages would show it.";
-      ink.to(recordTargets(), 1300); labels();
-    },
-    resize() { ink.retarget(phase === "ask" ? recordTargets() : yearTargets(Math.max(0, year))); labels(); },
-    primary() { if (phase === "ask") run(); else if (phase === "shown") next(); },
-    label: i => {
-      if (phase === "ask") { const y = REC.indexOf(i); return y >= 0 ? `Year ${y + 1}: beat the market` : null; }
-      const l = lasted(i);
-      return l >= Math.max(0, year) ? `Manager ${i + 1}: unbeaten for ${Math.max(0, year)} years` : `Manager ${i + 1}: fired after year ${l + 1}`;
-    },
-  };
-  return api;
-})();
-
-// ---------- Plate IV: the Datasaurus ----------
-plates.dino = (() => {
-  const fig = $("#dn-fig"), ov = $("#dn-ov"), tabs = $("#dn-tabs"), go = $("#dn-go");
-  const SETS = [["dino", "a dinosaur"], ["star", "a star"], ["circle", "a circle"], ["bullseye", "a bullseye"], ["x_shape", "an X"]];
-  const L = "ABCDE", N = 142;
-  let phase, set, auto, lastSwap;
-  // the summary table, computed from the data itself
-  const tb = $("#dn-table tbody");
-  SETS.forEach(([k], j) => {
-    const tr = document.createElement("tr");
-    [L[j], ...dinoRow(k)].forEach(v => { const td = document.createElement("td"); td.textContent = v; tr.appendChild(td); });
-    tb.appendChild(tr);
-  });
-  const plot = () => { const b = box(fig), s = Math.min(b.w - 60, b.h - 90); return { x: b.x + (b.w - s) / 2 + 20, y: b.y + (b.h - s) / 2 - 10, s }; };
-  function targets() {
-    const p = plot();
-    if (set < 0) { // the numbers alone: a neat grid, no shape yet
-      const cols = 12, step = p.s / 16;
-      return Array.from({ length: N }, (_, i) => ({ x: p.x + p.s / 2 + ((i % cols) - 5.5) * step, y: p.y + p.s / 2 + (Math.floor(i / cols) - 5.5) * step, r: 2.8, c: i === 0 ? 2 : 0 }));
-    }
-    return DINO[SETS[set][0]].map(([x, y], i) => ({ x: p.x + p.s * x / 100, y: p.y + p.s * (1 - y / 100), r: 3.2, c: i === 0 ? 2 : 0 }));
-  }
-  function axes() {
-    ov.innerHTML = "";
-    const p = plot(), b = box(fig), X = v => p.x - b.x + p.s * v / 100, Y = v => p.y - b.y + p.s * (1 - v / 100);
-    if (set < 0) { svgEl("text", { x: X(50), y: Y(4), "text-anchor": "middle" }, ov, "the numbers alone"); return; }
-    svgEl("line", { x1: X(0), x2: X(100), y1: Y(0), y2: Y(0), class: "ink" }, ov);
-    svgEl("line", { x1: X(0), x2: X(0), y1: Y(0), y2: Y(100), class: "ink" }, ov);
-    [0, 20, 40, 60, 80, 100].forEach(v => {
-      svgEl("line", { x1: X(v), x2: X(v), y1: Y(0), y2: Y(0) + 5, class: "ink" }, ov); svgEl("text", { x: X(v), y: Y(0) + 22, "text-anchor": "middle" }, ov, v);
-      svgEl("line", { x1: X(0) - 5, x2: X(0), y1: Y(v), y2: Y(v), class: "ink" }, ov); svgEl("text", { x: X(0) - 10, y: Y(v) + 5, "text-anchor": "end" }, ov, v);
-    });
-    svgEl("text", { x: X(100), y: Y(100) - 6, "text-anchor": "end", style: "fill:" + C.madder }, ov, `set ${L[set]}: ${SETS[set][1]}`);
-  }
-  function pick(j) {
-    set = j; ink.to(targets(), 1300); axes();
-    tb.querySelectorAll("tr").forEach((tr, i) => tr.classList.toggle("on", i === j));
-    tabs.querySelectorAll("button").forEach((b, i) => b.setAttribute("aria-pressed", i === j));
-  }
-  function reveal(guess) {
-    if (phase !== "ask") return;
-    phase = "shown"; $("#dn-guess").hidden = true; $("#dn-ask").hidden = true;
-    $("#dn-verdict").textContent = (guess === "1" ? "That's what the numbers say. Then you draw them. " : guess === "0" ? "Right. " : "") + "Identical numbers, completely different data. Always draw it.";
-    $("#dn-res").hidden = false; tabs.hidden = false; go.hidden = false;
-    auto = !reduced; pick(0); lastSwap = performance.now();
-    onRaf(t => { if (auto && t - lastSwap > 3200) { lastSwap = t; pick((set + 1) % SETS.length); } });
-  }
-  SETS.forEach((_, j) => { const b = document.createElement("button"); b.className = "btn ghost"; b.textContent = L[j]; b.onclick = () => { auto = false; pick(j); }; tabs.appendChild(b); });
-  $("#dn-guess").onclick = e => e.target.dataset.g && reveal(e.target.dataset.g);
-  go.onclick = () => next();
   return {
-    enter() {
-      phase = "ask"; set = -1; auto = false;
-      $("#dn-guess").hidden = false; $("#dn-ask").hidden = false; ["#dn-res"].forEach(s => $(s).hidden = true); tabs.hidden = go.hidden = true;
-      tb.querySelectorAll("tr").forEach(tr => tr.classList.remove("on"));
-      ink.to(targets(), 1400); axes();
-    },
-    resize() { ink.retarget(targets()); axes(); },
-    primary() { phase === "ask" ? reveal(null) : next(); },
-    label: i => i < N ? (set < 0 ? `Row ${i + 1} of set A` : `(${DINO[SETS[set][0]][i].map(v => v.toFixed(1)).join(", ")})`) : null,
+    enter() { story(); },
+    leave() { ink.clearProps(); ov.innerHTML = ""; },
+    resize() { if (phase === "log") { ink.retarget(logTargets().t); drawLogAxis(); } else ink.retarget(bowlTargets()); },
+    label: i => i === NEW ? (mode === "weight" ? "The heaviest person imaginable: 400 kg" : "The richest person on Earth: $80 billion") : i < CROWD ? (mode === "weight" && phase !== "log" ? `Fan ${i + 1}: ${Math.round(W8[i])} kg` : `Guest ${i + 1}: ${money(CR.wealth[i])}`) : null,
   };
-})();
-
-// ---------- Plate V: league table -> funnel plot ----------
-plates.funnel = (() => {
-  const fig = $("#fn-fig"), ov = $("#fn-ov"), go = $("#fn-go");
-  const DS = districts(), RANK = [...DS].sort((a, b) => b.rate - a.rate), TOP = RANK[0], OUT = DS[0], SW = 200;
-  const outRank = RANK.indexOf(OUT) + 1, name = d => `District ${d.id + 1}`;
-  const RMAX = 40, PLO = 2e4, PHI = 1.2e6;
-  let phase;
-  const P = () => { const b = box(fig); return { b, l: b.x + 56, r: b.x + b.w - 16, t: b.y + 40, bt: b.y + b.h - 70 }; };
-  function tableTargets() {
-    const { l, r, t, bt } = P(), step = (bt - t) / DS.length;
-    return RANK.reduce((acc, d, k) => (acc[d.id] = { x: l + (r - l) * d.rate / RMAX, y: t + (k + .5) * step, r: 2, c: d === TOP ? 1 : d.id === SW ? 2 : 0 }, acc), []);
-  }
-  const fx = p => { const { l, r } = P(); return l + (r - l) * (Math.log(p) - Math.log(PLO)) / (Math.log(PHI) - Math.log(PLO)); };
-  const fy = v => { const { t, bt } = P(); return bt - (bt - t) * clamp(v, 0, RMAX) / RMAX; };
-  function funnelTargets() {
-    return DS.map(d => ({ x: fx(d.pop), y: fy(d.rate), r: d === OUT ? 4.5 : 2.6, c: d === OUT ? 1 : d.id === SW ? 2 : 0, a: d === OUT || d === TOP ? 1 : .8 }));
-  }
-  function axes() {
-    ov.innerHTML = "";
-    const { b, l, r, t, bt } = P(), X = v => v - b.x, Y = v => v - b.y;
-    if (phase === "ask") {
-      const step = (bt - t) / DS.length;
-      RANK.forEach((d, k) => svgEl("line", { x1: X(l), x2: X(l + (r - l) * d.rate / RMAX), y1: Y(t + (k + .5) * step), y2: Y(t + (k + .5) * step), class: "hair", "stroke-width": .6 }, ov));
-      svgEl("line", { x1: X(l), x2: X(r), y1: Y(bt) + 8, y2: Y(bt) + 8, class: "ink" }, ov);
-      [0, 10, 20, 30, 40].forEach(v => svgEl("text", { x: X(l + (r - l) * v / RMAX), y: Y(bt) + 30, "text-anchor": "middle" }, ov, v));
-      svgEl("text", { x: X(r), y: Y(bt) + 54, "text-anchor": "end" }, ov, "deaths per 100,000 a year");
-      svgEl("text", { x: X(l) - 8, y: Y(t) + 4, "text-anchor": "end" }, ov, "worst");
-      svgEl("text", { x: X(l) - 8, y: Y(bt), "text-anchor": "end" }, ov, "best");
-      const tx = X(l + (r - l) * TOP.rate / RMAX);
-      svgEl("text", { x: tx - 10, y: Y(t) - 12, "text-anchor": "end", style: "fill:" + C.madder }, ov, `${name(TOP)}: ${TOP.rate.toFixed(1)} per 100,000`);
-      return;
-    }
-    // funnel: population on a log axis, the national rate, and chance limits that narrow as districts grow
-    svgEl("line", { x1: X(l), x2: X(r), y1: Y(bt) + 8, y2: Y(bt) + 8, class: "ink" }, ov);
-    svgEl("line", { x1: X(l) - 8, x2: X(l) - 8, y1: Y(t), y2: Y(bt), class: "ink" }, ov);
-    [[2e4, "20,000"], [5e4, "50,000"], [1e5, "100,000"], [2e5, "200,000"], [5e5, "500,000"], [1e6, "1 million"]].forEach(([p, s]) => {
-      svgEl("line", { x1: X(fx(p)), x2: X(fx(p)), y1: Y(bt) + 8, y2: Y(bt) + 14, class: "ink" }, ov); svgEl("text", { x: X(fx(p)), y: Y(bt) + 32, "text-anchor": "middle" }, ov, s);
-    });
-    svgEl("text", { x: X(r), y: Y(bt) + 56, "text-anchor": "end" }, ov, "population of the district");
-    [0, 10, 20, 30, 40].forEach(v => svgEl("text", { x: X(l) - 14, y: Y(fy(v)) + 5, "text-anchor": "end" }, ov, v));
-    svgEl("text", { x: X(l) - 8, y: Y(t) - 16 }, ov, "deaths per 100,000 a year");
-    const curve = (z, dash) => {
-      const pts = []; for (let k = 0; k <= 120; k++) { const p = Math.exp(Math.log(PLO) + (Math.log(PHI) - Math.log(PLO)) * k / 120), v = limit(p, z); if (v >= 0 && v <= RMAX) pts.push(`${X(fx(p))},${Y(fy(v))}`); }
-      svgEl("polyline", { points: pts.join(" "), class: "ink", "stroke-dasharray": dash, opacity: .7 }, ov);
-    };
-    [[1.96, "3 4"], [-1.96, "3 4"], [3.09, ""], [-3.09, ""]].forEach(([z, d]) => curve(z, d));
-    svgEl("line", { x1: X(l), x2: X(r), y1: Y(fy(P0)), y2: Y(fy(P0)), class: "hair" }, ov);
-    svgEl("text", { x: X(r), y: Y(fy(limit(PHI, 3.09))) - 8, "text-anchor": "end", class: "halo" }, ov, "99.8% of chance");
-    svgEl("text", { x: X(r), y: Y(fy(limit(PHI, 1.96))) + 18, "text-anchor": "end", class: "halo" }, ov, "95%");
-    svgEl("circle", { cx: X(fx(TOP.pop)), cy: Y(fy(TOP.rate)), r: 9, fill: "none", stroke: C.ink, "stroke-width": 1.2 }, ov);
-    svgEl("text", { x: X(fx(TOP.pop)) + 14, y: Y(fy(TOP.rate)) + 5, class: "halo" }, ov, "top of the league table");
-    svgEl("text", { x: X(fx(OUT.pop)) - 10, y: Y(fy(OUT.rate)) - 14, "text-anchor": "end", class: "halo", style: "fill:" + C.madder }, ov, `the real outlier, ranked ${outRank}th`);
-  }
-  function reveal(guess) {
-    if (phase !== "ask") return;
-    phase = "shown"; $("#fn-guess").hidden = true;
-    ink.to(funnelTargets(), 1800); axes();
-    $("#fn-ask").textContent = "The same 380 districts, drawn as a funnel: each dot's rate against its size.";
-    $("#fn-verdict").textContent = (guess === "1" ? "That's what a league table invites. " : guess === "0" ? "Good instinct. " : "") +
-      `${name(TOP)} is simply small: ${TOP.deaths} deaths in ${TOP.pop.toLocaleString()} people, so its rate swings by chance and it sits inside the 99.8% limits. The only district outside those ranked ${outRank}th. The funnel shows what the ranking hides.`;
-    $("#fn-res").hidden = false; go.hidden = false;
-    $("#fn-cap").textContent = "Fig. 5b. Funnel plot of the same 380 districts, with 95% and 99.8% limits around the national rate.";
-  }
-  $("#fn-guess").onclick = e => e.target.dataset.g && reveal(e.target.dataset.g);
-  go.onclick = () => next();
-  return {
-    enter() {
-      phase = "ask"; $("#fn-guess").hidden = false; $("#fn-res").hidden = true; go.hidden = true;
-      $("#fn-ask").textContent = `${name(TOP)} tops the table at ${TOP.rate.toFixed(1)} deaths per 100,000, double the national rate of ${P0}. Should it be investigated?`;
-      $("#fn-cap").textContent = "Fig. 5a. League table of 380 districts (simulated from Spiegelhalter's bowel-cancer example, ch. 9).";
-      ink.to(tableTargets(), 1500); axes();
-    },
-    resize() { ink.retarget(phase === "ask" ? tableTargets() : funnelTargets()); axes(); },
-    primary() { phase === "ask" ? reveal(null) : next(); },
-    label: i => i < DS.length ? `${name(DS[i])}: ${DS[i].deaths} deaths in ${DS[i].pop.toLocaleString()} people, ${DS[i].rate.toFixed(1)} per 100,000` : null,
-  };
-})();
-
-// ---------- Plate VI: the positive test, then framing ----------
-plates.test = (() => {
-  const fig = $("#ts-fig"), ov = $("#ts-ov"), inp = $("#ts-in"), out = $("#ts-out"), go = $("#ts-go"), pin = $("#ts-prev"), pout = $("#ts-prev-out");
-  const PREVS = [.001, .005, .01, .02, .05, .1, .2, .5];
-  const perm = (() => { const r = rng(11), a = [...Array(CROWD).keys()]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; })();
-  const inN = p => { const n = Math.round(1 / p); return n >= 2 ? `1 in ${n.toLocaleString()}` : pct(p, 0); };
-  let phase, g, prev, res, people, k1, k2, fa, fb;
-  function assign() {
-    res = screen(CROWD, prev);
-    people = Array.from({ length: CROWD }, () => ({ ill: false, pos: false }));
-    perm.slice(0, res.ill).forEach((p, i) => { people[p].ill = true; people[p].pos = i < res.tp; });
-    perm.slice(res.ill, res.ill + res.fp).forEach(p => { people[p].pos = true; });
-    people.map((p, i) => i).filter(i => people[i].pos).sort((a, b) => people[b].ill - people[a].ill).forEach((i, j) => { people[i].slot = j; });
-  }
-  // 1,000 people on the left; everyone who tests positive files into the box on the right
-  function layout() {
-    const b = box(fig), gw = b.w * .58, H = b.h - 80, cols = clamp(Math.round(Math.sqrt(CROWD * gw / H)), 20, 50), rows = Math.ceil(CROWD / cols);
-    const cell = Math.min(gw / cols, H / rows), bx = b.x + gw + cell * 3, bw = b.x + b.w - bx, pad = 12, full = rows * cell;
-    const bc = Math.min(cell, Math.sqrt((bw - 2 * pad) * (full - 2 * pad) / Math.max(res.pos, 1)) * .95), bcols = Math.max(1, Math.floor((bw - 2 * pad) / bc));
-    return { b, cols, cell, top: b.y + 46, box: { x: bx, y: b.y + 46, w: bw, h: Math.min(full, Math.ceil(Math.max(res.pos, 1) / bcols) * bc + 2 * pad) }, bc, bcols, pad };
-  }
-  function testTargets() {
-    const Lo = layout();
-    return people.map((p, i) => {
-      const hx = Lo.b.x + (i % Lo.cols + .5) * Lo.cell, hy = Lo.top + (Math.floor(i / Lo.cols) + .5) * Lo.cell;
-      const c = k1 ? (p.ill ? 1 : 0) : 3, a = k1 ? (k2 && !p.pos ? .25 : 1) : .45, r = Lo.cell * .32;
-      if (!(p.pos && k2)) return { x: hx, y: hy, r, c: i === 777 ? 2 : c, a: i === 777 ? 1 : a };
-      const j = p.slot, sx = Lo.box.x + Lo.pad + (j % Lo.bcols + .5) * Lo.bc, sy = Lo.box.y + Lo.pad + (Math.floor(j / Lo.bcols) + .5) * Lo.bc;
-      return { x: sx, y: sy, r: Lo.bc * .32, c, a: 1 };
-    });
-  }
-  function testLabels() {
-    ov.innerHTML = "";
-    const Lo = layout(), X = v => v - Lo.b.x, Y = v => v - Lo.b.y;
-    svgEl("text", { x: 0, y: 24 }, ov, "1,000 people tested");
-    if (!k2) return;
-    svgEl("rect", { x: X(Lo.box.x), y: Y(Lo.box.y), width: Lo.box.w, height: Lo.box.h, class: "ink", rx: 2 }, ov);
-    svgEl("text", { x: X(Lo.box.x), y: 24, style: "fill:" + C.ink }, ov, `tested positive: ${res.pos}`);
-    svgEl("text", { x: X(Lo.box.x), y: Y(Lo.box.y + Lo.box.h) + 24, style: "fill:" + C.madder }, ov, `${res.tp} have it`);
-    svgEl("text", { x: X(Lo.box.x + Lo.box.w), y: Y(Lo.box.y + Lo.box.h) + 24, "text-anchor": "end" }, ov, `${res.fp} don't`);
-  }
-  // two 10 x 10 arrays: the same facts, framed two ways
-  const frameBox = () => { const r = fig.getBoundingClientRect(), sp = Math.min(r.width * .34 / 10, (r.height - 240) / 10); return { sp, top: (r.height - 10 * sp) / 2 + 20 }; };
-  function frameTargets() {
-    const b = box(fig), { sp, top } = frameBox(), t = [];
-    const at = (cx, i) => ({ x: cx + ((i % 10) - 4.5) * sp, y: b.y + top + (Math.floor(i / 10) + .5) * sp, r: sp * .24 });
-    for (let i = 0; i < 100; i++) {
-      const dies = i >= 95; // the heart-surgery array: 5 of 100
-      t[i] = { ...at(b.x + b.w * .25, i), c: dies ? 1 : 0, a: fa === "die" ? (dies ? 1 : .18) : (dies ? .18 : 1) };
-      const ill = i >= 93, extra = i === 93; // the bacon array: 6 get it anyway, 1 more with bacon
-      t[100 + i] = { ...at(b.x + b.w * .75, i), c: ill ? 1 : 0, a: fb === "rel" ? .12 : ill ? 1 : .35, r: sp * (extra && fb === "abs" ? .38 : .24) };
-    }
-    t[3] = { ...t[3], c: 2, a: 1 };
-    return t;
-  }
-  function frameLabels() {
-    ov.innerHTML = "";
-    const b = fig.getBoundingClientRect(), { sp, top } = frameBox(), q = s => `“${s}”`;
-    svgEl("text", { x: b.width * .25, y: top - 62, "text-anchor": "middle", style: "font-size:24px;fill:" + C.ink }, ov, fa === "die" ? q("5% of children die") : q("95% of children survive"));
-    svgEl("text", { x: b.width * .25, y: top - 34, "text-anchor": "middle" }, ov, "after heart surgery (Bristol, 1990s)");
-    svgEl("text", { x: b.width * .75, y: top - 62, "text-anchor": "middle", style: "font-size:24px;fill:" + C.ink }, ov, fb === "rel" ? q("Daily bacon raises your risk by 18%") : q("6 in 100 get it anyway; bacon makes it 7"));
-    svgEl("text", { x: b.width * .75, y: top - 34, "text-anchor": "middle" }, ov, "lifetime risk of bowel cancer");
-    if (fb === "rel") svgEl("text", { x: b.width * .75, y: top + sp * 5 + sp * 1.3, "text-anchor": "middle", style: `font:400 ${sp * 4}px var(--serif);fill:${C.madder}` }, ov, "+18%");
-    svgEl("text", { x: b.width / 2, y: b.height - 16, "text-anchor": "middle" }, ov, "same facts on each side, whichever way you say them");
-  }
-  function setFrames() {
-    $("#fr-a").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x.dataset.v === fa));
-    $("#fr-b").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x.dataset.v === fb));
-    ink.to(frameTargets(), 700); frameLabels();
-  }
-  function results() {
-    $("#ts-big").textContent = res.pos ? pct(res.ppv, 0) : "–";
-    $("#ts-sub").textContent = res.pos ? `${res.ppv < .5 ? "Only " : ""}${res.tp} of the ${res.pos} people who tested positive actually have it.` : "No one tested positive.";
-    $("#ts-lead").textContent = `${inN(prev)} people have a disease. A test catches 90% of those who have it, and wrongly flags 10% of those who don't.`;
-  }
-  function reveal() {
-    phase = "anim"; inp.disabled = true;
-    k1 = 1; ink.to(testTargets(), 900); testLabels();
-    setTimeout(() => {
-      if (cur !== "test" || phase !== "anim") return;
-      k2 = 1; ink.to(testTargets(), 1700); testLabels();
-      phase = "shown"; results();
-      $("#ts-v").textContent = `You guessed ${pct(g, 0)}. Most people say about 90%. When a disease is rare, false alarms from the healthy majority swamp the real cases.`;
-      $("#ts-res").hidden = false; $("#ts-prev-box").hidden = false; $("#ts-guess").hidden = true; $("#ts-ask").hidden = true;
-      go.textContent = "Same facts, other words";
-    }, reduced ? 0 : 1000);
-  }
-  function toFrames() {
-    phase = "frame"; fa = "die"; fb = "rel";
-    ["#ts-res", "#ts-prev-box", "#ts-lead"].forEach(s => $(s).hidden = true); $("#fr-box").hidden = false;
-    $("#ts-title").textContent = "Same facts, other words";
-    $("#ts-cap").textContent = "Fig. 6b. Framing: the numbers don't change, the picture and the words do (Spiegelhalter, ch. 1 and 2).";
-    go.textContent = "Start again"; setFrames();
-  }
-  inp.oninput = () => { g = inp.value / 100; out.value = pct(g, 0); };
-  pin.oninput = () => { prev = PREVS[+pin.value]; pout.value = inN(prev); assign(); results(); ink.retarget(testTargets()); testLabels(); };
-  $("#fr-a").onclick = e => { if (e.target.dataset.v) { fa = e.target.dataset.v; setFrames(); } };
-  $("#fr-b").onclick = e => { if (e.target.dataset.v) { fb = e.target.dataset.v; setFrames(); } };
-  go.onclick = () => api.primary();
-  const api = {
-    enter() {
-      phase = "ask"; k1 = k2 = 0; g = .5; inp.value = 50; out.value = "50%"; inp.disabled = false;
-      prev = .01; pin.value = 2; pout.value = inN(prev); assign(); results();
-      ["#ts-res", "#ts-prev-box", "#fr-box"].forEach(s => $(s).hidden = true); ["#ts-guess", "#ts-ask", "#ts-lead"].forEach(s => $(s).hidden = false);
-      $("#ts-title").textContent = "The positive test"; go.textContent = "Reveal";
-      $("#ts-cap").textContent = "Fig. 6a. Screening 1,000 people (Spiegelhalter, ch. 8).";
-      ink.to(testTargets(), 1400); testLabels();
-    },
-    resize() { if (phase === "frame") { ink.retarget(frameTargets()); frameLabels(); } else { ink.retarget(testTargets()); testLabels(); } },
-    primary() { if (phase === "ask") reveal(); else if (phase === "shown") toFrames(); else if (phase === "frame") location.hash = "#home"; },
-    label: i => {
-      if (phase === "frame") return i < 100 ? (i >= 95 ? "Died after surgery" : "Survived surgery") : i < 200 ? (i === 193 ? "The one extra case from bacon" : i >= 194 ? "Would get bowel cancer anyway" : "Won't get bowel cancer") : null;
-      if (i >= CROWD) return null;
-      const p = people[i]; return `Person ${i + 1}: ${k1 ? (p.ill ? "has it" : "doesn't have it") : "not yet tested"}${k2 ? (p.pos ? ", tested positive" : ", tested negative") : ""}`;
-    },
-  };
-  return api;
 })();
 
 // ---------- router, keys, idle ----------
@@ -1024,9 +569,10 @@ let cur = null;
 const next = () => { location.hash = "#" + order[(order.indexOf(cur) + 1) % order.length]; };
 function show() {
   const id = order.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home";
-  if (cur) { stopAll(); plates[cur]?.leave?.(); tip(null); }
+  if (cur) { stopAll(); RUN++; plates[cur]?.leave?.(); ink.clearProps(); tip(null); }
   document.querySelectorAll(".plate").forEach(s => s.classList.toggle("on", s.dataset.plate === id));
   document.querySelectorAll(".rail a").forEach(a => a.hash === "#" + id ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  const host = $(`[data-plate=${id}] .story`); if (host) host.innerHTML = "";
   cur = id; window.scrollTo(0, 0); plates[id]?.enter?.();
 }
 addEventListener("hashchange", show);
@@ -1039,8 +585,10 @@ addEventListener("pointermove", e => {
 });
 addEventListener("keydown", e => {
   const t = e.target, slider = t.type === "range";
-  if (e.key === " " && t.tagName !== "BUTTON") { e.preventDefault(); if (!e.repeat) plates[cur]?.primary?.(); }
-  else if (!slider && !e.metaKey && !e.altKey && !e.ctrlKey && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+  if (e.key === " " && t.tagName !== "BUTTON") {
+    e.preventDefault(); if (e.repeat) return;
+    const go = [...document.querySelectorAll(".plate.on .btn.go")].pop(); go ? go.click() : plates[cur]?.primary?.();
+  } else if (!slider && !e.metaKey && !e.altKey && !e.ctrlKey && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
     const i = order.indexOf(cur) + (e.key === "ArrowRight" ? 1 : -1);
     location.hash = "#" + order[(i + order.length) % order.length];
   }
