@@ -56,7 +56,15 @@ a { color: var(--ink); }
 .label { font-style: italic; color: var(--ink-2); margin: 0; }
 .margin h2 { font: 400 clamp(34px, 3.4vw, 50px)/1.04 var(--serif); margin: 0; letter-spacing: -.01em; }
 .margin p { margin: 0; max-width: 38ch; }
-.story { display: flex; flex-direction: column; gap: 12px; }
+.story { display: flex; flex-direction: column; gap: 12px; outline: none; }
+.progress { height: 1px; background: var(--hair); position: relative; margin: 2px 0 6px; }
+.progress i { position: absolute; left: 0; top: -1px; height: 3px; width: 0; background: var(--ink); transition: width .8s ease; }
+.card { display: flex; flex-direction: column; gap: 14px; animation: in .7s ease both; }
+.card .when { font-style: italic; color: var(--madder); font-size: 17px; }
+.card .line { font-size: 23px; line-height: 1.42; max-width: 32ch; }
+.card .note { color: var(--ink-2); font-style: italic; }
+.btn.hold { background: linear-gradient(to right, rgba(179, 38, 30, .25) var(--p, 0%), transparent var(--p, 0%)); color: var(--ink); border-color: var(--ink); user-select: none; -webkit-user-select: none; touch-action: none; }
+.plate.on .fig { cursor: grab; touch-action: pan-y; } .plate.on .fig.dragging { cursor: grabbing; }
 .story p { animation: in .6s ease both; }
 .story .ask { font-size: 21px; }
 .story .reply { font-style: italic; }
@@ -156,36 +164,36 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
   </section>
 
   <section class="plate" data-plate="stadium">
-    <div class="margin"><p class="label">Plate I</p><h2>The stadium</h2><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
+    <div class="margin"><p class="label">Plate I</p><h2>The stadium</h2><div class="progress"><i></i></div><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
     <div class="fig" id="st-fig"><svg class="ov" aria-hidden="true"></svg></div>
   </section>
 
   <section class="plate" data-plate="turkey">
-    <div class="margin"><p class="label">Plate II</p><h2>The turkey</h2><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
+    <div class="margin"><p class="label">Plate II</p><h2>The turkey</h2><div class="progress"><i></i></div><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
     <div class="fig" id="tk-fig"><svg class="ov" aria-hidden="true"></svg></div>
   </section>
 
   <section class="plate" data-plate="graveyard">
-    <div class="margin"><p class="label">Plate III</p><h2>The graveyard</h2><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
+    <div class="margin"><p class="label">Plate III</p><h2>The graveyard</h2><div class="progress"><i></i></div><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
     <div class="fig" id="gy-fig"><svg class="ov" aria-hidden="true"></svg></div>
   </section>
 
   <section class="plate" data-plate="dino">
-    <div class="margin"><p class="label">Plate IV</p><h2>The Datasaurus</h2><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
+    <div class="margin"><p class="label">Plate IV</p><h2>The Datasaurus</h2><div class="progress"><i></i></div><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
     <div class="fig" id="dn-fig"><svg class="ov" aria-hidden="true"></svg></div>
   </section>
 
   <section class="plate" data-plate="funnel">
-    <div class="margin"><p class="label">Plate V</p><h2>The league table</h2><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
+    <div class="margin"><p class="label">Plate V</p><h2>The league table</h2><div class="progress"><i></i></div><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
     <div class="fig" id="fn-fig"><svg class="ov" aria-hidden="true"></svg></div>
   </section>
 
   <section class="plate" data-plate="test">
-    <div class="margin"><p class="label">Plate VI</p><h2>The positive test</h2><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
+    <div class="margin"><p class="label">Plate VI</p><h2>The positive test</h2><div class="progress"><i></i></div><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
     <div class="fig" id="ts-fig"><svg class="ov" aria-hidden="true"></svg></div>
   </section>
   <section class="plate" data-plate="record">
-    <div class="margin"><p class="label">Plate VII</p><h2>Your record</h2><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
+    <div class="margin"><p class="label">Plate VII</p><h2>Your record</h2><div class="progress"><i></i></div><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
     <div class="fig" id="rc-fig"></div>
   </section>
 </main>
@@ -393,13 +401,24 @@ const ink = (() => {
   };
 })();
 
+// drag on any story scene to look around; the offsets ride on top of the camera's own drift
+const look = { yaw: 0, pitch: 0 };
+(() => {
+  let drag = null;
+  document.querySelectorAll(".fig").forEach(f => {
+    f.addEventListener("pointerdown", e => { if (e.button === 0) { drag = { x: e.clientX, y: e.clientY }; f.setPointerCapture(e.pointerId); f.classList.add("dragging"); } });
+    f.addEventListener("pointermove", e => { if (!drag) return; look.yaw -= (e.clientX - drag.x) * .006; look.pitch = clamp(look.pitch + (e.clientY - drag.y) * .004, -.35, .35); drag = { x: e.clientX, y: e.clientY }; });
+    const end = () => { drag = null; f.classList.remove("dragging"); };
+    f.addEventListener("pointerup", end); f.addEventListener("pointercancel", end);
+  });
+})();
 // an orbit around a subject centred on a figure: the camera circles slowly, the picture shifts to sit over the figure
 function orbit(fig, { dist = 2.4, elev = .5, speed = .05, phase = 0, lift = 0 } = {}) {
   const t0 = performance.now();
   return t => {
     const b = box(fig), cx = b.x + b.w / 2, cy = -(b.y + b.h / 2) + lift, R = Math.max(b.w, b.h) * dist;
-    const th = phase + (reduced ? 0 : (t - t0) / 1000 * speed);
-    return { p: [cx + R * Math.cos(elev) * Math.sin(th), cy + R * Math.sin(elev), R * Math.cos(elev) * Math.cos(th)], l: [cx, cy, 0], shift: (b.x + b.w / 2) - ink.W / 2 };
+    const th = phase + look.yaw + (reduced ? 0 : (t - t0) / 1000 * speed), el = clamp(elev + look.pitch, -.15, 1.45);
+    return { p: [cx + R * Math.cos(el) * Math.sin(th), cy + R * Math.sin(el), R * Math.cos(el) * Math.cos(th)], l: [cx, cy, 0], shift: (b.x + b.w / 2) - ink.W / 2 };
   };
 }
 // hairline props in world coordinates (points given as [x, y, z] in document pixels)
@@ -415,12 +434,24 @@ function hairline(pts, { color = C.ink, opacity = .35, loop = false } = {}) {
 let RUN = 0;
 const record = {}, clearRecord = () => { for (const k in record) delete record[k]; };
 const sleep = ms => new Promise(res => setTimeout(res, ms));
-function storyOf(plate) {
-  const host = $(`[data-plate=${plate}] .story`), run = RUN, alive = () => run === RUN && cur === plate;
-  const add = (tag, html, cls) => { if (!alive()) return null; const e = document.createElement(tag); if (cls) e.className = cls; e.innerHTML = html; host.appendChild(e); requestAnimationFrame(() => e.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" })); return e; };
+function storyOf(plate, total = 8) {
+  const host = $(`[data-plate=${plate}] .story`), bar = $(`[data-plate=${plate}] .progress i`), run = RUN, alive = () => run === RUN && cur === plate;
+  let n = 0;
+  const target = () => host.querySelector(".card:last-child") || host;
+  const add = (tag, html, cls) => { if (!alive()) return null; const e = document.createElement(tag); if (cls) e.className = cls; e.innerHTML = html; target().appendChild(e); requestAnimationFrame(() => e.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" })); return e; };
+  const button = (label, cls) => { const g = add("div", "", "btns"); if (!g) return [null, null]; const b = document.createElement("button"); b.className = "btn " + cls; b.textContent = label; g.appendChild(b); return [g, b]; };
   return {
     alive,
     clear() { if (alive()) host.innerHTML = ""; },
+    // a new card: the old one goes, a place or time line, then the narration
+    card(html, when) {
+      if (!alive()) return null;
+      host.innerHTML = ""; n++; if (bar) bar.style.width = Math.min(100, 100 * n / total) + "%";
+      const c = document.createElement("div"); c.className = "card"; host.appendChild(c);
+      if (when) add("p", when, "when");
+      if (html) add("p", html, "line");
+      return c;
+    },
     say: (html, cls) => add("p", html, cls),
     el: (tag, html, cls) => add(tag, html, cls),
     ask: html => add("p", html, "ask"),
@@ -437,12 +468,35 @@ function storyOf(plate) {
     },
     cont(label = "Continue") {
       return new Promise(res => {
-        const g = add("div", "", "btns"); if (!g) return;
-        const b = document.createElement("button"); b.className = "btn go"; b.textContent = label;
-        b.onclick = () => { g.remove(); host.focus({ preventScroll: true }); res(); }; g.appendChild(b);
+        const [g, b] = button(label, "go"); if (!b) return;
+        b.onclick = () => { g.remove(); host.focus({ preventScroll: true }); res(); };
       });
     },
-    moral: text => add("blockquote", `<p class="label">Moral of the story</p><p>${text}</p>`, "moral"),
+    // press the button n times (Space works too); onTap(i) plays each press
+    taps(label, times, onTap) {
+      return new Promise(res => {
+        const [g, b] = button(label, "go"); if (!b) return;
+        let i = 0;
+        b.onclick = () => { if (!alive()) return; onTap(i++); if (i >= times) { g.remove(); host.focus({ preventScroll: true }); res(); } };
+      });
+    },
+    // press and hold (mouse, touch or Space) to push k from 0 to 1 over ms; onK(k) draws it
+    hold(label, ms, onK) {
+      return new Promise(res => {
+        const [g, b] = button(label, "hold"); if (!b) return;
+        let k = 0, down = false, last = 0;
+        const on = e => { if (e) e.preventDefault(); down = true; last = performance.now(); }, off = () => { down = false; };
+        b.addEventListener("pointerdown", on); b.addEventListener("pointerup", off); b.addEventListener("pointerleave", off);
+        const kd = e => { if (e.key === " " && !e.repeat) on(e); }, ku = e => { if (e.key === " ") off(); };
+        addEventListener("keydown", kd); addEventListener("keyup", ku);
+        onRaf(t => {
+          if (!alive()) { removeEventListener("keydown", kd); removeEventListener("keyup", ku); return false; }
+          if (down) { k = Math.min(1, k + (t - last) / (reduced ? 1 : ms)); last = t; b.style.setProperty("--p", (k * 100).toFixed(1) + "%"); onK(k); }
+          if (k >= 1) { removeEventListener("keydown", kd); removeEventListener("keyup", ku); g.remove(); host.focus({ preventScroll: true }); res(); return false; }
+        });
+      });
+    },
+    moral(text) { const c = this.card(""); if (!c) return null; if (bar) bar.style.width = "100%"; return add("blockquote", `<p class="label">Moral of the story</p><p>${text}</p>`, "moral"); },
     cap(text) { if (alive()) $(`[data-plate=${plate}] .cap`).textContent = text; },
     note(key, q, choice, right, world) { record[key] = { q, choice, right, world }; },
   };
@@ -456,6 +510,7 @@ function tip(e, text) {
 }
 
 const plates = {};
+const host$ = plate => $(`[data-plate=${plate}] .story`);
 const SWAN = "A black swan.";
 
 // ---------- a stadium bowl in 3D: 1,000 seats on rising tiers around a pitch ----------
@@ -498,16 +553,49 @@ const CR = crowd();
 const MED = [...CR.wealth].sort((a, b) => a - b)[CROWD / 2];
 const money = v => v >= 1e6 ? "$" + (v / 1e6).toFixed(1).replace(/\.0$/, "") + " million" : "$" + (Math.round(v / 100) * 100).toLocaleString();
 plates.stadium = (() => {
-  const fig = $("#st-fig"), ov = $("[data-plate=stadium] svg.ov"), NEW = CROWD;
-  let B, mode = "weight", k = 0, phase = "bowl";
-  const W8 = CR.weight, mean = a => sum(a) / CROWD;
+  const fig = $("#st-fig"), ov = $("[data-plate=stadium] svg.ov"), NEW = CROWD, W8 = CR.weight;
+  let B, mode = "weight", phase = "bowl", fill = 1, walk = 1, grow = 0, cols = 0, towerK = 0, unit = 0;
+  const mean = a => sum(a) / CROWD;
+  // fans stream in through the gates: each seat's fan starts outside the stadium and arrives in turn
+  const ORDER = (() => { const r = rng(17); return Array.from({ length: CROWD }, () => r()); })();
   function bowlTargets() {
     B = bowl(fig);
-    const arr = mode === "weight" ? W8 : CR.wealth, mu = mean(arr), t = B.seats.map((p, i) => ({ x: p[0], y: p[1], z: p[2], r: B.r0 * Math.sqrt(arr[i] / mu), c: i === 137 ? 2 : 0 }));
-    t[NEW] = { x: B.cx, y: B.cy - 4, z: 0, r: B.r0 * (mode === "weight" ? Math.sqrt(1 + 4 * k) : 1.4), c: 1 };
+    const arr = mode === "weight" ? W8 : CR.wealth, mu = mean(arr);
+    const t = B.seats.map((p, i) => {
+      const k = clamp((fill - ORDER[i] * .75) / .25, 0, 1), e = ease(k), th = Math.atan2(p[2] / .62, p[0] - B.cx), out = B.a * 1.45;
+      const ox = B.cx + out * Math.cos(th), oz = out * .62 * Math.sin(th);
+      return { x: lerp(ox, p[0], e), y: lerp(B.cy + 10, p[1], e), z: lerp(oz, p[2], e), r: B.r0 * Math.sqrt(arr[i] / mu), c: i === 137 ? 2 : 0, a: k > 0 ? 1 : 0 };
+    });
+    // the newcomer walks from the players' tunnel to the centre spot
+    const e = ease(walk);
+    t[NEW] = { x: B.cx, y: B.cy - 4, z: lerp(B.a * .62 * 1.1, 0, e), r: B.r0 * (mode === "weight" ? Math.sqrt(1 + 4 * grow) : 1.4), c: 1, a: walk > 0 ? 1 : 0 };
     return t;
   }
-  // the fortunes as a dot histogram on a log axis ($100 .. $100bn), drawn flat
+  // floodlights: four towers, each throwing a fan of hairline beams onto the pitch
+  function floodlights() {
+    [[1, 1], [1, -1], [-1, 1], [-1, -1]].forEach(([sx, sz]) => {
+      const x = B.cx + sx * B.a * .92, z = sz * B.a * .62 * .98, top = B.cy - B.a * .62;
+      hairline([[x, B.cy, z], [x, top, z]], { opacity: .5 });
+      for (let k = 0; k < 9; k++) hairline([[x, top, z], [B.cx + (k - 4) * B.a * .05, B.cy, (k % 3 - 1) * B.a * .08]], { opacity: .12 });
+      const lamp = ink.cloud(6, ink.props);
+      for (let k = 0; k < 6; k++) lamp.put(k, x + (k % 3 - 1) * 5, top - Math.floor(k / 3) * 5, z, 2.2, new THREE.Color(C.ink), .9);
+      lamp.commit();
+    });
+  }
+  // every fortune as a column over its seat; the richest guest's column climbs out of the sky
+  function columns() {
+    unit = B.a * .03 / MED;
+    if (cols > 0) {
+      const pts = [];
+      B.seats.forEach((p, i) => { pts.push(new THREE.Vector3(p[0], -p[1], p[2]), new THREE.Vector3(p[0], -p[1] + CR.wealth[i] * unit * cols, p[2])); });
+      ink.props.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: .45, depthWrite: false })));
+    }
+    if (towerK > 0) {
+      const tower = new THREE.Mesh(new THREE.CylinderGeometry(B.r0 * 2.2, B.r0 * 2.2, 1, 24), new THREE.MeshBasicMaterial({ color: C.madder }));
+      tower.scale.y = Math.max(.001, towerK); tower.position.set(B.cx, -B.cy + tower.scale.y / 2, 0); ink.props.add(tower);
+    }
+  }
+  const scenery = () => { if (phase === "log") return; bowlProps(B); floodlights(); columns(); };
   const LO = 2, HI = 11;
   function logTargets() {
     const b = box(fig), base = b.y + b.h - 170, x = v => b.x + b.w * (Math.log10(v) - LO) / (HI - LO), bins = {};
@@ -515,20 +603,16 @@ plates.stadium = (() => {
     t[NEW] = { x: x(RICHEST_USD), y: base - 2.6, r: 4, c: 1 };
     return { t, b, base, x, peak: Math.max(...Object.values(bins)) };
   }
-  function drawBar(truthV, kk, g, who) {
+  function drawBar(truthV, kk, who) {
     ov.querySelectorAll(".bar").forEach(e => e.remove());
     if (kk <= 0) return;
-    const b = fig.getBoundingClientRect(), W = b.width, y = 8, h = 14, gg = svgEl("g", { class: "bar" }, ov);
-    const xs = Math.max(2, truthV * kk * W);
+    const b = fig.getBoundingClientRect(), W = b.width, y = 8, h = 14, gg = svgEl("g", { class: "bar" }, ov), xs = Math.max(2, truthV * kk * W);
     svgEl("rect", { x: 0, y, width: xs, height: h, fill: C.madder }, gg);
     if (W - xs > 3) svgEl("rect", { x: xs + 2, y, width: W - xs - 2, height: h, fill: "none", stroke: C.ink, "stroke-width": 1 }, gg);
-    if (kk >= 1) {
-      svgEl("text", { x: 0, y: y + h + 22 }, gg, `${who}: ${pct(truthV)}`);
-      svgEl("text", { x: W, y: y + h + 22, "text-anchor": "end" }, gg, `the other 1,000 together: ${pct(1 - truthV)}`);
-    }
+    if (kk >= 1) { svgEl("text", { x: 0, y: y + h + 22 }, gg, `${who}: ${pct(truthV)}`); svgEl("text", { x: W, y: y + h + 22, "text-anchor": "end" }, gg, `the other 1,000 together: ${pct(1 - truthV)}`); }
   }
   function drawLogAxis() {
-    ov.querySelectorAll(".log").forEach(e => e.remove());
+    ov.innerHTML = "";
     if (phase !== "log") return;
     const { b, base, x, peak } = logTargets(), gg = svgEl("g", { class: "log" }, ov), X = v => x(v) - b.x, Y = base - b.y + 6;
     svgEl("line", { x1: 0, x2: b.w, y1: Y, y2: Y, class: "ink" }, gg);
@@ -536,28 +620,29 @@ plates.stadium = (() => {
       svgEl("line", { x1: X(v), x2: X(v), y1: Y, y2: Y + 6, class: "ink" }, gg); svgEl("text", { x: X(v), y: Y + 24, "text-anchor": "middle" }, gg, l);
     });
     svgEl("text", { x: 0, y: Y + 50 }, gg, "net worth, logarithmic scale: each step is ten times the last");
-    svgEl("text", { x: X(RICHEST_USD), y: Y - 22, "text-anchor": "end", style: "fill:" + C.madder }, gg, "the richest person");
+    svgEl("text", { x: X(RICHEST_USD), y: Y - 22, "text-anchor": "end", style: "fill:" + C.madder }, gg, "the richest guest");
     svgEl("text", { x: X(MED), y: Y - 6 - peak * 5.2 - 14, "text-anchor": "middle" }, gg, "the other 1,000");
   }
-  // every fortune as a column over its seat; the richest person's column climbs out of the sky
-  let tower;
-  function columns(scaleTop) {
-    ink.clearProps(); bowlProps(B);
-    const unit = B.a * .03 / MED, pts = [];
-    B.seats.forEach((p, i) => { pts.push(new THREE.Vector3(p[0], -p[1], p[2]), new THREE.Vector3(p[0], -p[1] + CR.wealth[i] * unit, p[2])); });
-    ink.props.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: .45, depthWrite: false })));
-    tower = new THREE.Mesh(new THREE.CylinderGeometry(B.r0 * 2.2, B.r0 * 2.2, 1, 24), new THREE.MeshBasicMaterial({ color: C.madder }));
-    tower.position.set(B.cx, -B.cy, 0); tower.scale.y = .001; ink.props.add(tower);
-    return unit;
-  }
+  const bigLine = cls => { const l = host$("stadium").querySelector(".card .line"); if (l) l.className = cls; };
   async function story() {
-    const s = storyOf("stadium"), who = { weight: "the heaviest fan", wealth: "the richest guest" };
-    phase = "bowl"; mode = "weight"; k = 0; ov.innerHTML = "";
-    ink.to(bowlTargets(), 1600); bowlProps(B); ink.pose(orbit(fig, { dist: 1.7, elev: .5, speed: .05 }), 1800);
+    const s = storyOf("stadium", 11), who = { weight: "the heaviest fan", wealth: "the richest guest" };
+    mode = "weight"; phase = "bowl"; fill = 0; walk = 0; grow = 0; cols = 0; towerK = 0; ov.innerHTML = "";
+    ink.to(bowlTargets(), 1400); setProps(scenery); ink.pose(orbit(fig, { dist: 1.75, elev: .62, speed: .04 }), 2200);
     s.cap("Fig. 1a. One thousand fans, and one more. After Taleb, The Black Swan, ch. 3.");
-    s.say("You are the structural engineer for tonight's match. A thousand fans have tickets, and the stand is rated for their combined weight, with a margin.");
-    s.say("An hour before kick-off, the last ticket is bought by the heaviest person you can imagine. They are walking onto the pitch now.");
-    s.ask("What do you do?");
+
+    s.card("You are the structural engineer for tonight's match. The stand you signed off holds a thousand people, with a margin.", "Saturday, 6:30 pm");
+    s.say("The floodlights are warming up. The gates open at seven.", "note");
+    await s.cont("Open the gates"); if (!s.alive()) return;
+    s.card("They pour in: a thousand people of every size, filling the stands row by row.", "7:00 pm");
+    await tween(4200, k => { fill = k; ink.set(bowlTargets()); }); if (!s.alive()) return;
+    s.say("Drag the stadium to look around. Every dot is a fan, drawn by weight.", "note");
+    await s.cont(); if (!s.alive()) return;
+
+    s.card("The box office calls. The last ticket has gone to the heaviest person you can imagine.", "7:52 pm");
+    await sleep(900); if (!s.alive()) return;
+    s.say("They are walking out of the tunnel now, towards the centre spot.");
+    await tween(3000, k => { walk = k; ink.set(bowlTargets()); }); if (!s.alive()) return;
+    s.ask("The stand is rated for the crowd, with a margin. What do you do?");
     const c1 = await s.choose([
       { label: "Reinforce the stand", right: false, reply: "You spent the evening bracing steel for half a percent." },
       { label: "Refuse them entry", right: false, reply: "You turned a fan away to save half a percent of the load." },
@@ -565,49 +650,52 @@ plates.stadium = (() => {
     ]);
     if (!s.alive()) return;
     const tw = share(HEAVIEST_KG, W8);
-    await tween(1400, kk => { k = ease(kk); ink.nudge(NEW, { r: B.r0 * Math.sqrt(1 + 4 * k) }); drawBar(tw, k, 0, who.weight); });
-    if (!s.alive()) return;
-    s.el("p", pct(tw), "big"); s.say(`The heaviest person imaginable adds ${pct(tw)} to the stadium's weight.`); s.say(c1.reply, "reply");
+    s.card(pct(tw), "Kick-off"); bigLine("big");
+    await tween(1600, kk => { grow = ease(kk); ink.nudge(NEW, { r: B.r0 * Math.sqrt(1 + 4 * grow) }); drawBar(tw, grow, who.weight); }); if (!s.alive()) return;
+    s.say(`The heaviest person imaginable adds ${pct(tw)} to the stadium's weight.`);
+    s.say(c1.reply, "reply");
     s.note("weight", "The heaviest fan walks in", c1.label, c1.right, "Mediocristan");
     await s.cont("Later that night"); if (!s.alive()) return;
 
-    s.clear(); drawBar(0, 0); mode = "wealth"; k = 0;
-    ink.to(bowlTargets(), 1200);
+    drawBar(0, 0); mode = "wealth"; walk = 0; grow = 0;
     s.cap("Fig. 1b. The same thousand, and the richest person on Earth, at Taleb's 2007 figure of $80 billion.");
-    s.say("The same thousand people are now guests at your charity gala. You have one evening to raise money for the hospital.");
-    s.say("Then the richest person on Earth walks in.");
-    s.ask("Where do you spend your evening?");
+    s.card("The same thousand are now guests at your charity gala. You have one night to raise money for the children's hospital.", "Midnight");
+    ink.to(bowlTargets(), 1400);
+    await tween(2600, k => { cols = ease(k); setProps(scenery); }); if (!s.alive()) return;
+    s.say("Over each seat stands a column: that guest's fortune. Most are modest. A few are tall.", "note");
+    await s.cont(); if (!s.alive()) return;
+
+    s.card("The doors open. The richest person on Earth walks in.", "12:20 am");
+    await tween(3000, k => { walk = k; ink.set(bowlTargets()); }); if (!s.alive()) return;
+    s.ask("You have one evening. Where do you spend it?");
     const c2 = await s.choose([
       { label: "Working the room: a thousand small cheques add up", right: false, reply: "The whole room together holds a tenth of a percent of the wealth. The person you walked past holds the rest." },
       { label: "With the one person", right: true, reply: "Right. One conversation is worth more than the other thousand put together." },
       { label: "Split my time evenly", right: false, reply: "Even time is wildly uneven value: one guest holds almost everything." },
     ]);
     if (!s.alive()) return;
-    const unit = columns(), tx = share(RICHEST_USD, CR.wealth), km = RICHEST_USD / MED / 1e5, top = RICHEST_USD * unit;
-    const b = box(fig), baseY = -B.cy, H = Math.min(top, 40 * b.h);
-    // pull back to a low angle with the stadium at the foot of the frame, then tilt up as the column climbs
+    const tx = share(RICHEST_USD, CR.wealth), km = RICHEST_USD / MED / 1e5, b = box(fig), H = Math.min(RICHEST_USD * unit, 40 * b.h);
+    s.card("Now raise their fortune beside the others, to the same scale.", "12:21 am");
     ink.pose(orbit(fig, { dist: 1.9, elev: .07, speed: .015, lift: b.h * .3 }), 2400);
-    await sleep(2400); if (!s.alive()) return;
-    await tween(5200, kk => { const e = ease(kk); tower.scale.y = Math.max(.001, H * e * e); tower.position.y = baseY + tower.scale.y / 2; drawBar(tx, e, 0, who.wealth); });
-    if (!s.alive()) return;
-    s.el("p", pct(tx), "big madder");
-    s.say(`If a typical fortune in the room were a column one centimetre tall, the richest guest's would be ${Math.round(km)} kilometres tall.`);
+    await s.hold("Hold to raise it", 5200, k => { towerK = H * k * k; setProps(scenery); drawBar(tx, k, who.wealth); }); if (!s.alive()) return;
+    s.card(pct(tx), "12:22 am"); bigLine("big madder");
+    s.say(`If a typical fortune in the room were a column one centimetre tall, this one would be ${Math.round(km)} kilometres tall. It left the sky some time ago.`);
     s.say(c2.reply, "reply");
     s.note("wealth", "The richest guest walks in", c2.label, c2.right, "Extremistan");
+    await s.cont(); if (!s.alive()) return;
     s.moral("In Mediocristan, no single person can move the total. In Extremistan, one person <em>is</em> the total. Before you plan, ask which world you are counting in.");
     await s.cont("Draw it on a log scale"); if (!s.alive()) return;
 
-    // drawn better: the same fortunes, flat, on a logarithmic axis
-    phase = "log"; drawBar(0, 0); ink.clearProps(); ink.flat(1600); ink.to(logTargets().t, 1800); drawLogAxis();
-    s.clear(); s.cap("Fig. 1c. The same 1,001 fortunes on a logarithmic scale.");
-    s.say(`On an ordinary scale the thousand vanish. On a logarithmic one, where each step is ten times the last, they come back: from ${money(Math.min(...CR.wealth))} to ${money(Math.max(...CR.wealth))}.`);
+    phase = "log"; drawBar(0, 0); setProps(null); ink.flat(1600); ink.to(logTargets().t, 1800); drawLogAxis();
+    s.cap("Fig. 1c. The same 1,001 fortunes on a logarithmic scale.");
+    s.card(`On an ordinary scale the thousand vanish. On a logarithmic one, where each step is ten times the last, they come back: from ${money(Math.min(...CR.wealth))} to ${money(Math.max(...CR.wealth))}.`, "Drawn better");
     s.say(`And the richest guest sits alone, ${Math.round(RICHEST_USD / MED / 1e5) / 10} million times the typical fortune. Drawing it better is half the insight.`);
     await s.cont("Next plate"); if (!s.alive()) return;
     next();
   }
   return {
     enter() { story(); },
-    leave() { ink.clearProps(); ov.innerHTML = ""; },
+    leave() { ov.innerHTML = ""; },
     resize() { if (phase === "log") { ink.retarget(logTargets().t); drawLogAxis(); } else ink.retarget(bowlTargets()); },
     label: i => i === NEW ? (mode === "weight" ? "The heaviest person imaginable: 400 kg" : "The richest person on Earth: $80 billion, Taleb's 2007 figure") : i < CROWD ? (mode === "weight" && phase !== "log" ? `Fan ${i + 1}: ${Math.round(W8[i])} kg` : `Guest ${i + 1}: ${money(CR.wealth[i])}`) : null,
   };
@@ -633,7 +721,7 @@ const OUTLINE = [ // hairline loops: fuselage, wings, tailplane, four nacelles
 plates.graveyard = (() => {
   const fig = $("#gy-fig"), BM = bombers(), HITS = BM.hits.slice(0, INK);
   const pct0 = a => Math.round(100 * a.filter(h => h.zone === "engines").length / a.length);
-  let act = 1, shownLost = false, year = 0, ghosts = [], shownBack = Infinity;
+  let act = 1, shownLost = false, year = 0, shownBack = Infinity, ghostK = 0, drift = 0, frameOn = true;
   const BACK = []; HITS.forEach((h, i) => { if (!h.lost) BACK[i] = BACK.filter(v => v !== undefined).length; });
   const frame = () => { const b = box(fig), S = Math.min(b.w * .85, b.h * 1.2); return { S, at: ([x, y, z]) => [b.x + b.w / 2 + x * S, b.y + b.h / 2 - y * S, z * S] }; };
   function hitTargets() {
@@ -644,14 +732,32 @@ plates.graveyard = (() => {
       return shownLost ? (h.zone === "engines" ? { x, y: y - 3, z, r: 3.4, c: 1, a: 1 } : { x, y: y - 2, z, r: 1.6, c: 1, a: .45 }) : { x, y, z, r: 0, a: 0 };
     });
   }
-  function airframe(parent = ink.props, color = C.ink2, opacity = .5, lift = 0) {
-    const { at } = frame(), g = new THREE.Group(); parent.add(g);
+  // an engraved airframe: hairline outlines plus four propellers that spin
+  function airframe(color = C.ink2, opacity = .5, lift = 0, props = true) {
+    const { at } = frame(), g = new THREE.Group(); ink.props.add(g);
     OUTLINE.forEach(loop => {
       const pts = loop.map(p => { const [x, y, z] = at(p); return new THREE.Vector3(x, -(y - lift), z); });
       g.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false })));
     });
+    if (props) [-.34, -.17, .17, .34].forEach(zz => {
+      const [x, y, z] = at([.215, .025, zz]), { S } = frame(), L = S * .035, p = new THREE.Group();
+      p.position.set(x, -(y - lift), z); p.userData.spin = true;
+      [0, Math.PI / 2].forEach(a => p.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -L * Math.cos(a), -L * Math.sin(a)), new THREE.Vector3(0, L * Math.cos(a), L * Math.sin(a))]), new THREE.LineBasicMaterial({ color, transparent: true, opacity: opacity * 1.4, depthWrite: false }))));
+      g.add(p);
+    });
     return g;
   }
+  // the planes that never came back: a formation of red outlines that rises and drifts away
+  function ghosts() {
+    const { S } = frame();
+    for (let k = 0; k < 6; k++) {
+      const g = airframe(C.madder, .5 * (1 - k / 7) * Math.min(1, ghostK * 2) * (1 - drift * .85), 0, false);
+      g.position.y = S * (.12 + .1 * k) * ease(ghostK) + S * drift * (.4 + .12 * k);
+      g.position.z = -S * .05 * k - S * drift * (.5 + .2 * k);
+      g.position.x = -S * drift * .3;
+    }
+  }
+  const scenery = () => { if (act === 1) { if (frameOn) airframe(); if (ghostK > 0) ghosts(); } };
   // act 2: 1,024 managers as a field of lights on the ground; each year the losers go out
   const SEAT = (() => { const r = rng(21), a = [...Array(MANAGERS).keys()]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; })();
   function fieldTargets(y) {
@@ -663,22 +769,29 @@ plates.graveyard = (() => {
     });
   }
   async function story() {
-    const s = storyOf("graveyard");
-    act = 1; shownLost = false; year = 0; ghosts = []; shownBack = 0;
-    ink.to(hitTargets(), 900); airframe();
+    const s = storyOf("graveyard", 13);
+    act = 1; shownLost = false; year = 0; shownBack = 0; ghostK = 0; drift = 0; frameOn = true;
+    ink.to(hitTargets(), 900); setProps(scenery);
     ink.pose(orbit(fig, { dist: 1.9, elev: 1.12, speed: .03, phase: -1.2 }), 2000);
+    onRaf(() => { ink.props.traverse(o => { if (o.userData.spin) o.rotation.x += reduced ? 0 : .35; }); });
     s.cap("Fig. 3a. Bullet holes on the bombers that came home. The simulation is illustrative; the densities are Wald's, as told by Jordan Ellenberg (2014).");
-    s.say("New York, 1943. You are Abraham Wald, a statistician. Every day, bombers limp home from Europe full of holes, and the Air Force has mapped where they are. Armour is heavy: it can only go in one place.");
-    // the returning planes, one by one
-    const back = HITS.filter(h => !h.lost), nBack = back.length;
-    await sleep(900); if (!s.alive()) return;
-    const counter = s.say("Planes home: 0");
-    await tween(3200, kk => { shownBack = Math.round(nBack * kk); ink.retarget(hitTargets());
-      if (counter) counter.textContent = `Planes home: ${Math.round(BM.returned * kk)} of ${BM.returned}`; });
+
+    s.card("You are Abraham Wald, a mathematician who fled Vienna. You work for the Statistical Research Group: a room of statisticians in Manhattan, helping to win a war.", "New York, 1943");
+    await s.cont(); if (!s.alive()) return;
+    s.card("Over Germany, American bombers are being shot down faster than they can be built. Every plane that doesn't come back is ten men.", "The air war");
+    s.say("The engines are still turning on this one. It made it home.", "note");
+    await s.cont(); if (!s.alive()) return;
+    s.card("The Air Force sends you its survey: every bullet hole, on every bomber that made it back.", "Monday morning");
+    const counter = s.say("Planes home: 0", "note");
+    await tween(3600, kk => { shownBack = Math.round(HITS.filter(h => !h.lost).length * kk); ink.retarget(hitTargets()); if (counter) counter.textContent = `Planes home: ${Math.round(BM.returned * kk)} of ${BM.returned}`; });
     if (!s.alive()) return;
-    counter?.remove();
+    await s.cont(); if (!s.alive()) return;
+    s.card("Drag the plane to turn it over and study the damage. The holes are everywhere: wings, tail, fuselage.", "The hangar");
     s.el("table", `<caption>Bullet holes per square foot, planes that came back</caption><tr><td>Engines</td><td>1.11</td></tr><tr><td>Fuselage</td><td>1.73</td></tr><tr><td>Fuel system</td><td>1.55</td></tr><tr><td>Rest of the plane</td><td>1.80</td></tr>`, "holes");
-    s.ask("The general asks you: where should the armour go?");
+    await s.cont("Report to the general"); if (!s.alive()) return;
+
+    s.card("The general has a problem. Armour is heavy: a heavier bomber is slower, climbs worse and burns more fuel. He can armour one place.", "The general's office");
+    s.ask("Where should the armour go?");
     const c = await s.choose([
       { label: "The wings and tail: that's where the holes are", right: false, reply: "Those planes took hits there and still flew home. The wings were never the problem." },
       { label: "The fuselage", right: false, reply: "The fuselage is full of holes because a plane can survive them." },
@@ -686,43 +799,47 @@ plates.graveyard = (() => {
       { label: "Spread it evenly", right: false, reply: "Even armour protects the places that don't need it just as much as the one that does." },
     ]);
     if (!s.alive()) return;
-    s.say("You are only looking at the planes that came back. Where are the rest?");
-    // the planes that never came back rise as ghosts, and their holes bleed onto the map
+    s.card("You are only looking at the planes that came back. Where are the rest?", "Wald's question");
     ink.pose(orbit(fig, { dist: 2.3, elev: .8, speed: .03, phase: -1, lift: 90 }), 2400);
-    const { S } = frame();
-    for (let k = 0; k < 6; k++) ghosts.push(airframe(ink.props, C.madder, 0, 0));
     shownLost = true; ink.to(hitTargets(), 2200);
-    await tween(3000, kk => ghosts.forEach((g, k) => { g.position.y = S * (.12 + .1 * k) * ease(kk); g.position.z = -S * .05 * k; g.children.forEach(l => { l.material.opacity = .5 * (1 - k / 7) * Math.min(1, kk * 2); }); }));
-    if (!s.alive()) return;
-    s.say(`In this simulation, ${BM.lost} of 200 planes never came back. ${pct0(HITS.filter(h => h.lost))}% of their hits were in the engines, against ${pct0(back)}% on the planes that made it home. The engine holes aren't missing because engines don't get hit. They're missing because those planes went down.`);
+    await tween(3000, kk => { ghostK = kk; setProps(scenery); }); if (!s.alive()) return;
+    s.say(`In this simulation, ${BM.lost} of 200 planes never came back. ${pct0(HITS.filter(h => h.lost))}% of their hits were in the engines, against ${pct0(HITS.filter(h => !h.lost))}% on the planes that made it home.`);
+    s.say("The engine holes aren't missing because engines don't get hit. They're missing because those planes went down.");
     s.say(c.reply, "reply");
     s.note("bomber", "Where to armour the bombers", c.label, c.right, "survivors");
-    await s.cont("Sixty years later"); if (!s.alive()) return;
+    await s.cont(); if (!s.alive()) return;
+    // the ghost formation drifts away before the story moves on
+    await tween(2600, kk => { drift = ease(kk); setProps(scenery); }); if (!s.alive()) return;
 
     // act 2: the fund managers
-    act = 2; s.clear(); ink.clearProps(); ghosts = [];
+    act = 2; setProps(null);
     s.cap("Fig. 3b. 1,024 fund managers, one for every possible run of ten coin flips. The faint ones are the silent evidence (Taleb, ch. 8).");
+    s.card("You manage the pension fund for 40,000 nurses. Their retirement is in your hands.", "Sixty years later");
     ink.to(fieldTargets(0), 1800); ink.pose(orbit(fig, { dist: 1.6, elev: .6, speed: .03 }), 2200);
-    s.say("You run a pension fund. A manager walks in with a perfect record: ten years in a row beating the market.");
-    s.ask("Do you hand over the pension money?");
+    await s.cont(); if (!s.alive()) return;
+    s.card("A fund manager comes to pitch. Ten years in a row, he has beaten the market. His slides are beautiful. He says it is skill.", "Tuesday, 10:00 am");
+    s.ask("Do you hand over the nurses' money?");
     const d = await s.choose([
       { label: "Yes. Ten years in a row is no fluke", right: false, reply: "Ten in a row is exactly what chance hands one manager in every 1,024." },
       { label: "Ask how many managers started out", right: true, reply: "Right. The record means nothing until you know the size of the graveyard." },
       { label: "Put it in a cheap index fund instead", right: true, reply: "Sensible. The genius and the coin look the same from here." },
     ]);
     if (!s.alive()) return;
-    s.say("Watch 1,024 managers who pick stocks by flipping a coin. Each year, the ones who lose to the market are fired.");
-    const line = s.say("Start: 1,024 managers");
+    s.card("Watch 1,024 managers who pick stocks by flipping a coin. Each year, the ones who lose to the market are fired.", "The experiment");
+    const line = s.say("Start: 1,024 managers", "note");
     for (year = 1; year <= YEARS; year++) {
-      await sleep(year === 1 ? 900 : 700); if (!s.alive()) return;
+      await sleep(year === 1 ? 900 : 750); if (!s.alive()) return;
       ink.to(fieldTargets(year), 650);
       if (line) line.textContent = `Year ${year}: ${(MANAGERS >> year).toLocaleString()} still unbeaten`;
     }
     year = YEARS;
-    s.el("p", "1", "big madder");
-    s.say("Exactly one perfect record, every time. It is a coin, not a genius: one of the 1,024 possible runs is always all heads.");
+    await sleep(900); if (!s.alive()) return;
+    s.card("1", "Year ten"); const l = host$("graveyard").querySelector(".card .line"); if (l) l.className = "big madder";
+    s.say("Exactly one perfect record, every time. It is a coin, not a genius: of the 1,024 possible runs of ten flips, one is always all heads.");
+    s.say("Nobody writes a profile of the other 1,023. They are the faint dots.");
     s.say(d.reply, "reply");
     s.note("manager", "The ten-year genius", d.label, d.right, "survivors");
+    await s.cont(); if (!s.alive()) return;
     s.moral("The evidence you see has already been filtered by what killed the rest. Before you learn from the survivors, go and count the graveyard.");
     await s.cont("Next plate"); if (!s.alive()) return;
     next();
@@ -1139,7 +1256,7 @@ function show() {
   document.querySelectorAll(".plate").forEach(s => s.classList.toggle("on", s.dataset.plate === id));
   document.querySelectorAll(".rail a").forEach(a => a.hash === "#" + id ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
   const host = $(`[data-plate=${id}] .story`); if (host) host.innerHTML = "";
-  cur = id; window.scrollTo(0, 0); plates[id]?.enter?.();
+  cur = id; look.yaw = look.pitch = 0; window.scrollTo(0, 0); plates[id]?.enter?.();
 }
 addEventListener("hashchange", show);
 // props (scenery) are rebuilt with the layout: plates register a builder with setProps
@@ -1157,6 +1274,7 @@ addEventListener("keydown", e => {
   const t = e.target, slider = t.type === "range";
   if (e.key === " " && t.tagName !== "BUTTON") {
     e.preventDefault(); if (e.repeat) return;
+    if (document.querySelector(".plate.on .btn.hold")) return;
     const go = [...document.querySelectorAll(".plate.on .btn.go")].pop(); go ? go.click() : plates[cur]?.primary?.();
   } else if (!slider && !e.metaKey && !e.altKey && !e.ctrlKey && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
     const i = order.indexOf(cur) + (e.key === "ArrowRight" ? 1 : -1);
