@@ -73,7 +73,7 @@ a { color: var(--ink); }
 .cap { font-style: italic; color: var(--ink-2); font-size: 15px; margin-top: auto !important; padding-top: 16px; }
 .big { font: 400 clamp(48px, 5vw, 76px)/.9 var(--serif); margin: 0; font-variant-numeric: lining-nums tabular-nums; }
 .big.madder { color: var(--madder); }
-.fig { position: relative; min-height: 520px; }
+.fig { position: sticky; top: 84px; height: calc(100vh - 116px); min-height: 480px; align-self: start; }
 .fig svg.ov { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 svg text { font: italic 15px var(--serif); fill: var(--ink-2); }
 svg .hair { stroke: var(--hair); stroke-width: 1; fill: none; }
@@ -111,7 +111,7 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
 @media (max-width: 900px) {
   .plate { grid-template-columns: 1fr; padding: 72px 16px 24px; gap: 20px; }
   .margin { margin-right: 0; padding-right: 0; }
-  .fig { min-height: 440px; }
+  .fig { order: -1; top: 72px; height: 46vh; min-height: 300px; z-index: 1; }
   .top { padding: 12px 16px 10px; }
   .rail span { display: none; }
 }
@@ -124,6 +124,7 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
   <nav class="rail" aria-label="Plates">
     <a href="#stadium" aria-label="Plate I, the stadium"><i>I</i><span>The stadium</span></a>
     <a href="#graveyard" aria-label="Plate III, the graveyard"><i>III</i><span>The graveyard</span></a>
+    <a href="#funnel" aria-label="Plate V, the league table"><i>V</i><span>The league table</span></a>
   </nav>
 </header>
 
@@ -147,6 +148,11 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
   <section class="plate" data-plate="graveyard">
     <div class="margin"><p class="label">Plate III</p><h2>The graveyard</h2><div class="story"></div><p class="cap"></p></div>
     <div class="fig" id="gy-fig"><svg class="ov" aria-hidden="true"></svg></div>
+  </section>
+
+  <section class="plate" data-plate="funnel">
+    <div class="margin"><p class="label">Plate V</p><h2>The league table</h2><div class="story"></div><p class="cap"></p></div>
+    <div class="fig" id="fn-fig"><svg class="ov" aria-hidden="true"></svg></div>
   </section>
 </main>
 <div id="tip" role="tooltip"></div>
@@ -247,8 +253,8 @@ function stopAll() { frames.forEach(f => cancelAnimationFrame(f.v)); frames.clea
 function tween(ms, fn) {
   return new Promise(res => { const t0 = performance.now(); onRaf(t => { const k = reduced ? 1 : Math.min(1, (t - t0) / ms); fn(k); if (k >= 1) { res(); return false; } }); });
 }
-// a figure's box in document coordinates
-function box(el) { const r = el.getBoundingClientRect(); return { x: r.left + scrollX, y: r.top + scrollY, w: r.width, h: r.height }; }
+// a figure's box in viewport coordinates (figures are sticky, so the ink never needs to follow scroll)
+function box(el) { const r = el.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; }
 
 const NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs, parent, text) {
@@ -260,7 +266,7 @@ function svgEl(tag, attrs, parent, text) {
 const anchor = (x, W) => x < W * .15 ? "start" : x > W * .85 ? "end" : "middle";
 
 // ---------- the ink: 1,024 dots on WebGL, shared by every plate ----------
-// World coordinates are document pixels: (x, -y, z). The flat pose puts the camera where z = 0 maps
+// World coordinates are viewport pixels: (x, -y, z). The flat pose puts the camera where z = 0 maps
 // 1:1 onto CSS pixels, so dots land exactly on SVG axes; scene poses orbit a subject for the stories.
 // target = {x, y, z?, r, c: 0 ink | 1 madder | 2 swan | 3 ink-2, a}
 const INK = 1024;
@@ -301,7 +307,7 @@ const ink = (() => {
   const col = new THREE.Color();
 
   // camera poses: {p: [x, y, z], l: [x, y, z], shift} in world coordinates; shift moves the picture sideways
-  const flatPose = () => ({ p: [W / 2 + scrollX, -(H / 2 + scrollY), dFlat], l: [W / 2 + scrollX, -(H / 2 + scrollY), 0], shift: 0 });
+  const flatPose = () => ({ p: [W / 2, -H / 2, dFlat], l: [W / 2, -H / 2, 0], shift: 0 });
   let poseFn = flatPose, poseFrom = flatPose(), pt0 = 0, pdur = 0, cur = flatPose();
   const props = new THREE.Group(); scene.add(props);
 
@@ -359,7 +365,7 @@ function orbit(fig, { dist = 2.4, elev = .5, speed = .05, phase = 0, lift = 0 } 
   return t => {
     const b = box(fig), cx = b.x + b.w / 2, cy = -(b.y + b.h / 2) + lift, R = Math.max(b.w, b.h) * dist;
     const th = phase + (reduced ? 0 : (t - t0) / 1000 * speed);
-    return { p: [cx + R * Math.cos(elev) * Math.sin(th), cy + R * Math.sin(elev), R * Math.cos(elev) * Math.cos(th)], l: [cx, cy, 0], shift: (b.x - scrollX + b.w / 2) - innerWidth / 2 };
+    return { p: [cx + R * Math.cos(elev) * Math.sin(th), cy + R * Math.sin(elev), R * Math.cos(elev) * Math.cos(th)], l: [cx, cy, 0], shift: (b.x + b.w / 2) - innerWidth / 2 };
   };
 }
 // hairline props in world coordinates (points given as [x, y, z] in document pixels)
@@ -696,6 +702,92 @@ plates.graveyard = (() => {
       const where = { engines: "an engine", fuel: "the fuel system", fuselage: "the fuselage", rest: "the wings or tail" }[h.zone];
       return h.lost ? `A hit in ${where}, on a plane that never came back` : `A hit in ${where}, on a plane that came home`;
     },
+  };
+})();
+
+// ---------- Plate V: the league table, then the funnel ----------
+plates.funnel = (() => {
+  const fig = $("#fn-fig"), ov = $("[data-plate=funnel] svg.ov");
+  const DS = districts(), RANK = [...DS].sort((a, b) => b.rate - a.rate), TOP = RANK[0], OUT = DS[0], SW = 200;
+  const outRank = RANK.indexOf(OUT) + 1, name = d => `District ${d.id + 1}`, RMAX = 40, PLO = 2e4, PHI = 1.2e6;
+  let phase = "table";
+  // the league table as a skyline: one hairline tower per district, tallest first
+  function skyline() {
+    const b = box(fig), base = b.y + b.h * .72, hs = b.h * .55 / RMAX;
+    return { b, base, hs, at: k => b.x + b.w * (.12 + .78 * k / (DS.length - 1)) };
+  }
+  function tableTargets() {
+    const { base, hs, at } = skyline();
+    return RANK.reduce((acc, d, k) => (acc[d.id] = { x: at(k), y: base - d.rate * hs, z: 0, r: 2.2, c: d === TOP ? 1 : d.id === SW ? 2 : 0 }, acc), []);
+  }
+  function towers() {
+    const { base, hs, at } = skyline(), pts = [];
+    RANK.forEach((d, k) => pts.push(new THREE.Vector3(at(k), -base, 0), new THREE.Vector3(at(k), -(base - d.rate * hs), 0)));
+    ink.props.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: .3, depthWrite: false })));
+    hairline([[at(0), base, 0], [at(DS.length - 1), base, 0]], { opacity: .6 });
+    hairline([[at(0), base - P0 * hs, 0], [at(DS.length - 1), base - P0 * hs, 0]], { color: C.madder, opacity: .5 });
+  }
+  const P = () => { const b = box(fig); return { b, l: b.x + 56, r: b.x + b.w - 16, t: b.y + 40, bt: b.y + b.h - 70 }; };
+  const fx = p => { const { l, r } = P(); return l + (r - l) * (Math.log(p) - Math.log(PLO)) / (Math.log(PHI) - Math.log(PLO)); };
+  const fy = v => { const { t, bt } = P(); return bt - (bt - t) * clamp(v, 0, RMAX) / RMAX; };
+  const funnelTargets = () => DS.map(d => ({ x: fx(d.pop), y: fy(d.rate), r: d === OUT ? 4.5 : 2.6, c: d === OUT ? 1 : d.id === SW ? 2 : 0, a: d === OUT || d === TOP ? 1 : .8 }));
+  function axes() {
+    ov.innerHTML = "";
+    if (phase !== "funnel") return;
+    const { b, l, r, t, bt } = P(), X = v => v - b.x, Y = v => v - b.y;
+    svgEl("line", { x1: X(l), x2: X(r), y1: Y(bt) + 8, y2: Y(bt) + 8, class: "ink" }, ov);
+    svgEl("line", { x1: X(l) - 8, x2: X(l) - 8, y1: Y(t), y2: Y(bt), class: "ink" }, ov);
+    [[2e4, "20,000"], [5e4, "50,000"], [1e5, "100,000"], [2e5, "200,000"], [5e5, "500,000"], [1e6, "1 million"]].forEach(([p, s]) => {
+      svgEl("line", { x1: X(fx(p)), x2: X(fx(p)), y1: Y(bt) + 8, y2: Y(bt) + 14, class: "ink" }, ov); svgEl("text", { x: X(fx(p)), y: Y(bt) + 32, "text-anchor": "middle" }, ov, s);
+    });
+    svgEl("text", { x: X(r), y: Y(bt) + 56, "text-anchor": "end" }, ov, "population of the district");
+    [0, 10, 20, 30, 40].forEach(v => svgEl("text", { x: X(l) - 14, y: Y(fy(v)) + 5, "text-anchor": "end" }, ov, v));
+    svgEl("text", { x: X(l) - 8, y: Y(t) - 16 }, ov, "deaths per 100,000 a year");
+    const curve = (z, dash) => {
+      const pts = []; for (let k = 0; k <= 120; k++) { const p = Math.exp(Math.log(PLO) + (Math.log(PHI) - Math.log(PLO)) * k / 120), v = limit(p, z); if (v >= 0 && v <= RMAX) pts.push(`${X(fx(p))},${Y(fy(v))}`); }
+      svgEl("polyline", { points: pts.join(" "), class: "ink", "stroke-dasharray": dash, opacity: .7 }, ov);
+    };
+    [[1.96, "3 4"], [-1.96, "3 4"], [3.09, ""], [-3.09, ""]].forEach(([z, d]) => curve(z, d));
+    svgEl("line", { x1: X(l), x2: X(r), y1: Y(fy(P0)), y2: Y(fy(P0)), class: "hair" }, ov);
+    svgEl("text", { x: X(r), y: Y(fy(limit(PHI, 3.09))) - 8, "text-anchor": "end", class: "halo" }, ov, "99.8% of chance");
+    svgEl("text", { x: X(r), y: Y(fy(limit(PHI, 1.96))) + 18, "text-anchor": "end", class: "halo" }, ov, "95%");
+    svgEl("circle", { cx: X(fx(TOP.pop)), cy: Y(fy(TOP.rate)), r: 9, fill: "none", stroke: C.ink, "stroke-width": 1.2 }, ov);
+    svgEl("text", { x: X(fx(TOP.pop)) + 14, y: Y(fy(TOP.rate)) + 5, class: "halo" }, ov, `${name(TOP)}, top of the table`);
+    svgEl("text", { x: X(fx(OUT.pop)) - 10, y: Y(fy(OUT.rate)) - 14, "text-anchor": "end", class: "halo", style: "fill:" + C.madder }, ov, `the real outlier, ranked ${outRank}th`);
+  }
+  async function story() {
+    const s = storyOf("funnel");
+    phase = "table"; ov.innerHTML = "";
+    ink.to(tableTargets(), 1600); towers();
+    ink.pose(orbit(fig, { dist: 1.6, elev: .28, speed: .025, phase: -.3 }), 2200);
+    s.cap("Fig. 5a. Bowel-cancer death rates in 380 districts, ranked. Simulated from Spiegelhalter's example, ch. 9.");
+    s.say("You are the health minister. It is Monday morning, and this is on the front page:");
+    s.el("div", `<small>The Daily Record, Monday</small>${name(TOP)} is the worst place in the country to have bowel cancer: its death rate is double the national average`, "clip");
+    s.say(`The league table behind the story ranks all 380 districts. ${name(TOP)} is at the top, at ${TOP.rate.toFixed(1)} deaths per 100,000 a year. The national rate is ${P0}.`);
+    s.ask("Your phone is ringing. What do you do?");
+    const c = await s.choose([
+      { label: `Send inspectors to ${name(TOP)} today`, right: false, reply: `Your inspectors find a small, ordinary district having an unlucky year. The one district that really needed them, ranked ${outRank}th, gets no visit.` },
+      { label: `Sack ${name(TOP)}'s health board`, right: false, reply: `You fired a board for a coin toss. The real problem, ranked ${outRank}th, carries on.` },
+      { label: "Ask your statisticians for a funnel plot first", right: true, reply: `Right. The funnel shows ${name(TOP)} is simply small. The district that needs you ranked ${outRank}th.` },
+    ]);
+    if (!s.alive()) return;
+    s.say("Here is the same data again. This time each district is placed by its size as well as its rate.");
+    await sleep(600); if (!s.alive()) return;
+    phase = "funnel"; ink.clearProps(); ink.flat(1800); ink.to(funnelTargets(), 2000);
+    await sleep(1900); if (!s.alive()) return;
+    axes(); s.cap("Fig. 5b. The same 380 districts as a funnel plot, with 95% and 99.8% limits around the national rate.");
+    s.say(`${name(TOP)} has ${TOP.deaths} deaths in ${TOP.pop.toLocaleString()} people. With numbers that small, a rate swings wildly by chance, and it still sits inside the 99.8% limits. Only one district sits outside them: a big one, ranked ${outRank}th in the table.`);
+    s.say(c.reply, "reply");
+    s.note("minister", "The worst district in the country", c.label, c.right, "drawn better");
+    s.moral("Small places produce extreme numbers by chance. Before you act on a ranking, ask how big each place is, and how surprised you should really be.");
+    await s.cont("Next plate"); if (!s.alive()) return;
+    next();
+  }
+  return {
+    enter() { story(); },
+    leave() { ov.innerHTML = ""; },
+    resize() { if (phase === "funnel") { ink.retarget(funnelTargets()); axes(); } else ink.retarget(tableTargets()); },
+    label: i => i < DS.length ? `${name(DS[i])}: ${DS[i].deaths} deaths in ${DS[i].pop.toLocaleString()} people, ${DS[i].rate.toFixed(1)} per 100,000` : null,
   };
 })();
 
