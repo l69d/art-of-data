@@ -157,6 +157,7 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
       <p class="label">Six short stories about data</p>
       <h1>Which world are you in?</h1>
       <p class="sub">Take the seat. Make the call. Watch what happens.</p>
+      <p class="note">Click to continue, or press Space. Drag any scene to look around.</p>
       <div class="btns"><button class="btn go" id="start">Begin</button></div>
       <p class="cap">After Nassim Taleb, <cite>The Black Swan</cite>, and David Spiegelhalter, <cite>The Art of Statistics</cite>.</p>
     </div>
@@ -1336,11 +1337,12 @@ plates.record = (() => {
     });
   }
   async function story() {
-    const s = storyOf("record");
+    const s = storyOf("record", 2);
     ink.to(globe(), 2000); ink.pose(orbit(fig, { dist: 1.35, elev: .3, speed: .08 }), 2000);
     s.cap("Every decision you made tonight, and the world it belonged to.");
     const rows = ORDER.filter(k => record[k]);
-    if (!rows.length) { s.say("You haven't made any decisions yet. Take a seat in any plate and come back here."); await s.cont("Begin"); if (s.alive()) location.hash = "#stadium"; return; }
+    if (!rows.length) { s.card("You haven't made any decisions yet. Take a seat in any story and come back here.", "Tonight"); await s.cont("Begin"); if (s.alive()) location.hash = "#stadium"; return; }
+    s.card("", "Tonight, you were");
     const scored = rows.filter(k => record[k].right !== null), right = scored.filter(k => record[k].right).length;
     s.el("ol", rows.map(k => { const r = record[k], m = r.right === null ? ["na", "~"] : r.right ? ["ok", "✓"] : ["no", "✗"]; const lesson = { Mediocristan: "Mediocristan: no one moves the total", Extremistan: "Extremistan: one can be everything", survivors: "The survivors' trap: count the graveyard", "drawn better": "A better picture", framing: "A choice of words: both are true" }[r.world];
       return `<li><b class="${m[0]}">${m[1]}</b><span>${r.q}</span><small>You chose “${r.choice.replace(/^“|”$/g, "")}”. ${lesson}.</small></li>`; }).join(""), "rec");
@@ -1352,6 +1354,7 @@ plates.record = (() => {
       : fooled.includes("Mediocristan") ? "Your gut over-worried in Mediocristan, where no single case can move the total. Save the alarm for Extremistan."
       : "Your gut read the world well, but the picture fooled it. Ask for it to be drawn better.";
     if (verdict) s.say(verdict);
+    await s.cont(); if (!s.alive()) return;
     s.moral("Which world you are in, and how you draw it, decide half the answer.");
     await s.cont("Start again"); if (!s.alive()) return;
     clearRecord(); location.hash = "#home";

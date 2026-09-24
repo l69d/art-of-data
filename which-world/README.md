@@ -1,29 +1,33 @@
 # Which world are you in?
 
-Six short stories about data, and a record of the choices you make in them. In each one
-you take a seat, as an engineer, a turkey, Abraham Wald, a health minister or a GP, and
-make a call. Then you watch it play out and read the moral of the story. The stories
-come from Nassim Taleb's *The Black Swan* and David Spiegelhalter's *The Art of
-Statistics*. The thread through them: Spiegelhalter's statistics tame one kind of
+Six short stories about data, told one card at a time, plus a record of the choices you
+make in them. In each story you take the seat: a stadium engineer, a turkey, Abraham
+Wald, an analyst, a health minister, a GP. The build-up comes a card at a time, each
+one a new shot in the 3D scene. You act with your own hands: open the gates, eat
+breakfast, turn the damaged bomber over, open the letter. Then you make the big call,
+watch it play out, and read the moral of the story.
+
+The stories come from Nassim Taleb's *The Black Swan* and David Spiegelhalter's *The Art
+of Statistics*. The thread through them: Spiegelhalter's statistics tame one kind of
 randomness (*Mediocristan*), Taleb shows where that breaks (*Extremistan*), and a
 better picture is often half the insight.
 
 It is drawn in three.js as an engraved atlas: ink on paper, madder red for the extreme
 case, and one black swan hidden in every plate. A single crowd of 1,024 ink dots re-forms
-into each story's scene: a stadium, a bomber, a tower of days, a funnel plot.
+into each story's scene. You can drag any scene to look around.
 
 **Open:** `index.html`, straight from disk, no server or network needed.
 Live: https://l69d.github.io/art-of-data/which-world/
 
-| plate | your seat | your choice | what plays out | source |
-|---|---|---|---|---|
-| I. The stadium | the engineer, then the fundraiser | reinforce the stand? who to talk to? | the heaviest fan adds 0.5%; the richest guest holds 99.9%, a column 18 km tall at this scale; then the same fortunes on a log scale | Taleb, ch. 3 |
-| II. The turkey | the turkey, on day 1,000 | relax, stay alert, run? | 1,000 fed days climb a spiral tower; confidence 99.9%; day 1,001 falls | Taleb, ch. 4 |
-| III. The graveyard | Abraham Wald, 1943; then a pension fund | where to armour the bombers? hire the 10-year genius? | the missing planes rise as ghosts, hit in the engines; 1 of 1,024 coin-flippers keeps a perfect record | Wald via Ellenberg; Taleb, ch. 8 |
-| IV. The Datasaurus | an analyst whose boss reads only tables | agree the branches are the same? | a cloud collapses flat into a dinosaur, a star, a circle, a bullseye, an X | Spiegelhalter, ch. 2 |
-| V. The league table | the health minister, facing the front page | inspect, sack, or ask for a funnel plot? | the skyline of 380 districts flies into a funnel: the "worst" is small, and the outlier ranked 6th | Spiegelhalter, ch. 9 |
-| VI. The positive test | a GP; then a press officer and a headline writer | what do you tell the patient? which words do you print? | 9 of 108 positives are real (8%); "5% die" vs "95% survive"; "+18%" vs 6 → 7 in 100 | Spiegelhalter, ch. 1, 2, 8 |
-| VII. Your record | | | every choice, marked, with its world and a verdict | |
+| plate | your seat | what you do | the decision | what plays out | source |
+|---|---|---|---|---|---|
+| I. The stadium | the engineer, then the fundraiser | open the gates; hold to raise a fortune | reinforce the stand? who to spend the night with? | the heaviest fan adds 0.5%; the richest guest holds 99.9%, a column 18 km tall at this scale; then a log scale | Taleb, ch. 3 |
+| II. The turkey | the turkey | eat breakfast; let the days pass | day 1,000: relax, stay alert, run? | 1,000 fed days climb a spiral tower under a rising sun; day 1,001 falls | Taleb, ch. 4 |
+| III. The graveyard | Abraham Wald, 1943; then a pension fund for 40,000 nurses | turn the bomber over | where to armour? hire the 10-year genius? | the missing planes rise as a ghost formation, hit in the engines; 1 of 1,024 coin-flippers keeps a perfect record | Wald via Ellenberg; Taleb, ch. 8 |
+| IV. The Datasaurus | an analyst | open five branch reports | agree with the boss? | a cloud lifts off the page and flattens into a dinosaur, a star, a circle, a bullseye, an X | Spiegelhalter, ch. 2 |
+| V. The league table | the health minister | answer the phone; face the cameras | inspect, sack, or ask for a funnel plot? | the press pack becomes a skyline of 380 districts, then a funnel: the "worst" is small, the outlier ranked 6th | Spiegelhalter, ch. 9 |
+| VI. The positive test | a GP, then a press officer and a headline writer | open Sarah's letter | what do you tell her? which words do you print? | 9 of 108 positives are real (8%), and Sarah is one of the false alarms; "5% die" vs "95% survive"; "+18%" vs 6 → 7 in 100 | Spiegelhalter, ch. 1, 2, 8 |
+| VII. Your record | | | | every choice, marked, with its world and a verdict | |
 
 ## Data and what's simulated
 
@@ -59,7 +63,9 @@ Live: https://l69d.github.io/art-of-data/which-world/
   - Seed 1 is the first seed where the top of the table sits inside the 99.8% limits
     and that district is the only one outside them. `test_model.mjs` checks both.
 - **The positive test** uses 90% sensitivity and 90% specificity, as in the book.
-  Bacon's "18% higher" lifetime risk goes from 6 in 100 to 7 in 100.
+  Sarah is invented. She is the first false alarm among the 1,000 at 1-in-100 prevalence,
+  so her story matches the data. Bacon's "18% higher" lifetime risk goes from 6 in 100
+  to 7 in 100.
 
 ## three.js
 
@@ -90,8 +96,12 @@ print('const DINO = {'+','.join(k+':'+str(d[k]).replace(' ','') for k in ['dino'
 
 - Open it fullscreen in Chrome or Safari. Plates are deep-linkable: `#stadium`,
   `#turkey`, `#graveyard`, `#dino`, `#funnel`, `#test`, `#record`.
-- Visitors click an option at every "What do you do?". Space presses the Continue
-  button but never picks an option for them. ←/→ moves between plates.
+- Visitors click an option at every "What do you do?". Space presses Continue and the
+  "Eat" or "Open the gates" style buttons, and holding Space works the hold buttons. It
+  never picks an option for them. ←/→ moves between plates. Dragging any scene turns the
+  camera.
+- A full visit takes about 15 minutes. Most visitors will play two or three stories;
+  "Your record" works with any number.
 - After 60 seconds without input the page returns to the title for the next visitor,
   which also clears their record. Add `?talk` to switch that off while presenting.
   `?idle=N` changes the timeout to N seconds.

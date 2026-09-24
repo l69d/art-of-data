@@ -11,7 +11,7 @@ the data needs 3D, scale, or motion.
 | piece | dataset | built with |
 |---|---|---|
 | [Shipman deaths by age](https://l69d.github.io/art-of-data/shipman-data/age_by_year.html) | [Shipman Inquiry case decisions](shipman-data/) — 531 deaths, 1974–1998 | SVG + vanilla JS |
-| [Which world are you in?](https://l69d.github.io/art-of-data/which-world/) | [The Datasaurus Dozen, Wald's bombers + figures from *The Black Swan* and *The Art of Statistics*](which-world/) — six stories you play, and your record | three.js (vendored) + SVG, offline |
+| [Which world are you in?](https://l69d.github.io/art-of-data/which-world/) | [The Datasaurus Dozen, Wald's bombers + figures from *The Black Swan* and *The Art of Statistics*](which-world/) — six stories you play from the driver's seat, and your record | three.js (vendored) + SVG, offline |
 
 ![Shipman deaths by age](shipman-data/shipman-scatter.png)
 
@@ -58,3 +58,9 @@ One folder per dataset. Each one holds:
   choose, watch it play out, moral of the story), rendered in three.js (vendored r149 for
   offline use), with Wald's bombers, the turkey's tower of days and a "Your record" finale.
   Galton dropped (data and fetch script removed).
+- **2026-09-24** — Which world are you in? v4, the driver's seat: stories now play one card
+  at a time with hands-on moments (open the gates, eat breakfast, turn the bomber over, open
+  the letter), drag-to-look in every scene, and new engraved art (floodlights, propellers and
+  a ghost formation, a sun over the turkey's tower, a ministry with its press pack, report
+  sheets, Sarah). Review fixes from v3: idle reset clears the record, scrollbar-safe renderer,
+  phone layout.
