@@ -36,7 +36,7 @@ a { color: var(--ink); }
 .top {
   position: fixed; inset: 0 0 auto 0; z-index: 5;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  padding: 14px 28px;
+  padding: 14px 28px; background: var(--bg);
 }
 .mark { font: 600 17px/1 var(--display); text-decoration: none; color: var(--ink-2); letter-spacing: .01em; }
 .rail { display: flex; gap: 6px; }
@@ -109,7 +109,7 @@ input[type=range] { width: 100%; accent-color: var(--guess); height: 28px; }
 .panel h3 { font: 600 26px/1.1 var(--display); margin: 0; }
 .panel .ask { margin: 0; max-width: 52ch; }
 .panel .verdict { margin: 0; }
-.panel svg { width: 100%; height: auto; max-height: 40vh; touch-action: none; }
+.panel svg { width: 100%; height: auto; max-height: 32vh; touch-action: none; }
 .guess.row { display: flex; align-items: center; gap: 16px; }
 .guess.row output { font-size: 32px; min-width: 4.2em; }
 .guess.row input { flex: 1; }
@@ -198,7 +198,7 @@ svg text { font: 500 15px var(--display); fill: var(--ink-2); }
     <article class="panel">
       <span class="badge med"><i></i>Mediocristan</span>
       <h3>Fathers and sons, 1886</h3>
-      <p class="ask">This father is 199 cm tall. The average father is 175 cm. How tall is his son? Drag on the chart to guess.</p>
+      <p class="ask">This father is 199 cm tall. The average father is 176 cm. How tall is his son? Drag on the chart to guess.</p>
       <div class="guess row"><output id="gal-out" for="gal-in"></output><input type="range" id="gal-in" min="150" max="205" step="0.5" aria-label="Son's height in cm"></div>
       <svg id="gal-svg" viewBox="0 0 600 400" role="img" aria-label="Scatter of 481 fathers' and sons' heights"></svg>
       <p class="verdict" id="gal-v" hidden></p>
@@ -244,14 +244,14 @@ svg text { font: 500 15px var(--display); fill: var(--ink-2); }
         <p class="lede">Between 1975 and 1998 a family doctor in Manchester, Harold Shipman, killed at least 215 of his patients. The deaths sat in plain sight, in ordinary records, in the tame world where statistics works.</p>
         <p class="lede">Weight, height and death rates live in Mediocristan, where patient counting beats gut feeling. Wealth, markets and pandemics live in Extremistan, where the past can't warn you. Knowing which world you're in comes before any statistic.</p>
         <div class="finale-actions">
-          <a class="btn" href="../shipman-data/age_by_year.html">See the Shipman data</a>
+          <a class="btn" id="ship-link" href="../shipman-data/age_by_year.html" hidden>See the Shipman data</a>
           <button class="btn ghost" id="again">Start again</button>
         </div>
         <p class="src">Spiegelhalter, <cite>The Art of Statistics</cite>, introduction and ch. 10. Taleb, <cite>The Black Swan</cite>.</p>
       </div>
       <ol class="facts">
         <li><b>215</b><span>patients killed, mostly elderly. They died in the early afternoon, when he made his home visits.</span></li>
-        <li><b>~1,300</b><span>innocent GPs would be flagged if you tested all 25,000 UK doctors at the usual 5% threshold. It's the positive test again: check enough people and false alarms bury the signal.</span></li>
+        <li><b>~1,300</b><span>innocent GPs would be flagged if you tested all 25,000 UK GPs at the usual 5% threshold. It's the positive test again: check enough people and false alarms bury the signal.</span></li>
         <li><b>1984</b><span>is when a strict threshold would still have flagged him: 105 deaths where 59.2 were expected. He wasn't stopped until 1998.</span></li>
       </ol>
     </div>
@@ -267,7 +267,7 @@ const sum = a => a.reduce((x, y) => x + y, 0);
 function crowd(seed = 7) {
   const r = rng(seed), weight = [], wealth = [];
   for (let i = 0; i < CROWD; i++) { weight.push(Math.min(160, Math.max(45, 80 + 15 * gauss(r)))); wealth.push(Math.exp(gauss(r))); }
-  const k = 80e6 / sum(wealth); // Taleb's stadium: the 1,000 together hold ~$80M
+  const k = 80e6 / sum(wealth); // $80k each; Taleb's "a few million" in total would make the richest share even larger
   return { weight, wealth: wealth.map(w => w * k) };
 }
 const share = (extra, arr) => extra / (extra + sum(arr));
@@ -550,7 +550,7 @@ rooms.turkey = (() => {
   };
   ts.onpointerleave = () => tip(null);
   function revealTurkey() {
-    tPhase = "anim"; tin.disabled = true;
+    tPhase = "anim"; tin.disabled = true; days = 1000; // finish the line before it falls
     tween(1200, k => { drop = ease(k); tur(); }, () => {
       tPhase = "shown"; tgo.hidden = true;
       $("#tur-v").textContent = `You said ${pct(tGuess, 0)}. By its own data the turkey was ${pct(T.confidence[999])} sure, and never surer than on its last day. Every fed day made it more confident; none of them could warn it.`;
@@ -574,7 +574,7 @@ rooms.turkey = (() => {
     },
   };
   ggo.onclick = () => gPhase === "ask" && revealGalton();
-  tgo.onclick = () => { if (tPhase === "ask") { days = 1000; revealTurkey(); } };
+  tgo.onclick = () => { if (tPhase === "ask") revealTurkey(); };
   $("#duo-next").onclick = () => (location.hash = "#test");
   return api;
 })();
@@ -605,9 +605,10 @@ rooms.test = (() => {
     boxLayout(res.pos);
   }
   function boxLayout(n) {
-    const b = S.box, pad = 12, c = Math.min(S.cell, Math.sqrt((b.w - 2 * pad) * (b.h - 2 * pad) / Math.max(n, 1)) * .95);
+    // size dots against the full-height box, then shrink the box to hug them
+    const b = S.box, pad = 12, full = ROWS * S.cell, c = Math.min(S.cell, Math.sqrt((b.w - 2 * pad) * (full - 2 * pad) / Math.max(n, 1)) * .95);
     S.bc = c; S.bcols = Math.max(1, Math.floor((b.w - 2 * pad) / c)); S.bpad = pad;
-    b.h = Math.min(ROWS * S.cell, Math.ceil(Math.max(n, 1) / S.bcols) * c + 2 * pad); // box hugs its dots
+    b.h = Math.min(full, Math.ceil(Math.max(n, 1) / S.bcols) * c + 2 * pad); // box hugs its dots
   }
   const home = i => [(i % COLS + .5) * S.cell, S.top + (Math.floor(i / COLS) + .5) * S.cell];
   const slot = j => [S.box.x + S.bpad + (j % S.bcols + .5) * S.bc, S.box.y + S.bpad + (Math.floor(j / S.bcols) + .5) * S.bc];
@@ -690,11 +691,13 @@ function show() {
   cur = id; window.scrollTo(0, 0); rooms[id]?.enter?.();
 }
 addEventListener("hashchange", show);
-new ResizeObserver(() => rooms[cur]?.resize?.()).observe(document.body);
+// watch the canvases themselves: a reveal can grow the text column and with it the stage
+const ro = new ResizeObserver(() => rooms[cur]?.resize?.());
+document.querySelectorAll("canvas").forEach(c => ro.observe(c));
 
 addEventListener("keydown", e => {
   const t = e.target, slider = t.type === "range";
-  if (e.key === " " && t.tagName !== "BUTTON" && t.tagName !== "A") { e.preventDefault(); rooms[cur]?.primary?.(); }
+  if (e.key === " " && t.tagName !== "BUTTON") { e.preventDefault(); if (!e.repeat) rooms[cur]?.primary?.(); }
   else if (!slider && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
     const i = order.indexOf(cur) + (e.key === "ArrowRight" ? 1 : -1);
     location.hash = "#" + order[(i + order.length) % order.length];
@@ -702,6 +705,7 @@ addEventListener("keydown", e => {
 });
 
 const qs = new URLSearchParams(location.search), IDLE = (+qs.get("idle") || 60) * 1000;
+$("#ship-link").hidden = !qs.has("talk"); // the Shipman page has no idle reset, so booth visitors stay in the exhibit
 let idleT;
 function poke() { clearTimeout(idleT); if (!qs.has("talk")) idleT = setTimeout(() => { location.hash = "#home"; }, IDLE); }
 ["pointermove", "pointerdown", "keydown"].forEach(ev => addEventListener(ev, poke, { passive: true }));
