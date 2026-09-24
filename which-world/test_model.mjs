@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 const html = readFileSync(new URL("./index.html", import.meta.url), "utf8");
 const src = html.match(/<script id="model">([\s\S]*?)<\/script>/)[1];
-const m = new Function(src + "; return {crowd, share, screen, fit, turkey, GALTON, HEAVIEST_KG, RICHEST_USD, survivors, lasted, districts, limit, BACON, DINO};")();
+const m = new Function(src + "; return {crowd, share, screen, fit, turkey, GALTON, HEAVIEST_KG, RICHEST_USD, survivors, lasted, districts, limit, BACON, DINO, dinoRow};")();
 
 const c = m.crowd();
 assert.equal(c.weight.length, 1000);
@@ -48,4 +48,7 @@ for (const k of ["dino", "star", "circle", "bullseye", "x_shape"]) {
   const a = m.DINO[k], mx = a.reduce((q, p) => q + p[0], 0) / a.length, my = a.reduce((q, p) => q + p[1], 0) / a.length;
   assert.equal(a.length, 142); assert.ok(Math.abs(mx - 54.26) < .02 && Math.abs(my - 47.83) < .02, k);
 }
+// Plate IV's table must show identical figures in every row, as the plate claims
+const rows = ["dino", "star", "circle", "bullseye", "x_shape"].map(k => m.dinoRow(k).join(" "));
+assert.ok(rows.every(r => r === rows[0]), "Datasaurus table rows differ: " + rows.join(" | "));
 console.log("model ok");

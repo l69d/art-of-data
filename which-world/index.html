@@ -110,12 +110,12 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
 <header class="top">
   <a class="mark" href="#home">Which world are you in?</a>
   <nav class="rail" aria-label="Plates">
-    <a href="#stadium"><i>I</i><span>The stadium</span></a>
-    <a href="#turkey"><i>II</i><span>Galton and the turkey</span></a>
-    <a href="#graveyard"><i>III</i><span>The graveyard</span></a>
-    <a href="#dino"><i>IV</i><span>The Datasaurus</span></a>
-    <a href="#funnel"><i>V</i><span>The league table</span></a>
-    <a href="#test"><i>VI</i><span>The positive test</span></a>
+    <a href="#stadium" aria-label="Plate I, the stadium"><i>I</i><span>The stadium</span></a>
+    <a href="#turkey" aria-label="Plate II, Galton and the turkey"><i>II</i><span>Galton and the turkey</span></a>
+    <a href="#graveyard" aria-label="Plate III, the graveyard"><i>III</i><span>The graveyard</span></a>
+    <a href="#dino" aria-label="Plate IV, the Datasaurus"><i>IV</i><span>The Datasaurus</span></a>
+    <a href="#funnel" aria-label="Plate V, the league table"><i>V</i><span>The league table</span></a>
+    <a href="#test" aria-label="Plate VI, the positive test"><i>VI</i><span>The positive test</span></a>
   </nav>
 </header>
 
@@ -138,7 +138,7 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
       <p class="note">1,000 random people fill a stadium. Then one more walks onto the pitch.</p>
       <p class="ask" id="st-ask"></p>
       <div class="guess" id="st-guess"><label for="st-in">Your guess</label><output id="st-out" for="st-in"></output><input type="range" id="st-in" min="0" max="100" step="0.5"></div>
-      <div id="st-res" hidden><p class="big" id="st-big"></p><p id="st-verdict"></p></div>
+      <div id="st-res" role="status" hidden><p class="big" id="st-big"></p><p id="st-verdict"></p></div>
       <div class="btns"><button class="btn" id="st-go"></button></div>
       <p class="cap" id="st-cap"></p>
     </div>
@@ -155,13 +155,13 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
         <p class="ask">This father is 199 cm tall; the average father is 176 cm. How tall is his son?</p>
         <div class="guess"><label for="tk-gin">Your guess</label><output id="tk-gout" for="tk-gin"></output><input type="range" id="tk-gin" min="150" max="205" step="0.5"></div>
       </div>
-      <p id="tk-v1" hidden></p>
+      <p id="tk-v1" role="status" hidden></p>
       <div id="tk-q2" hidden>
         <p class="label">In Extremistan</p>
         <p class="ask">A turkey is fed every day for 1,000 days, and each day adds to its evidence. How sure should it be of being fed on day 1,001?</p>
         <div class="guess"><label for="tk-tin">Your guess</label><output id="tk-tout" for="tk-tin"></output><input type="range" id="tk-tin" min="0" max="100" step="1"></div>
       </div>
-      <p id="tk-v2" hidden></p>
+      <p id="tk-v2" role="status" hidden></p>
       <div class="btns"><button class="btn" id="tk-go"></button></div>
       <p class="cap">Fig. 2. Left: Galton's 1886 family heights, 481 sons (Spiegelhalter, ch. 5). Right: Taleb's turkey (ch. 4), simulated.</p>
     </div>
@@ -175,7 +175,7 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
       <p class="note">Meet a fund manager who has beaten the stock market ten years in a row.</p>
       <p class="ask" id="gy-ask">Now suppose 1,024 managers just flip a coin each year: heads, they beat the market. After ten years, how many have a perfect record?</p>
       <div class="guess" id="gy-guess"><label for="gy-in">Your guess</label><output id="gy-out" for="gy-in"></output><input type="range" id="gy-in" min="0" max="64" step="1"></div>
-      <div id="gy-res" hidden><p class="big madder" id="gy-big"></p><p id="gy-verdict"></p></div>
+      <div id="gy-res" role="status" hidden><p class="big madder" id="gy-big"></p><p id="gy-verdict"></p></div>
       <div class="btns"><button class="btn" id="gy-go"></button></div>
       <p class="cap" id="gy-cap"></p>
     </div>
@@ -190,7 +190,7 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
       <table class="stats" id="dn-table"><thead><tr><th>set</th><th>mean x</th><th>mean y</th><th>SD x</th><th>SD y</th><th>r</th></tr></thead><tbody></tbody></table>
       <p class="ask" id="dn-ask">Same averages, same spreads, same correlation. Are the five datasets alike?</p>
       <div class="btns" id="dn-guess"><button class="btn ghost" data-g="1">Pretty much</button><button class="btn ghost" data-g="0">Not necessarily</button></div>
-      <div id="dn-res" hidden><p id="dn-verdict"></p></div>
+      <div id="dn-res" role="status" hidden><p id="dn-verdict"></p></div>
       <div class="btns" id="dn-tabs" hidden></div>
       <div class="btns"><button class="btn" id="dn-go" hidden>Next plate</button></div>
       <p class="cap" id="dn-cap">Fig. 4. The Datasaurus Dozen (Matejka and Fitzmaurice, 2017): five of its thirteen sets.</p>
@@ -205,7 +205,7 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
       <p class="note">Bowel-cancer death rates in 380 districts, ranked from worst to best.</p>
       <p class="ask" id="fn-ask"></p>
       <div class="btns" id="fn-guess"><button class="btn ghost" data-g="1">Yes, investigate</button><button class="btn ghost" data-g="0">Not yet</button></div>
-      <div id="fn-res" hidden><p id="fn-verdict"></p></div>
+      <div id="fn-res" role="status" hidden><p id="fn-verdict"></p></div>
       <div class="btns"><button class="btn" id="fn-go" hidden>Next plate</button></div>
       <p class="cap" id="fn-cap"></p>
     </div>
@@ -219,7 +219,7 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
       <p class="note" id="ts-lead"></p>
       <p class="ask" id="ts-ask">The test is 90% accurate, and you test positive. What's the chance you actually have the disease?</p>
       <div class="guess" id="ts-guess"><label for="ts-in">Your guess</label><output id="ts-out" for="ts-in"></output><input type="range" id="ts-in" min="0" max="100" step="1"></div>
-      <div id="ts-res" hidden><p class="big" id="ts-big"></p><p id="ts-sub"></p><p class="note" id="ts-v"></p></div>
+      <div id="ts-res" role="status" hidden><p class="big" id="ts-big"></p><p id="ts-sub"></p><p class="note" id="ts-v"></p></div>
       <div class="guess" id="ts-prev-box" hidden><label for="ts-prev">Now change how common the disease is</label><output id="ts-prev-out" for="ts-prev"></output><input type="range" id="ts-prev" min="0" max="7" step="1"></div>
       <div id="fr-box" hidden>
         <p class="note">Say the heart-surgery figure as</p>
@@ -291,6 +291,8 @@ function districts(seed = DSEED) {
 const BACON = { base: 6, rel: .18 }; // lifetime bowel-cancer risk per 100, and the "18% higher" headline
 
 // Plate IV: five of the Datasaurus Dozen, [x, y]: derived/datasaurus.csv (see README to regenerate)
+// the summary table as displayed: mean x, mean y, SD x, SD y, r, to one decimal
+const dinoRow = k => { const a = DINO[k], xs = a.map(p => p[0]), ys = a.map(p => p[1]), sd = v => { const mu = sum(v) / v.length; return Math.sqrt(sum(v.map(q => (q - mu) ** 2)) / (v.length - 1)); }; return [sum(xs) / a.length, sum(ys) / a.length, sd(xs), sd(ys), fit(xs, ys).r].map(v => v.toFixed(1)); };
 const DINO = {dino:[[55.3846,97.1795],[51.5385,96.0256],[46.1538,94.4872],[42.8205,91.4103],[40.7692,88.3333],[38.7179,84.8718],[35.641,79.8718],[33.0769,77.5641],[28.9744,74.4872],[26.1538,71.4103],[23.0769,66.4103],[22.3077,61.7949],[22.3077,57.1795],[23.3333,52.9487],[25.8974,51.0256],[29.4872,51.0256],[32.8205,51.0256],[35.3846,51.4103],[40.2564,51.4103],[44.1026,52.9487],[46.6667,54.1026],[50.0,55.2564],[53.0769,55.641],[56.6667,56.0256],[59.2308,57.9487],[61.2821,62.1795],[61.5385,66.4103],[61.7949,69.1026],[57.4359,55.2564],[54.8718,49.8718],[52.5641,46.0256],[48.2051,38.3333],[49.4872,42.1795],[51.0256,44.1026],[45.3846,36.4103],[42.8205,32.5641],[38.7179,31.4103],[35.1282,30.2564],[32.5641,32.1795],[30.0,36.7949],[33.5897,41.4103],[36.6667,45.641],[38.2051,49.1026],[29.7436,36.0256],[29.7436,32.1795],[30.0,29.1026],[32.0513,26.7949],[35.8974,25.2564],[41.0256,25.2564],[44.1026,25.641],[47.1795,28.718],[49.4872,31.4103],[51.5385,34.8718],[53.5897,37.5641],[55.1282,40.641],[56.6667,42.1795],[59.2308,44.4872],[62.3077,46.0256],[64.8718,46.7949],[67.9487,47.9487],[70.5128,53.718],[71.5385,60.641],[71.5385,64.4872],[69.4872,69.4872],[46.9231,79.8718],[48.2051,84.1026],[50.0,85.2564],[53.0769,85.2564],[55.3846,86.0256],[56.6667,86.0256],[56.1538,82.9487],[53.8462,80.641],[51.2821,78.718],[50.0,78.718],[47.9487,77.5641],[29.7436,59.8718],[29.7436,62.1795],[31.2821,62.5641],[57.9487,99.4872],[61.7949,99.1026],[64.8718,97.5641],[68.4615,94.1026],[70.7692,91.0256],[72.0513,86.4103],[73.8462,83.3333],[75.1282,79.1026],[76.6667,75.2564],[77.6923,71.4103],[79.7436,66.7949],[81.7949,60.2564],[83.3333,55.2564],[85.1282,51.4103],[86.4103,47.5641],[87.9487,46.0256],[89.4872,42.5641],[93.3333,39.8718],[95.3846,36.7949],[98.2051,33.718],[56.6667,40.641],[59.2308,38.3333],[60.7692,33.718],[63.0769,29.1026],[64.1026,25.2564],[64.359,24.1026],[74.359,22.9487],[71.2821,22.9487],[67.9487,22.1795],[65.8974,20.2564],[63.0769,19.1026],[61.2821,19.1026],[58.7179,18.3333],[55.1282,18.3333],[52.3077,18.3333],[49.7436,17.5641],[47.4359,16.0256],[44.8718,13.718],[48.7179,14.8718],[51.2821,14.8718],[54.1026,14.8718],[56.1538,14.1026],[52.0513,12.5641],[48.7179,11.0256],[47.1795,9.8718],[46.1538,6.0256],[50.5128,9.4872],[53.8462,10.2564],[57.4359,10.2564],[60.0,10.641],[64.1026,10.641],[66.9231,10.641],[71.2821,10.641],[74.359,10.641],[78.2051,10.641],[67.9487,8.718],[68.4615,5.2564],[68.2051,2.9487],[37.6923,25.7692],[39.4872,25.3846],[91.2821,41.5385],[50.0,95.7692],[47.9487,95.0],[44.1026,92.6923]],star:[[58.2136,91.8819],[58.1961,92.215],[58.7182,90.3105],[57.2784,89.9076],[58.082,92.0081],[57.4894,88.0853],[28.0887,63.5108],[28.0855,63.5902],[28.0873,63.1233],[27.578,62.821],[27.7799,63.5181],[28.589,63.0241],[28.7391,62.7209],[27.0246,62.9019],[28.8013,63.389],[27.1865,63.5587],[29.2851,63.3836],[39.4029,51.1509],[28.8113,61.3579],[34.304,56.5421],[29.6028,60.1573],[49.1162,63.66],[39.6175,62.9252],[43.2331,63.1652],[64.8928,65.8142],[62.4901,74.5843],[68.9881,63.2321],[62.1056,75.9909],[32.4618,62.8819],[41.3272,49.0703],[44.0071,46.4497],[44.0741,34.5532],[44.0013,33.9042],[45.0063,38.299],[44.4438,36.0191],[42.1787,26.4921],[44.0446,35.6622],[41.6405,27.0931],[41.9383,24.9915],[44.0539,33.5564],[39.2067,51.5337],[28.7044,61.7775],[31.7087,58.8378],[42.8117,30.0204],[43.3006,31.5264],[40.3986,16.347],[40.4357,20.2327],[40.9365,16.913],[39.6616,15.6094],[40.8993,20.7985],[41.9686,26.4971],[40.3834,21.3912],[56.5381,32.4442],[52.9707,29.0402],[54.621,30.3445],[65.099,27.2416],[63.056,29.7091],[70.9601,41.2595],[69.8958,43.4538],[70.5959,41.9647],[69.647,44.0444],[77.393,63.3715],[64.4008,67.4487],[63.869,70.2137],[56.5944,86.927],[56.5313,87.4998],[59.6522,87.8095],[56.6365,85.6375],[58.6723,90.0772],[58.2216,90.411],[57.9147,89.9538],[55.3155,80.2519],[54.5757,77.5363],[54.4131,78.2291],[55.0745,79.8175],[29.433,60.8018],[29.4227,63.0685],[29.0056,63.3908],[58.4618,90.2653],[57.9978,92.1599],[57.5495,90.7489],[59.5299,88.3273],[58.2494,92.1297],[58.0245,91.6944],[58.3821,90.5535],[62.5668,77.7439],[72.1758,63.1289],[79.4728,63.4087],[80.3577,63.2954],[78.7572,53.3326],[82.5402,56.5411],[86.4359,59.7928],[79.4887,53.6517],[81.5304,56.0254],[79.1868,53.2348],[77.8991,51.8225],[75.1307,23.3724],[76.058,16.3837],[57.6147,33.8224],[56.1714,32.118],[66.2879,26.1171],[67.8817,24.236],[64.0281,27.6727],[77.4967,14.9485],[77.6347,14.4619],[77.8637,14.6107],[77.3382,15.8901],[76.1804,15.9126],[77.2527,15.1515],[77.4134,15.2219],[76.7318,16.2168],[49.4711,25.063],[42.4765,18.3385],[43.5951,19.9942],[50.34,26.4714],[40.749,16.1821],[38.3865,14.5802],[38.404,14.4519],[38.7643,14.3656],[41.4701,17.278],[47.1554,22.3779],[39.5826,17.6485],[41.7402,17.8293],[39.3119,15.6407],[41.6798,17.7459],[39.0875,15.1223],[41.4815,18.0474],[77.6061,15.1629],[75.9827,16.3069],[76.9458,15.8585],[77.5437,15.2539],[77.5847,15.83],[76.8223,15.5952],[77.3486,15.7745],[77.5732,14.7806],[77.9726,14.9557],[41.5289,24.9164],[43.7226,19.0773],[79.3261,52.9004],[56.664,87.9401],[57.8218,90.6932],[58.2432,92.1043]],circle:[[55.993,79.2773],[50.0323,79.0131],[51.2885,82.4359],[51.1705,79.1653],[44.3779,78.1646],[45.0103,77.8809],[48.5598,78.7884],[42.1423,76.8806],[41.027,76.4096],[34.5753,72.7248],[31.1686,69.2454],[32.6443,70.7326],[26.6666,62.981],[26.4593,62.6347],[25.538,60.6302],[26.3207,62.3963],[26.1634,62.0268],[25.2138,60.2734],[26.8595,63.1418],[31.7607,69.7977],[39.7933,75.808],[45.6174,78.12],[53.7715,79.3029],[56.4514,79.2471],[66.0937,77.0178],[56.9258,79.2063],[58.9883,78.9173],[57.9023,79.0809],[64.8129,77.4869],[60.3498,78.7294],[48.8906,16.8065],[47.5495,17.0714],[30.8894,26.329],[28.9728,29.0505],[35.1614,22.7868],[45.8704,17.4894],[32.8314,24.7975],[39.4856,20.0331],[33.4462,24.1906],[21.8636,46.0526],[25.1659,35.7666],[22.9595,51.2877],[25.5861,60.8466],[26.3143,33.2972],[33.0373,24.5645],[36.4689,21.8761],[26.5136,32.9187],[36.0271,22.1954],[42.681,18.5425],[45.0411,17.7345],[47.3524,17.1347],[53.8462,16.3873],[55.1296,16.3532],[52.1881,16.4182],[58.6727,16.6634],[82.1443,33.1952],[75.6866,24.7415],[85.345,52.8864],[83.8447,58.6161],[85.6648,45.5428],[77.931,68.6901],[73.0318,73.1206],[70.1028,75.6832],[57.1447,79.1941],[46.9625,78.6666],[50.5649,79.0773],[53.7197,79.3069],[54.2002,79.325],[47.8752,78.6759],[51.4735,79.1599],[52.7512,79.2937],[48.5622,78.7824],[53.0812,79.2973],[56.4754,79.1678],[49.5709,79.0381],[37.6277,74.5575],[32.2637,70.3166],[32.5424,70.7024],[52.825,85.5781],[58.5283,78.9787],[56.2658,79.2529],[57.0759,79.1939],[54.2564,79.3139],[62.6857,78.1747],[68.0856,76.1123],[65.1181,77.3992],[68.7456,75.7901],[63.0902,78.0414],[77.2046,69.3121],[82.0339,62.6819],[81.5779,63.8949],[85.1801,53.7817],[84.2868,57.2562],[85.6225,45.0242],[85.6045,50.7623],[84.4248,38.7614],[85.571,44.5601],[84.6267,39.4871],[73.3962,22.8162],[73.5074,22.857],[63.3565,17.7241],[72.959,22.5115],[64.0208,17.8836],[61.1245,17.1164],[75.6742,24.7825],[69.5136,20.2794],[58.5721,16.6427],[70.9819,21.1459],[65.223,18.3972],[65.315,18.3337],[64.0102,17.9245],[57.1409,16.5986],[56.3652,16.3265],[43.0462,18.4026],[52.0818,16.4539],[42.879,18.4894],[51.567,16.4857],[58.8391,16.6376],[60.7558,17.0332],[54.7612,16.3662],[53.5699,16.3397],[48.9146,16.7986],[52.6461,16.3848],[49.8385,16.6763],[52.6841,16.408],[65.8072,18.1408],[60.6739,17.0518],[63.3947,17.7005],[64.802,18.2169],[65.0259,18.2878],[65.7556,18.5162],[69.9677,20.539],[68.8928,20.0324],[61.8265,17.2697],[60.788,17.0462],[61.9156,17.2822],[45.029,17.7244],[39.9214,19.7018],[84.7943,55.5687],[55.663,83.3565],[50.4922,78.9975],[51.4671,79.2018]],bullseye:[[51.2039,83.3398],[58.9745,85.4998],[51.8721,85.8297],[48.1799,85.0451],[41.6832,84.0179],[37.8904,82.5675],[39.549,80.8126],[39.6496,82.6645],[34.7506,80.0111],[27.5608,72.8478],[24.6355,71.6107],[20.9595,66.0415],[20.6891,62.7213],[19.2882,62.0631],[20.0245,61.3426],[35.4695,43.1159],[36.8943,47.7066],[39.0555,55.547],[46.9571,65.2404],[37.3105,45.2588],[40.0097,60.9866],[48.0144,65.7128],[53.7038,66.3895],[63.0675,64.035],[62.048,63.8459],[59.84,64.4768],[55.1609,65.2373],[61.2798,65.7664],[60.8349,64.6038],[61.5206,64.7919],[36.9165,41.0952],[38.5022,41.5672],[48.6644,30.6807],[50.2853,30.3379],[42.2763,34.5276],[54.0318,29.6723],[37.3294,39.602],[41.3895,37.2961],[40.0747,34.6237],[35.3497,47.1411],[34.7637,47.6248],[37.0266,44.4623],[36.4556,40.7918],[35.5377,48.7294],[20.4089,32.203],[23.4957,25.3225],[29.5575,21.3648],[33.0082,15.9851],[53.9804,29.351],[52.2343,29.7117],[59.5031,30.6697],[41.1638,34.3158],[48.993,32.0304],[59.2693,29.6407],[45.4692,33.8312],[62.6913,30.2904],[73.4287,48.5779],[70.8464,52.2823],[71.539,45.5218],[67.6209,38.0066],[72.471,51.1221],[64.8122,62.8109],[60.8537,65.4991],[67.7895,61.3637],[41.6096,83.8487],[53.003,84.6748],[54.7142,84.0431],[44.2917,82.9094],[49.1917,85.8762],[53.1014,84.5477],[51.5998,84.8198],[54.3797,84.2404],[46.4808,83.5182],[53.1747,84.2606],[45.272,85.2371],[36.0334,53.3717],[28.2712,72.8402],[25.0548,71.5486],[64.7589,82.3152],[63.1445,85.2367],[50.4247,85.1747],[70.645,82.4309],[63.149,83.9469],[62.824,84.9662],[70.2369,82.1712],[70.0427,80.385],[72.5706,80.9712],[75.1307,79.9841],[83.2939,70.7784],[79.6643,73.9323],[88.4321,64.6242],[89.1156,64.0015],[89.0922,57.7682],[91.726,52.6234],[91.7355,48.9702],[91.5079,53.3127],[88.239,31.4774],[88.5305,30.476],[55.3652,30.4459],[62.5603,30.4471],[58.0067,30.2537],[55.0671,29.0115],[61.6148,29.9944],[68.5431,35.6578],[77.7061,20.3043],[68.453,13.0355],[68.2572,12.3846],[70.2555,13.2504],[65.0443,11.0008],[60.0922,11.8721],[52.992,9.9067],[50.1446,12.2115],[46.5086,11.2071],[43.807,11.3189],[57.8179,10.9451],[50.9405,9.6915],[63.4973,11.9141],[50.0165,11.9339],[58.6368,11.9747],[54.7303,11.4129],[65.8755,11.7324],[57.061,9.9206],[46.8199,10.4947],[38.3594,13.4313],[47.3154,12.8535],[55.0519,11.95],[50.516,9.7656],[49.6774,10.3831],[67.2807,14.1287],[66.173,12.0379],[61.0885,10.0845],[66.0531,13.3802],[72.67,15.2342],[61.5035,10.8284],[68.995,13.9943],[78.2499,17.8832],[36.482,15.1628],[50.9677,29.6798],[91.1911,46.6743],[55.8638,85.3365],[49.2806,84.0488],[43.3685,84.3322]],x_shape:[[38.3378,92.4727],[35.7519,94.1168],[32.7672,88.5183],[33.7296,88.6223],[37.2382,83.7249],[36.0272,82.0408],[39.2393,79.2637],[39.7845,82.2606],[35.166,84.1565],[40.6221,78.5421],[39.1819,79.819],[42.4309,75.1336],[43.0813,75.3467],[44.3607,70.4742],[44.3248,71.0459],[47.5522,66.4604],[48.6649,64.961],[46.2806,68.0284],[50.5632,62.6238],[52.631,59.9639],[54.6362,57.4938],[51.346,61.6006],[57.1349,53.878],[54.1712,58.0598],[50.9424,62.0974],[66.5129,59.0713],[64.3979,56.1749],[68.6866,62.2373],[65.0278,57.0963],[53.3045,40.8838],[52.9452,40.3846],[45.2257,30.5552],[50.8433,37.7446],[49.6593,36.2734],[47.1428,32.0251],[41.2701,21.7218],[47.1301,31.3099],[40.916,23.5416],[38.6602,21.6895],[42.6126,24.1951],[41.209,24.1287],[50.6492,37.4838],[52.1319,39.3646],[39.7973,16.0835],[43.5499,24.3072],[36.7147,17.3818],[37.2246,17.9801],[40.5124,22.9622],[40.2221,20.6146],[44.125,23.3662],[42.3463,24.5583],[44.1891,28.7726],[45.8142,31.057],[46.6431,31.4072],[52.1899,39.3678],[51.1003,38.0957],[65.4008,42.614],[64.852,43.1337],[63.4038,44.8475],[65.3715,42.696],[61.908,53.1904],[71.8267,65.6862],[72.6546,66.8783],[76.8886,72.1655],[43.7446,71.268],[39.0542,83.119],[39.9317,79.9392],[39.7628,76.406],[41.3234,80.2119],[41.7873,83.9881],[39.7556,79.6571],[40.7499,77.2047],[43.8569,77.6098],[42.3678,73.6383],[39.463,78.46],[44.5173,70.3693],[41.6361,76.2492],[45.4229,69.0955],[42.0029,97.8376],[76.1056,95.305],[79.2026,92.4072],[84.8482,95.4248],[81.5645,83.7929],[85.4462,83.0783],[80.3125,76.5162],[80.7662,79.8961],[82.6701,81.7115],[77.1636,73.5237],[74.0707,68.4796],[74.1142,71.9264],[68.9421,62.6352],[73.242,67.3533],[71.867,34.3292],[71.5692,34.6992],[71.4829,34.6805],[78.1285,23.1392],[78.7898,25.5972],[77.7815,23.4472],[48.5306,34.1525],[65.5308,42.2811],[70.118,36.4482],[70.4723,36.0881],[76.7911,28.072],[72.4094,33.0393],[76.2713,25.5695],[76.9533,27.7706],[75.1077,30.017],[75.9693,29.0389],[75.2839,24.8748],[77.0522,27.9056],[42.8268,25.557],[42.0807,24.9465],[39.8783,18.3249],[36.4755,17.7189],[37.1031,15.4456],[34.149,13.5239],[37.5794,15.0159],[41.0643,12.2145],[42.1953,20.9194],[36.6056,15.7489],[39.4312,19.3238],[37.5621,11.9284],[34.2381,13.7132],[34.1409,4.5777],[36.6593,17.682],[40.6437,20.2409],[36.7925,13.3921],[75.9483,22.7448],[76.8407,20.9185],[81.9505,19.8746],[81.6437,16.5918],[84.6102,14.2478],[84.1029,8.9807],[80.18,19.0888],[80.5733,8.3656],[79.0043,10.6282],[40.0482,24.2615],[34.7946,13.9697],[79.2218,22.0946],[36.0309,93.1217],[34.4996,86.61],[31.1069,89.4616]]};
 </script>
 
@@ -371,10 +373,11 @@ const ink = (() => {
     D,
     to(targets, ms = 1100) { from = D.map(d => ({ ...d })); to = fill(targets); t0 = performance.now(); dur = reduced ? 0 : ms; },
     set(targets) { to = fill(targets); from = to.map(d => ({ ...d })); dur = 0; },
+    retarget(targets) { to = fill(targets); }, // layout changed: a running tween bends toward the new spots, a finished one moves at once
     nudge(i, p) { Object.assign(to[i], p); Object.assign(from[i], p); },
     pick(cx, cy) {
       const x = cx + scrollX, y = cy + scrollY; let best = -1, bd = Infinity;
-      D.forEach((d, i) => { if (d.a < .3) return; const q = (d.x - x) ** 2 + (d.y - y) ** 2; if (q < (Math.min(d.r, 24) + 4) ** 2 && q < bd) { bd = q; best = i; } });
+      D.forEach((d, i) => { if (d.a < .1) return; const q = (d.x - x) ** 2 + (d.y - y) ** 2; if (q < (Math.min(d.r, 24) + 4) ** 2 && q < bd) { bd = q; best = i; } });
       return best;
     },
   };
@@ -422,7 +425,7 @@ plates.home = (() => {
       onRaf(t => {
         if (reduced) return false;
         const cyc = ((t - t0) / 6500) % 1;
-        if (cyc < .02 && star < 0) star = 1 + Math.floor(Math.random() * 998);
+        if (cyc < .02 && star < 0) do star = 1 + Math.floor(Math.random() * 998); while (star === 137);
         if (star >= 0) {
           const k = Math.sin(Math.PI * Math.min(1, cyc / .8)) ** 2;
           ink.nudge(star, { r: st.r0 + k * st.a * .5, c: k > .02 ? 1 : 0, a: 1, clip: [b.x, b.y, b.w, b.h] });
@@ -431,7 +434,7 @@ plates.home = (() => {
       });
     },
     leave() { star = -1; },
-    resize() { ink.set(targets()); },
+    resize() { ink.retarget(targets()); },
     primary() { location.hash = "#stadium"; },
     label: i => i < CROWD ? "One of a thousand people" : null,
   };
@@ -549,8 +552,8 @@ plates.stadium = (() => {
   const api = {
     enter() { setMode("weight"); },
     resize() {
-      if (phase === "log") { ink.set(logTargets().t); drawLogAxis(); return; }
-      ink.set(standTargets().t); if (phase === "shown") { drawBar(truth(), 1); drawBlotWords(); }
+      if (phase === "log") { ink.retarget(logTargets().t); drawLogAxis(); return; }
+      ink.retarget(standTargets().t); if (phase === "shown") { drawBar(truth(), 1); drawBlotWords(); }
     },
     primary() {
       if (phase === "ask") reveal();
@@ -623,7 +626,7 @@ plates.turkey = (() => {
   function revealGalton() {
     phase = "anim"; gin.disabled = true; ink.to(targets(), 1500); draw();
     setTimeout(() => {
-      if (cur !== "turkey") return;
+      if (cur !== "turkey" || phase !== "anim") return;
       phase = "g-shown"; go.textContent = "Now the turkey";
       $("#tk-v1").textContent = `You guessed ${Math.round(gg)} cm. Sons of fathers this tall average ${Math.round(PRED)} cm: still tall, but pulled back toward the middle. In Mediocristan, extremes fade.`;
       $("#tk-v1").hidden = false; $("#tk-q1").hidden = true;
@@ -651,7 +654,7 @@ plates.turkey = (() => {
       $("#tk-q1").hidden = false; ["#tk-q2", "#tk-v1", "#tk-v2"].forEach(s => $(s).hidden = true); go.textContent = "Reveal";
       ink.to([], 900); draw();
     },
-    resize() { ink.set(targets()); draw(); },
+    resize() { ink.retarget(targets()); draw(); },
     primary() {
       if (phase === "g-ask") revealGalton();
       else if (phase === "g-shown") startTurkey();
@@ -709,10 +712,10 @@ plates.graveyard = (() => {
     phase = "anim"; year = 0; inp.disabled = true; go.hidden = true;
     ink.to(yearTargets(0), 1400); labels();
     $("#gy-cap").textContent = "Fig. 3b. All 1,024 managers, one for every possible run of ten coin flips. The faint ones are the silent evidence.";
-    let t0 = performance.now() + 1500;
+    let t0 = performance.now() + (reduced ? 0 : 1500);
     onRaf(t => {
       if (t < t0) return;
-      year++; t0 = t + 750; ink.to(yearTargets(year), 650); labels();
+      year = reduced ? YEARS : year + 1; t0 = t + 750; ink.to(yearTargets(year), 650); labels();
       if (year < YEARS) return;
       phase = "shown"; go.hidden = false; go.textContent = "Next plate";
       $("#gy-big").textContent = "1";
@@ -730,7 +733,7 @@ plates.graveyard = (() => {
       $("#gy-cap").textContent = "Fig. 3a. A perfect ten-year record, as the financial pages would show it.";
       ink.to(recordTargets(), 1300); labels();
     },
-    resize() { ink.set(phase === "ask" ? recordTargets() : yearTargets(Math.max(0, year))); labels(); },
+    resize() { ink.retarget(phase === "ask" ? recordTargets() : yearTargets(Math.max(0, year))); labels(); },
     primary() { if (phase === "ask") run(); else if (phase === "shown") next(); },
     label: i => {
       if (phase === "ask") { const y = REC.indexOf(i); return y >= 0 ? `Year ${y + 1}: beat the market` : null; }
@@ -750,9 +753,8 @@ plates.dino = (() => {
   // the summary table, computed from the data itself
   const tb = $("#dn-table tbody");
   SETS.forEach(([k], j) => {
-    const a = DINO[k], xs = a.map(p => p[0]), ys = a.map(p => p[1]), sd = v => { const mu = sum(v) / v.length; return Math.sqrt(sum(v.map(q => (q - mu) ** 2)) / (v.length - 1)); };
     const tr = document.createElement("tr");
-    [L[j], sum(xs) / N, sum(ys) / N, sd(xs), sd(ys), fit(xs, ys).r].forEach((v, c) => { const td = document.createElement("td"); td.textContent = c ? v.toFixed(2) : v; tr.appendChild(td); });
+    [L[j], ...dinoRow(k)].forEach(v => { const td = document.createElement("td"); td.textContent = v; tr.appendChild(td); });
     tb.appendChild(tr);
   });
   const plot = () => { const b = box(fig), s = Math.min(b.w - 60, b.h - 90); return { x: b.x + (b.w - s) / 2 + 20, y: b.y + (b.h - s) / 2 - 10, s }; };
@@ -786,7 +788,7 @@ plates.dino = (() => {
     phase = "shown"; $("#dn-guess").hidden = true; $("#dn-ask").hidden = true;
     $("#dn-verdict").textContent = (guess === "1" ? "That's what the numbers say. Then you draw them. " : guess === "0" ? "Right. " : "") + "Identical numbers, completely different data. Always draw it.";
     $("#dn-res").hidden = false; tabs.hidden = false; go.hidden = false;
-    auto = true; pick(0); lastSwap = performance.now();
+    auto = !reduced; pick(0); lastSwap = performance.now();
     onRaf(t => { if (auto && t - lastSwap > 3200) { lastSwap = t; pick((set + 1) % SETS.length); } });
   }
   SETS.forEach((_, j) => { const b = document.createElement("button"); b.className = "btn ghost"; b.textContent = L[j]; b.onclick = () => { auto = false; pick(j); }; tabs.appendChild(b); });
@@ -799,7 +801,7 @@ plates.dino = (() => {
       tb.querySelectorAll("tr").forEach(tr => tr.classList.remove("on"));
       ink.to(targets(), 1400); axes();
     },
-    resize() { ink.set(targets()); axes(); },
+    resize() { ink.retarget(targets()); axes(); },
     primary() { phase === "ask" ? reveal(null) : next(); },
     label: i => i < N ? (set < 0 ? `Row ${i + 1} of set A` : `(${DINO[SETS[set][0]][i].map(v => v.toFixed(1)).join(", ")})`) : null,
   };
@@ -864,7 +866,7 @@ plates.funnel = (() => {
     ink.to(funnelTargets(), 1800); axes();
     $("#fn-ask").textContent = "The same 380 districts, drawn as a funnel: each dot's rate against its size.";
     $("#fn-verdict").textContent = (guess === "1" ? "That's what a league table invites. " : guess === "0" ? "Good instinct. " : "") +
-      `${name(TOP)} is simply small: ${TOP.deaths} deaths in ${TOP.pop.toLocaleString()} people, so its rate swings by chance and it sits inside the limits. The only district outside them ranked ${outRank}th. The funnel shows what the ranking hides.`;
+      `${name(TOP)} is simply small: ${TOP.deaths} deaths in ${TOP.pop.toLocaleString()} people, so its rate swings by chance and it sits inside the 99.8% limits. The only district outside those ranked ${outRank}th. The funnel shows what the ranking hides.`;
     $("#fn-res").hidden = false; go.hidden = false;
     $("#fn-cap").textContent = "Fig. 5b. Funnel plot of the same 380 districts, with 95% and 99.8% limits around the national rate.";
   }
@@ -877,7 +879,7 @@ plates.funnel = (() => {
       $("#fn-cap").textContent = "Fig. 5a. League table of 380 districts (simulated from Spiegelhalter's bowel-cancer example, ch. 9).";
       ink.to(tableTargets(), 1500); axes();
     },
-    resize() { ink.set(phase === "ask" ? tableTargets() : funnelTargets()); axes(); },
+    resize() { ink.retarget(phase === "ask" ? tableTargets() : funnelTargets()); axes(); },
     primary() { phase === "ask" ? reveal(null) : next(); },
     label: i => i < DS.length ? `${name(DS[i])}: ${DS[i].deaths} deaths in ${DS[i].pop.toLocaleString()} people, ${DS[i].rate.toFixed(1)} per 100,000` : null,
   };
@@ -978,7 +980,7 @@ plates.test = (() => {
     go.textContent = "Start again"; setFrames();
   }
   inp.oninput = () => { g = inp.value / 100; out.value = pct(g, 0); };
-  pin.oninput = () => { prev = PREVS[+pin.value]; pout.value = inN(prev); assign(); results(); ink.set(testTargets()); testLabels(); };
+  pin.oninput = () => { prev = PREVS[+pin.value]; pout.value = inN(prev); assign(); results(); ink.retarget(testTargets()); testLabels(); };
   $("#fr-a").onclick = e => { if (e.target.dataset.v) { fa = e.target.dataset.v; setFrames(); } };
   $("#fr-b").onclick = e => { if (e.target.dataset.v) { fb = e.target.dataset.v; setFrames(); } };
   go.onclick = () => api.primary();
@@ -991,7 +993,7 @@ plates.test = (() => {
       $("#ts-cap").textContent = "Fig. 6a. Screening 1,000 people (Spiegelhalter, ch. 8).";
       ink.to(testTargets(), 1400); testLabels();
     },
-    resize() { if (phase === "frame") { ink.set(frameTargets()); frameLabels(); } else { ink.set(testTargets()); testLabels(); } },
+    resize() { if (phase === "frame") { ink.retarget(frameTargets()); frameLabels(); } else { ink.retarget(testTargets()); testLabels(); } },
     primary() { if (phase === "ask") reveal(); else if (phase === "shown") toFrames(); else if (phase === "frame") location.hash = "#home"; },
     label: i => {
       if (phase === "frame") return i < 100 ? (i >= 95 ? "Died after surgery" : "Survived surgery") : i < 200 ? (i === 193 ? "The one extra case from bacon" : i >= 194 ? "Would get bowel cancer anyway" : "Won't get bowel cancer") : null;
@@ -1015,7 +1017,7 @@ function show() {
 }
 addEventListener("hashchange", show);
 const ro = new ResizeObserver(() => plates[cur]?.resize?.());
-document.querySelectorAll(".fig").forEach(f => ro.observe(f));
+document.querySelectorAll(".fig, .margin").forEach(f => ro.observe(f));
 
 addEventListener("pointermove", e => {
   const i = ink.pick(e.clientX, e.clientY);
@@ -1024,7 +1026,7 @@ addEventListener("pointermove", e => {
 addEventListener("keydown", e => {
   const t = e.target, slider = t.type === "range";
   if (e.key === " " && t.tagName !== "BUTTON") { e.preventDefault(); if (!e.repeat) plates[cur]?.primary?.(); }
-  else if (!slider && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+  else if (!slider && !e.metaKey && !e.altKey && !e.ctrlKey && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
     const i = order.indexOf(cur) + (e.key === "ArrowRight" ? 1 : -1);
     location.hash = "#" + order[(i + order.length) % order.length];
   }
