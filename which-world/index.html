@@ -1154,31 +1154,52 @@ plates.turkey = (() => {
     return t;
   }
   const ride = k => { const { b, Ht } = tower(); return orbit(fig, { dist: 1.3, elev: .22, speed: .09, lift: -b.h * .42 + Ht * k }); };
+  // the farm at dawn: a horizon on the ground and a sun that climbs as the days pass
+  let sunK = 0;
+  function farm() {
+    const { R, Ht, cx, base } = tower(), pts = [], sun = [];
+    for (let i = 0; i < 96; i++) { const a = i / 96 * Math.PI * 2; pts.push([cx + R * 2.6 * Math.cos(a), base + 4, R * 2.6 * Math.sin(a)]); }
+    hairline(pts, { loop: true, opacity: .3 });
+    const sy = base - Ht * (.1 + .95 * sunK), sr = R * .35;
+    for (let i = 0; i < 48; i++) { const a = i / 48 * Math.PI * 2; sun.push([cx + R * 1.9 + sr * Math.cos(a), sy + sr * Math.sin(a), -R * 1.5]); }
+    hairline(sun, { loop: true, color: C.madder, opacity: .55 });
+    for (let k = -3; k <= 3; k++) { const yy = sy + k * sr / 4, half = Math.sqrt(Math.max(0, sr * sr - (k * sr / 4) ** 2)); hairline([[cx + R * 1.9 - half, yy, -R * 1.5], [cx + R * 1.9 + half, yy, -R * 1.5]], { color: C.madder, opacity: .3 }); }
+  }
   async function story() {
-    const s = storyOf("turkey");
-    shown = 0; fallen = 0; doom = false;
-    ink.to(targets(), 600); ink.pose(ride(0), 1800);
+    const s = storyOf("turkey", 8);
+    shown = 0; fallen = 0; doom = false; sunK = 0;
+    ink.to(targets(), 600); setProps(farm); ink.pose(ride(0), 1800);
     s.cap("Fig. 2. A thousand and one days (Taleb, The Black Swan, ch. 4). The turkey's confidence is Laplace's rule of succession; the turkey is simulated.");
-    s.say("You are a turkey. Every morning for as long as you can remember, a kind farmer has brought you food.");
-    s.say("Each day you are fed, you grow a little more certain he means you well.");
-    const line = s.say("Day 1: fed.");
-    await sleep(1400); if (!s.alive()) return;
-    let rider = 0;
-    ink.pose(t => ride(rider)(t), 400);
-    await tween(7000, k => {
-      shown = Math.round(DAYS * k); rider = k; ink.retarget(targets());
-      if (line && shown) line.textContent = `Day ${shown.toLocaleString()}: fed. You are ${pct(T.confidence[shown - 1])} sure of tomorrow.`;
+    s.card("You are a turkey. You hatched on a farm in Virginia. At dawn, the farmer comes out with a bucket of grain.", "Day 1, dawn");
+    const line = s.say("Your belly is empty.", "note");
+    await s.taps("Eat", 3, i => {
+      shown = i + 1; ink.retarget(targets());
+      if (line) line.textContent = `Day ${shown}: fed. You are ${pct(T.confidence[shown - 1], 0)} sure he'll come tomorrow.`;
     });
     if (!s.alive()) return;
-    s.ask("It is the evening of day 1,000. Tomorrow is the fourth Thursday in November. What do you do?");
+    s.card("He comes every morning. He even whistles. Each day you are fed, you grow a little more certain he means you well.", "Day 4");
+    await s.cont("Let the days pass"); if (!s.alive()) return;
+    s.card("The days blur into seasons.", "Day 5");
+    const when = host$("turkey").querySelector(".card .when"), mile = s.say("", "note");
+    const MILES = [[100, "The farmer knows your name."], [365, "A whole year of kindness."], [700, "You've never been happier. Or heavier."], [950, "Autumn again. The best grain yet."]];
+    let rider = 0;
+    ink.pose(t => ride(rider)(t), 400);
+    await tween(9000, k => {
+      shown = Math.max(4, Math.round(DAYS * k)); rider = k; sunK = k; ink.retarget(targets()); setProps(farm);
+      if (when) when.textContent = `Day ${shown.toLocaleString()}`;
+      const m = MILES.filter(([d]) => shown >= d).pop(); if (mile && m) mile.textContent = m[1];
+    });
+    if (!s.alive()) return;
+    s.card(`You have been fed a thousand times. By your own data, you are ${pct(T.confidence[DAYS - 1])} sure of tomorrow.`, "Day 1,000, evening");
+    s.ask("Tomorrow is the fourth Thursday in November. What do you do?");
     const c = await s.choose([
-      { label: "Relax. A thousand good days can't be wrong", right: false, reply: "A thousand good days were exactly what made it so sure, and so wrong." },
+      { label: "Relax. A thousand good days can't be wrong", right: false, reply: "A thousand good days were exactly what made you so sure, and so wrong." },
       { label: "Stay alert", right: true, reply: "Right to be wary: nothing in a thousand days of data could have warned you." },
       { label: "Run", right: true, reply: "Run. The one day that mattered was never in the data." },
     ]);
     if (!s.alive()) return;
-    doom = true; ink.retarget(targets()); await sleep(500); if (!s.alive()) return;
-    s.say("Day 1,001: Thanksgiving.");
+    s.card("Thanksgiving.", "Day 1,001"); const l = host$("turkey").querySelector(".card .line"); if (l) l.className = "big madder";
+    doom = true; ink.retarget(targets()); await sleep(600); if (!s.alive()) return;
     // the last day falls the whole height of the tower, and the camera follows it down
     ink.pose(t => ride(1 - fallen)(t), 300);
     await tween(2600, k => { fallen = k * k; ink.retarget(targets()); });
@@ -1186,6 +1207,7 @@ plates.turkey = (() => {
     s.say(`By its own data the turkey was ${pct(T.confidence[DAYS - 1])} sure it would be fed, and it was never surer than on its last evening.`);
     s.say(c.reply, "reply");
     s.note("turkey", "The turkey's thousandth evening", c.label, c.right, "Extremistan");
+    await s.cont(); if (!s.alive()) return;
     s.moral("A thousand calm days are not evidence of safety. In Extremistan the day that matters is not in the data, and your confidence can peak just when the risk does.");
     await s.cont("Next plate"); if (!s.alive()) return;
     next();
