@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Which World Are You In?</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="A walk-up exhibit: guess first, then see the data. Four rooms on where your gut is right and where it fails, after Taleb's The Black Swan and Spiegelhalter's The Art of Statistics.">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0e1424;
+  --surface: #161e33;
+  --line: #2a3552;
+  --ink: #eef1f7;
+  --ink-2: #a9b3c7;
+  --med: #3987e5;   /* Mediocristan */
+  --ext: #d95926;   /* Extremistan */
+  --guess: #ffffff;
+  --display: "Avenir Next Condensed", "Avenir Next", "Arial Narrow", sans-serif;
+  --body: "Iowan Old Style", Charter, Georgia, serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 18px/1.55 var(--body);
+  overflow-x: hidden;
+}
+button, input { font: inherit; color: inherit; }
+a { color: var(--ink); }
+:focus-visible { outline: 2px solid var(--guess); outline-offset: 3px; }
+
+/* top rail */
+.top {
+  position: fixed; inset: 0 0 auto 0; z-index: 5;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 28px;
+}
+.mark { font: 600 17px/1 var(--display); text-decoration: none; color: var(--ink-2); letter-spacing: .01em; }
+.rail { display: flex; gap: 6px; }
+.rail a {
+  font: 500 15px/1 var(--display); text-decoration: none; color: var(--ink-2);
+  padding: 8px 12px; border-radius: 999px; border: 1px solid transparent;
+}
+.rail a[aria-current="page"] { color: var(--ink); border-color: var(--line); background: var(--surface); }
+.rail b { font-weight: 600; margin-right: 6px; color: var(--ink); }
+
+/* rooms */
+.room { display: none; min-height: 100vh; padding: 72px 28px 28px; }
+.room.on { display: grid; }
+.split { grid-template-columns: minmax(290px, 380px) 1fr; gap: 36px; align-items: stretch; }
+.q { display: flex; flex-direction: column; gap: 16px; padding-top: 20px; }
+.q h2 { font: 600 clamp(30px, 3.2vw, 44px)/1.05 var(--display); margin: 0; letter-spacing: -.01em; }
+.q p { margin: 0; color: var(--ink-2); max-width: 36ch; }
+.q .ask { color: var(--ink); font-size: 20px; }
+.stage { position: relative; min-height: 460px; }
+.stage canvas, .stage svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.src { font-size: 14px; color: var(--ink-2); margin-top: auto; }
+
+/* guess control */
+.guess { display: grid; gap: 6px; }
+.guess label { font-size: 15px; color: var(--ink-2); }
+.guess output { font: 600 44px/1 var(--display); font-variant-numeric: tabular-nums; }
+input[type=range] { width: 100%; accent-color: var(--guess); height: 28px; }
+.btn {
+  align-self: start; cursor: pointer;
+  font: 600 19px/1 var(--display); letter-spacing: .01em;
+  background: var(--ink); color: var(--bg); border: 0; border-radius: 999px;
+  padding: 14px 26px;
+}
+.btn.ghost { background: none; color: var(--ink); border: 1px solid var(--line); }
+.btn[hidden] { display: none; }
+.big { font: 700 clamp(56px, 7vw, 104px)/.9 var(--display); font-variant-numeric: tabular-nums; margin: 0; }
+.verdict { color: var(--ink); }
+.badges { display: flex; flex-wrap: wrap; gap: 8px; }
+.badge { font: 500 15px/1 var(--display); padding: 8px 12px; border-radius: 999px; border: 1px solid; }
+.badge.med { border-color: var(--med); color: var(--ink); }
+.badge.ext { border-color: var(--ext); color: var(--ink); }
+.badge i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+.med i { background: var(--med); } .ext i { background: var(--ext); }
+
+/* home */
+[data-room=home] { grid-template-rows: 1fr auto; padding: 0; }
+[data-room=home] .stage { grid-area: 1 / 1 / 3 / 2; min-height: 100vh; }
+.hero {
+  grid-area: 2 / 1; position: relative; padding: 80px 28px 56px; max-width: 980px; pointer-events: none;
+  background: radial-gradient(ellipse 75% 85% at 0% 100%, rgba(14,20,36,.94) 55%, rgba(14,20,36,0) 100%);
+}
+.hero > * { pointer-events: auto; }
+.hero h1 { font: 700 clamp(56px, 9vw, 132px)/.88 var(--display); margin: 0 0 20px; letter-spacing: -.02em; }
+.hero p { font-size: 22px; margin: 0 0 24px; max-width: 34ch; color: var(--ink-2); }
+.hero .fine { font-size: 15px; margin-top: 20px; }
+
+#tip {
+  position: fixed; z-index: 9; pointer-events: none; display: none;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  padding: 6px 10px; font-size: 15px; white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .split { grid-template-columns: 1fr; }
+  .stage { min-height: 380px; }
+  .rail span { display: none; }
+  .top { padding: 10px 16px; }
+  .room { padding: 64px 16px 24px; }
+  .hero { padding: 0 16px 40px; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="mark" href="#home">Which world are you in?</a>
+  <nav class="rail" aria-label="Rooms">
+    <a href="#stadium"><b>1</b><span>The stadium</span></a>
+    <a href="#turkey"><b>2</b><span>Turkey &amp; Galton</span></a>
+    <a href="#test"><b>3</b><span>The positive test</span></a>
+    <a href="#shipman"><b>4</b><span>Shipman</span></a>
+  </nav>
+</header>
+
+<main>
+  <section class="room" data-room="home">
+    <div class="stage"><canvas id="home-c" aria-hidden="true"></canvas></div>
+    <div class="hero">
+      <h1>Which world are you in?</h1>
+      <p>Your gut is a statistician trained in the wrong world. Guess first, then see the data.</p>
+      <button class="btn" id="start">Start</button>
+      <p class="fine">Four rooms, about three minutes. After Nassim Taleb's <cite>The Black Swan</cite> and David Spiegelhalter's <cite>The Art of Statistics</cite>.</p>
+    </div>
+  </section>
+
+  <section class="room split" data-room="stadium"></section>
+  <section class="room split" data-room="turkey"></section>
+  <section class="room split" data-room="test"></section>
+  <section class="room" data-room="shipman"></section>
+</main>
+<div id="tip" role="tooltip"></div>
+
+<script id="model">
+const CROWD = 1000, HEAVIEST_KG = 400, RICHEST_USD = 80e9;
+function rng(seed) { return () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function gauss(r) { let u = 0; while (!u) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); }
+const sum = a => a.reduce((x, y) => x + y, 0);
+function crowd(seed = 7) {
+  const r = rng(seed), weight = [], wealth = [];
+  for (let i = 0; i < CROWD; i++) { weight.push(Math.min(160, Math.max(45, 80 + 15 * gauss(r)))); wealth.push(Math.exp(gauss(r))); }
+  const k = 80e6 / sum(wealth); // Taleb's stadium: the 1,000 together hold ~$80M
+  return { weight, wealth: wealth.map(w => w * k) };
+}
+const share = (extra, arr) => extra / (extra + sum(arr));
+function screen(n, prev, sens = 0.9, spec = 0.9) {
+  const ill = Math.round(n * prev), well = n - ill, tp = Math.round(ill * sens), fp = Math.round(well * (1 - spec));
+  return { ill, well, tp, fp, pos: tp + fp, ppv: tp + fp ? tp / (tp + fp) : 0 };
+}
+function fit(xs, ys) {
+  const n = xs.length, mx = sum(xs) / n, my = sum(ys) / n; let sxy = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < n; i++) { const dx = xs[i] - mx, dy = ys[i] - my; sxy += dx * dy; sxx += dx * dx; syy += dy * dy; }
+  const slope = sxy / sxx; return { slope, intercept: my - slope * mx, r: sxy / Math.sqrt(sxx * syy), mx, my };
+}
+// Laplace's rule of succession: after d safe days, P(safe tomorrow) = (d+1)/(d+2)
+function turkey(days = 1000) {
+  const weight = [], confidence = [];
+  for (let d = 1; d <= days; d++) { weight.push(5 + 15 * (1 - Math.exp(-d / 250))); confidence.push((d + 1) / (d + 2)); }
+  return { weight, confidence };
+}
+// Galton's sons, [father, son] in inches: derived/galton_sons.csv (see README to regenerate)
+const GALTON = [[78.5,73.2],[75.5,73.5],[75.5,72.5],[75.0,71.0],[75.0,70.5],[75.0,68.5],[75.0,72.0],[75.0,69.0],[75.0,68.0],[74.0,76.5],[74.0,74.0],[74.0,73.0],[74.0,73.0],[74.0,74.0],[74.0,70.0],[73.0,71.0],[73.0,68.0],[73.0,67.0],[73.0,71.0],[73.0,70.5],[73.0,72.0],[73.0,70.5],[73.0,70.2],[73.0,70.2],[73.0,69.2],[73.0,74.0],[73.0,73.0],[73.0,71.5],[73.0,62.5],[72.7,73.2],[72.7,73.0],[72.7,72.7],[72.0,73.0],[72.0,73.0],[72.0,71.0],[72.0,74.2],[72.0,70.5],[72.0,69.5],[72.0,70.5],[72.0,70.5],[72.0,69.0],[72.0,69.0],[72.0,67.0],[72.0,73.0],[72.0,67.0],[72.5,71.0],[72.5,70.0],[72.5,70.0],[72.0,74.0],[72.0,72.0],[72.0,69.0],[72.0,72.0],[72.0,71.5],[72.0,71.5],[72.0,70.0],[71.0,78.0],[71.0,74.0],[71.0,73.0],[71.0,72.0],[71.0,73.2],[71.0,73.0],[71.0,69.0],[71.0,70.0],[71.0,70.0],[71.0,69.0],[71.0,68.5],[71.0,71.0],[71.0,76.0],[71.0,72.0],[71.0,71.0],[71.0,66.0],[71.7,70.5],[71.0,72.0],[71.0,72.0],[71.0,71.0],[71.0,69.0],[71.5,73.0],[71.5,68.5],[71.5,67.7],[71.0,68.0],[71.0,68.0],[71.7,72.0],[71.7,71.0],[71.7,70.5],[71.0,68.0],[71.0,68.0],[71.0,68.0],[71.5,72.0],[71.5,71.0],[71.5,70.0],[71.0,73.0],[71.0,71.0],[71.0,67.0],[71.0,71.0],[71.0,70.0],[71.0,70.0],[71.0,64.0],[71.0,71.0],[71.0,71.0],[71.0,70.0],[71.0,71.0],[71.0,70.0],[71.0,72.0],[71.0,70.5],[71.0,70.5],[71.0,70.0],[71.0,70.5],[71.0,70.0],[71.0,69.0],[71.0,69.0],[71.0,66.0],[71.0,71.5],[71.0,69.0],[70.0,71.0],[70.0,70.0],[70.0,69.0],[70.0,70.0],[70.0,68.7],[70.0,75.0],[70.0,70.0],[70.0,69.0],[70.0,73.0],[70.0,72.0],[70.0,72.0],[70.0,66.5],[70.5,72.0],[70.5,70.2],[70.5,69.0],[70.5,68.5],[70.0,73.0],[70.0,72.0],[70.0,70.5],[70.0,65.0],[70.0,65.0],[70.0,67.0],[70.0,65.0],[70.0,70.0],[70.0,70.0],[70.0,79.0],[70.0,75.0],[70.0,71.0],[70.0,73.0],[70.0,72.5],[70.0,69.0],[70.0,69.0],[70.0,72.0],[70.0,70.0],[70.0,68.7],[70.0,70.7],[70.0,70.0],[70.0,68.0],[70.0,67.0],[70.0,66.0],[70.0,65.0],[70.0,70.0],[70.0,68.0],[70.0,66.7],[70.0,72.0],[70.0,70.0],[70.5,74.0],[70.5,69.5],[70.5,69.0],[70.5,68.0],[70.5,68.0],[70.5,68.0],[70.0,68.0],[70.0,71.0],[70.0,70.0],[70.0,70.0],[70.0,70.0],[70.0,69.5],[70.0,68.5],[70.0,70.0],[70.0,67.0],[70.0,65.5],[70.5,70.0],[70.5,68.5],[70.5,72.5],[70.5,69.0],[70.5,67.0],[70.0,71.0],[70.0,67.5],[70.0,68.0],[70.0,67.0],[70.0,70.0],[70.0,66.5],[70.5,72.0],[70.5,70.0],[70.5,69.5],[70.5,69.5],[70.5,68.0],[70.3,70.7],[70.3,69.7],[70.3,69.2],[70.3,65.2],[70.5,72.0],[70.5,72.0],[70.0,71.2],[70.0,67.0],[70.0,67.0],[70.0,64.5],[70.0,71.5],[70.0,64.5],[70.0,72.0],[70.0,66.0],[69.0,75.0],[69.0,71.0],[69.0,70.0],[69.0,73.0],[69.0,72.0],[69.0,71.7],[69.0,71.5],[69.0,71.2],[69.0,71.0],[69.0,70.0],[69.0,75.0],[69.0,74.0],[69.0,72.0],[69.0,68.5],[69.0,70.0],[69.0,68.5],[69.0,68.0],[69.0,73.0],[69.0,71.0],[69.0,70.5],[69.0,70.5],[69.0,67.0],[69.0,66.0],[69.5,70.5],[69.5,67.5],[69.0,71.0],[69.5,71.0],[69.5,71.0],[69.5,70.5],[69.5,70.5],[69.0,73.0],[69.0,72.0],[69.0,69.0],[69.0,69.0],[69.0,70.0],[69.0,68.5],[69.0,67.0],[69.5,69.7],[69.5,68.0],[69.5,60.0],[69.2,71.7],[69.2,66.5],[69.0,69.0],[69.0,72.0],[69.0,73.0],[69.0,70.0],[69.0,70.0],[69.0,64.0],[69.0,70.5],[69.0,67.0],[69.0,66.0],[69.0,70.5],[69.5,73.0],[69.5,72.0],[69.5,69.0],[69.0,73.0],[69.0,71.0],[69.0,71.0],[69.0,69.0],[69.5,72.0],[69.5,70.0],[69.5,67.8],[69.0,71.0],[69.0,70.0],[69.0,70.0],[69.0,69.0],[69.0,72.0],[69.0,68.0],[69.5,70.0],[69.5,69.5],[69.5,69.0],[69.0,68.0],[69.0,68.0],[69.0,67.5],[69.0,64.0],[69.0,63.0],[69.0,63.0],[69.0,70.5],[69.0,69.0],[69.0,66.0],[69.0,69.5],[68.7,71.0],[68.5,73.0],[68.5,71.0],[68.5,70.0],[68.5,69.0],[68.5,69.0],[68.5,68.7],[68.5,68.5],[68.5,68.5],[68.5,68.0],[68.5,68.0],[68.5,68.0],[68.5,66.2],[68.0,67.5],[68.0,66.0],[68.0,66.0],[68.0,71.7],[68.0,71.5],[68.0,70.7],[68.0,65.5],[68.0,72.0],[68.0,72.0],[68.5,69.2],[68.5,68.0],[68.5,66.0],[68.5,66.0],[68.5,72.0],[68.5,70.5],[68.5,68.7],[68.5,68.5],[68.5,67.7],[68.0,71.0],[68.0,68.0],[68.0,68.0],[68.0,67.0],[68.0,66.0],[68.0,63.0],[68.0,71.2],[68.0,71.2],[68.0,69.0],[68.0,68.5],[68.0,69.0],[68.0,67.0],[68.0,66.0],[68.0,70.5],[68.0,70.0],[68.0,68.0],[68.0,66.0],[68.0,66.0],[68.5,73.5],[68.5,70.0],[68.5,69.5],[68.0,67.0],[68.0,70.0],[68.0,68.0],[68.0,71.0],[68.0,68.0],[68.0,66.0],[68.0,65.5],[68.0,65.0],[68.0,67.0],[68.0,67.0],[68.0,66.0],[68.5,68.2],[68.0,70.0],[68.2,70.0],[68.2,69.0],[68.2,67.0],[68.2,65.5],[68.0,68.5],[68.7,67.7],[68.0,66.5],[68.0,68.5],[68.0,68.0],[68.0,64.0],[68.0,66.7],[68.0,64.0],[68.0,67.5],[68.0,67.0],[68.0,66.5],[68.5,69.0],[68.0,68.0],[68.0,65.0],[68.0,64.7],[68.0,64.0],[68.0,64.0],[68.0,63.0],[67.0,72.7],[67.0,72.7],[67.0,71.5],[67.0,71.0],[67.0,73.0],[67.0,71.0],[67.0,70.7],[67.0,70.0],[67.0,69.0],[67.0,69.7],[67.0,67.5],[67.0,70.0],[67.0,69.0],[67.0,70.0],[67.0,67.7],[67.0,65.0],[67.5,71.0],[67.5,69.0],[67.0,71.5],[67.0,70.0],[67.0,67.0],[67.0,67.0],[67.0,71.0],[67.0,70.2],[67.0,69.2],[67.0,68.5],[67.0,68.0],[67.0,67.0],[67.0,65.5],[67.0,69.0],[67.0,68.0],[67.5,70.0],[67.5,69.5],[67.5,69.0],[67.5,68.5],[67.0,67.0],[66.0,70.5],[66.0,70.5],[66.0,67.0],[66.0,66.0],[66.0,66.0],[66.0,72.0],[66.0,65.0],[66.0,65.0],[66.0,66.0],[66.0,65.0],[66.0,72.0],[66.0,68.0],[66.5,68.7],[66.5,68.5],[66.5,66.5],[66.5,64.5],[66.0,72.0],[66.0,71.0],[66.0,67.0],[66.0,70.0],[66.5,67.2],[66.5,67.0],[66.5,65.0],[66.5,70.0],[66.5,68.0],[66.0,70.0],[66.0,68.0],[66.0,67.0],[66.0,65.0],[66.0,65.0],[66.0,68.0],[66.0,67.0],[66.0,66.5],[66.0,66.0],[66.0,65.7],[66.0,65.5],[66.0,65.0],[65.0,66.5],[65.0,66.0],[65.0,66.0],[65.0,63.0],[65.0,67.0],[65.0,66.0],[65.0,65.0],[65.0,69.0],[65.0,68.0],[65.0,68.0],[65.0,70.7],[65.0,69.2],[65.0,69.0],[65.0,68.0],[65.0,67.7],[65.0,67.0],[65.0,67.0],[65.0,70.0],[65.0,66.0],[65.0,66.0],[65.5,71.0],[65.5,71.0],[65.5,69.0],[65.5,68.0],[65.5,68.0],[65.5,67.0],[65.5,67.0],[64.0,71.5],[64.0,68.0],[64.0,70.5],[64.0,68.0],[64.0,64.5],[64.0,66.0],[62.0,64.0],[62.5,66.5]];
+</script>
+
+<script>
+const $ = (s, root = document) => root.querySelector(s);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const C = { med: css("--med"), ext: css("--ext"), ink: css("--ink"), ink2: css("--ink-2"), line: css("--line"), guess: css("--guess"), bg: css("--bg") };
+const ease = t => 1 - Math.pow(1 - t, 3);
+const pct = (x, d = 1) => (x * 100).toFixed(d).replace(/\.0+$/, "") + "%";
+
+// animation frames belong to the current room; leaving a room cancels them
+let frames = new Set();
+function onRaf(fn) {
+  const id = { v: 0 };
+  const loop = t => { if (fn(t) === false) { frames.delete(id); return; } id.v = requestAnimationFrame(loop); };
+  id.v = requestAnimationFrame(loop); frames.add(id); return id;
+}
+function stopAll() { frames.forEach(f => cancelAnimationFrame(f.v)); frames.clear(); }
+// tween 0→1 over ms (instant under reduced motion)
+function tween(ms, fn, done) {
+  const t0 = performance.now();
+  onRaf(t => { const k = reduced ? 1 : Math.min(1, (t - t0) / ms); fn(k); if (k >= 1) { done && done(); return false; } });
+}
+
+// crisp canvas at devicePixelRatio; returns ctx in CSS pixels
+function sized(cv) {
+  const r = cv.getBoundingClientRect(), dpr = devicePixelRatio || 1;
+  cv.width = Math.max(1, Math.round(r.width * dpr)); cv.height = Math.max(1, Math.round(r.height * dpr));
+  const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, W: r.width, H: r.height };
+}
+function dot(ctx, x, y, r, fill) { ctx.beginPath(); ctx.arc(x, y, Math.max(r, .6), 0, 7); ctx.fillStyle = fill; ctx.fill(); }
+
+const tipEl = $("#tip");
+function tip(e, text) {
+  if (!text) { tipEl.style.display = "none"; return; }
+  tipEl.textContent = text; tipEl.style.display = "block";
+  const x = Math.min(e.clientX + 14, innerWidth - tipEl.offsetWidth - 8);
+  tipEl.style.left = x + "px"; tipEl.style.top = (e.clientY + 16) + "px";
+}
+
+// seats on concentric ellipses around an empty oval pitch
+function stands(n, W, H) {
+  const a = Math.min(W * .46, H * .46 * 1.55), b = a / 1.55, R = 10, cx = W / 2, cy = H / 2;
+  const rings = [];
+  for (let k = 0; k < R; k++) {
+    const f = .52 + .48 * k / (R - 1), ra = a * f, rb = b * f;
+    rings.push({ ra, rb, per: Math.PI * (3 * (ra + rb) - Math.sqrt((3 * ra + rb) * (ra + 3 * rb))) });
+  }
+  const tot = sum(rings.map(r => r.per)), pts = [];
+  let left = n;
+  rings.forEach((r, k) => {
+    const m = k === R - 1 ? left : Math.round(n * r.per / tot); left -= m;
+    for (let i = 0; i < m; i++) { const th = (i + (k % 2) * .5) / m * 2 * Math.PI; pts.push([cx + r.ra * Math.cos(th), cy + r.rb * Math.sin(th)]); }
+  });
+  const gap = a * .48 / (R - 1), spacing = tot / n;
+  return { pts, cx, cy, a, b, r0: Math.min(gap, spacing) * .3 };
+}
+
+// ---------- rooms ----------
+const rooms = {};
+
+rooms.home = {
+  enter() {
+    const cv = $("#home-c");
+    let S, t0 = performance.now(), star = 0;
+    const layout = () => {
+      S = sized(cv);
+      const off = S.W > 900 ? S.W * .3 : 0; // stadium sits right of the title on wide screens
+      S.st = stands(CROWD, S.W - off, S.H * .9); S.st.pts.forEach(p => p[0] += off);
+    };
+    layout(); this.resize = layout;
+    onRaf(t => {
+      const { ctx, W, H, st } = S; ctx.clearRect(0, 0, W, H);
+      const cyc = ((t - t0) / 5200) % 1, k = Math.sin(Math.PI * Math.min(1, cyc / .7)) ** 2;
+      if (cyc < .01) star = Math.floor(Math.random() * CROWD);
+      st.pts.forEach((p, i) => dot(ctx, p[0], p[1] - H * .05, st.r0, i === star ? C.ext : "rgba(57,135,229,.55)"));
+      if (!reduced) { const p = st.pts[star]; dot(ctx, p[0], p[1] - H * .05, st.r0 + k * st.a * .42, "rgba(217,89,38,.85)"); }
+    });
+  },
+  primary() { location.hash = "#stadium"; },
+};
+$("#start").onclick = () => rooms.home.primary();
+
+// ---------- router, keys, idle ----------
+const order = ["home", "stadium", "turkey", "test", "shipman"];
+let cur = null;
+function show() {
+  const id = order.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home";
+  if (cur) { stopAll(); rooms[cur]?.leave?.(); tip(null); }
+  document.querySelectorAll(".room").forEach(s => s.classList.toggle("on", s.dataset.room === id));
+  document.querySelectorAll(".rail a").forEach(a => a.hash === "#" + id ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  cur = id; window.scrollTo(0, 0); rooms[id]?.enter?.();
+}
+addEventListener("hashchange", show);
+new ResizeObserver(() => rooms[cur]?.resize?.()).observe(document.body);
+
+addEventListener("keydown", e => {
+  const t = e.target, slider = t.type === "range";
+  if (e.key === " " && t.tagName !== "BUTTON" && t.tagName !== "A") { e.preventDefault(); rooms[cur]?.primary?.(); }
+  else if (!slider && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+    const i = order.indexOf(cur) + (e.key === "ArrowRight" ? 1 : -1);
+    location.hash = "#" + order[(i + order.length) % order.length];
+  }
+});
+
+const qs = new URLSearchParams(location.search), IDLE = (+qs.get("idle") || 60) * 1000;
+let idleT;
+function poke() { clearTimeout(idleT); if (!qs.has("talk")) idleT = setTimeout(() => { location.hash = "#home"; }, IDLE); }
+["pointermove", "pointerdown", "keydown"].forEach(ev => addEventListener(ev, poke, { passive: true }));
+poke(); show();
+</script>
+</body>
+</html>
