@@ -11,11 +11,11 @@ the data needs 3D, scale, or motion.
 | piece | dataset | built with |
 |---|---|---|
 | [Shipman deaths by age](https://l69d.github.io/art-of-data/shipman-data/age_by_year.html) | [Shipman Inquiry case decisions](shipman-data/) — 531 deaths, 1974–1998 | SVG + vanilla JS |
-| [Which world are you in?](https://l69d.github.io/art-of-data/which-world/) | [Galton's family heights + figures from *The Black Swan* and *The Art of Statistics*](which-world/) — four guess-then-reveal rooms | canvas + SVG + vanilla JS, offline |
+| [Which world are you in?](https://l69d.github.io/art-of-data/which-world/) | [Galton's family heights, the Datasaurus Dozen + figures from *The Black Swan* and *The Art of Statistics*](which-world/) — an atlas in six plates | canvas + SVG + vanilla JS, offline |
 
 ![Shipman deaths by age](shipman-data/shipman-scatter.png)
 
-![Which world are you in? The stadium, wealth round](which-world/stadium.png)
+![Which world are you in? Plate I, the stadium, wealth round](which-world/stadium.png)
 
 ## Layout
 
@@ -50,3 +50,7 @@ One folder per dataset. Each one holds:
   community event (stadium, Galton vs the turkey, positive test, Shipman), with Galton's
   1886 heights fetched to `which-world/derived/`, `test_galton.py`, `test_model.mjs`
   and a talk outline.
+- **2026-09-24** — Which world are you in? v2: rebuilt as an atlas in six plates on one
+  persistent crowd of ink dots, with a log-scale beat on the stadium and three new plates
+  (the graveyard, the Datasaurus, league table to funnel) plus framing on the positive test.
+  Added `fetch_datasaurus.py`; `test_galton.py` became `test_data.py`. Shipman plate parked.

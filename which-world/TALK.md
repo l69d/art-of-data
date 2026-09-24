@@ -1,73 +1,66 @@
 # Talk: Which world are you in? (about 3 minutes)
 
-Open `index.html?talk` fullscreen. Space presses each room's main button; → moves on.
+Open `index.html?talk` fullscreen. Space presses each plate's main button; → moves on.
+The script demos plates I, III, IV and V and points at the others.
 
-## 0:00 Hook: the stadium (45 s)
+## 0:00 The stadium (50 s)
 
-*Start on the home screen, then press Space.*
+*Title plate, then Space.*
 
-> "Picture 1,000 random people in a stadium. The heaviest person imaginable walks
-> onto the pitch. What share of the stadium's total weight is theirs?"
+> "A thousand random people in a stadium. The heaviest person imaginable walks onto
+> the pitch. What share of the stadium's weight is theirs?"
 
-Ask a judge to guess. Reveal: **0.5%**.
+Ask a judge. Reveal: **0.5%**.
 
-> "Now swap them for the richest person on Earth. What share of the wealth?"
+> "Now the richest person on Earth. What share of the wealth?"
 
-Ask again. Reveal and let the orange fill the screen: **99.9%**.
+Ask again. Let the ink spread: **99.9%**.
 
-> "Same stadium, same kind of question. Your gut used one rule for both, and it was
-> badly wrong on one of them."
+> "Taleb calls these two worlds Mediocristan and Extremistan. Same question, and your
+> gut used one rule for both. Now watch the same data drawn better."
 
-## 0:45 The idea (20 s)
+Press "Draw it on a log scale".
 
-> "Nassim Taleb calls these two worlds Mediocristan and Extremistan. In one, no
-> single observation can move the total: height, weight, test scores. In the other,
-> one observation can be everything: wealth, book sales, market crashes, pandemics.
-> David Spiegelhalter's *The Art of Statistics* is the toolkit for the first world.
-> This exhibit asks you which world you're in before you reach for it."
+> "On a log scale the thousand come back, and the richest person sits alone, 1.8
+> million times the typical fortune. The better picture is half the insight."
 
-## 1:05 Two long runs of data (45 s)
+## 0:50 The graveyard (40 s)
 
-*Room 2.*
+*Plate III.*
 
-> "Galton, 1886. A father is 199 cm tall. Guess his son's height."
+> "This fund manager beat the market ten years running. Genius? Suppose 1,024
+> managers just flip coins. How many end up with a perfect record?"
 
-Reveal: sons of fathers that tall average **186 cm**, still tall but pulled back to
-the middle. That's regression to the mean.
+Show everyone and let the years run.
 
-> "Now the turkey. Fed every day for 1,000 days, and each day is more evidence. On
-> its own data it is 99.9% sure of day 1,001."
+> "Exactly one, every time, because 1,024 is every possible run of ten flips. The
+> faint dots are the fired managers. We only ever interview the survivor."
 
-Reveal the drop.
+## 1:30 The Datasaurus (35 s)
 
-> "Both are long runs of data. In Mediocristan the past is a fair guide. In
-> Extremistan the one day that matters was never in the data."
+*Plate IV.*
 
-## 1:50 The positive test (35 s)
+> "Five datasets. Same means, same spreads, same correlation. Are they alike?"
 
-*Room 3.*
+Reveal and let it cycle through dinosaur, star, circle, bullseye and X.
 
-> "Back in the tame world, where careful counting should win. A test is 90% accurate
-> and you test positive. What's the chance you're ill?"
+> "Identical numbers, completely different data. Always draw it."
 
-Most people say around 90%. Reveal: **8%**. Only 9 of 108 positives are real.
-Move the prevalence slider to show it swing.
+## 2:05 The league table (40 s)
 
-> "Here statistics works, but only if you count instead of trusting your gut."
+*Plate V.*
 
-## 2:25 Close: Shipman (25 s)
+> "Death rates in 380 districts. The one at the top is double the national rate.
+> Investigate?"
 
-*Room 4.*
+Reveal the funnel.
 
-> "Harold Shipman killed at least 215 patients. The deaths were in ordinary records.
-> Test all 25,000 GPs the naive way and you flag about 1,300 innocent doctors, which
-> is the positive test again. Count properly and he'd have been flagged by 1984, 14 years
-> before he was stopped."
+> "It's just small, so its rate swings by chance. The only real outlier ranked 6th.
+> Same data: the ranking hides it and the funnel shows it."
 
-> "So: which world are you in? It's the question to ask before any statistic."
+## 2:45 Close (15 s)
 
-## 2:50 How it was built (10 s)
-
-> "It's one HTML file, offline and with no libraries, built with Claude in two days,
-> straight from the two books. Every number on screen is checked against them by a
-> test."
+> "Galton, the turkey and the positive test are on plates II and VI. Which world you're
+> in, and how you draw it, decide half the answer. It's one offline HTML file, built
+> with Claude from two books, and every number on screen is checked against them by
+> a test."
