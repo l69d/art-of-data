@@ -63,6 +63,7 @@ a { color: var(--ink); }
 .fig svg.ov { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 svg text { font: italic 15px var(--serif); fill: var(--ink-2); }
 svg .hair { stroke: var(--hair); stroke-width: 1; fill: none; }
+svg text.halo { paint-order: stroke; stroke: var(--paper); stroke-width: 5px; stroke-linejoin: round; }
 svg .ink { stroke: var(--ink); stroke-width: 1; fill: none; }
 
 /* controls */
@@ -112,6 +113,7 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
     <a href="#stadium"><i>I</i><span>The stadium</span></a>
     <a href="#graveyard"><i>III</i><span>The graveyard</span></a>
     <a href="#dino"><i>IV</i><span>The Datasaurus</span></a>
+    <a href="#funnel"><i>V</i><span>The league table</span></a>
   </nav>
 </header>
 
@@ -169,6 +171,20 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
       <p class="cap" id="dn-cap">Fig. 4. The Datasaurus Dozen (Matejka and Fitzmaurice, 2017): five of its thirteen sets.</p>
     </div>
     <div class="fig" id="dn-fig"><svg class="ov" id="dn-ov" aria-hidden="true"></svg></div>
+  </section>
+
+  <section class="plate" data-plate="funnel">
+    <div class="margin">
+      <p class="label">Plate V</p>
+      <h2>The league table</h2>
+      <p class="note">Bowel-cancer death rates in 380 districts, ranked from worst to best.</p>
+      <p class="ask" id="fn-ask"></p>
+      <div class="btns" id="fn-guess"><button class="btn ghost" data-g="1">Yes, investigate</button><button class="btn ghost" data-g="0">Not yet</button></div>
+      <div id="fn-res" hidden><p id="fn-verdict"></p></div>
+      <div class="btns"><button class="btn" id="fn-go" hidden>Next plate</button></div>
+      <p class="cap" id="fn-cap"></p>
+    </div>
+    <div class="fig" id="fn-fig"><svg class="ov" id="fn-ov" aria-hidden="true"></svg></div>
   </section>
 </main>
 <div id="tip" role="tooltip"></div>
@@ -639,6 +655,84 @@ plates.dino = (() => {
     resize() { ink.set(targets()); axes(); },
     primary() { phase === "ask" ? reveal(null) : next(); },
     label: i => i < N ? (set < 0 ? `Row ${i + 1} of set A` : `(${DINO[SETS[set][0]][i].map(v => v.toFixed(1)).join(", ")})`) : null,
+  };
+})();
+
+// ---------- Plate V: league table -> funnel plot ----------
+plates.funnel = (() => {
+  const fig = $("#fn-fig"), ov = $("#fn-ov"), go = $("#fn-go");
+  const DS = districts(), RANK = [...DS].sort((a, b) => b.rate - a.rate), TOP = RANK[0], OUT = DS[0], SW = 200;
+  const outRank = RANK.indexOf(OUT) + 1, name = d => `District ${d.id + 1}`;
+  const RMAX = 40, PLO = 2e4, PHI = 1.2e6;
+  let phase;
+  const P = () => { const b = box(fig); return { b, l: b.x + 56, r: b.x + b.w - 16, t: b.y + 40, bt: b.y + b.h - 70 }; };
+  function tableTargets() {
+    const { l, r, t, bt } = P(), step = (bt - t) / DS.length;
+    return RANK.reduce((acc, d, k) => (acc[d.id] = { x: l + (r - l) * d.rate / RMAX, y: t + (k + .5) * step, r: 2, c: d === TOP ? 1 : d.id === SW ? 2 : 0 }, acc), []);
+  }
+  const fx = p => { const { l, r } = P(); return l + (r - l) * (Math.log(p) - Math.log(PLO)) / (Math.log(PHI) - Math.log(PLO)); };
+  const fy = v => { const { t, bt } = P(); return bt - (bt - t) * clamp(v, 0, RMAX) / RMAX; };
+  function funnelTargets() {
+    return DS.map(d => ({ x: fx(d.pop), y: fy(d.rate), r: d === OUT ? 4.5 : 2.6, c: d === OUT ? 1 : d.id === SW ? 2 : 0, a: d === OUT || d === TOP ? 1 : .8 }));
+  }
+  function axes() {
+    ov.innerHTML = "";
+    const { b, l, r, t, bt } = P(), X = v => v - b.x, Y = v => v - b.y;
+    if (phase === "ask") {
+      const step = (bt - t) / DS.length;
+      RANK.forEach((d, k) => svgEl("line", { x1: X(l), x2: X(l + (r - l) * d.rate / RMAX), y1: Y(t + (k + .5) * step), y2: Y(t + (k + .5) * step), class: "hair", "stroke-width": .6 }, ov));
+      svgEl("line", { x1: X(l), x2: X(r), y1: Y(bt) + 8, y2: Y(bt) + 8, class: "ink" }, ov);
+      [0, 10, 20, 30, 40].forEach(v => svgEl("text", { x: X(l + (r - l) * v / RMAX), y: Y(bt) + 30, "text-anchor": "middle" }, ov, v));
+      svgEl("text", { x: X(r), y: Y(bt) + 54, "text-anchor": "end" }, ov, "deaths per 100,000 a year");
+      svgEl("text", { x: X(l) - 8, y: Y(t) + 4, "text-anchor": "end" }, ov, "worst");
+      svgEl("text", { x: X(l) - 8, y: Y(bt), "text-anchor": "end" }, ov, "best");
+      const tx = X(l + (r - l) * TOP.rate / RMAX);
+      svgEl("text", { x: tx - 10, y: Y(t) - 12, "text-anchor": "end", style: "fill:" + C.madder }, ov, `${name(TOP)}: ${TOP.rate.toFixed(1)} per 100,000`);
+      return;
+    }
+    // funnel: population on a log axis, the national rate, and chance limits that narrow as districts grow
+    svgEl("line", { x1: X(l), x2: X(r), y1: Y(bt) + 8, y2: Y(bt) + 8, class: "ink" }, ov);
+    svgEl("line", { x1: X(l) - 8, x2: X(l) - 8, y1: Y(t), y2: Y(bt), class: "ink" }, ov);
+    [[2e4, "20,000"], [5e4, "50,000"], [1e5, "100,000"], [2e5, "200,000"], [5e5, "500,000"], [1e6, "1 million"]].forEach(([p, s]) => {
+      svgEl("line", { x1: X(fx(p)), x2: X(fx(p)), y1: Y(bt) + 8, y2: Y(bt) + 14, class: "ink" }, ov); svgEl("text", { x: X(fx(p)), y: Y(bt) + 32, "text-anchor": "middle" }, ov, s);
+    });
+    svgEl("text", { x: X(r), y: Y(bt) + 56, "text-anchor": "end" }, ov, "population of the district");
+    [0, 10, 20, 30, 40].forEach(v => svgEl("text", { x: X(l) - 14, y: Y(fy(v)) + 5, "text-anchor": "end" }, ov, v));
+    svgEl("text", { x: X(l) - 8, y: Y(t) - 16 }, ov, "deaths per 100,000 a year");
+    const curve = (z, dash) => {
+      const pts = []; for (let k = 0; k <= 120; k++) { const p = Math.exp(Math.log(PLO) + (Math.log(PHI) - Math.log(PLO)) * k / 120), v = limit(p, z); if (v >= 0 && v <= RMAX) pts.push(`${X(fx(p))},${Y(fy(v))}`); }
+      svgEl("polyline", { points: pts.join(" "), class: "ink", "stroke-dasharray": dash, opacity: .7 }, ov);
+    };
+    [[1.96, "3 4"], [-1.96, "3 4"], [3.09, ""], [-3.09, ""]].forEach(([z, d]) => curve(z, d));
+    svgEl("line", { x1: X(l), x2: X(r), y1: Y(fy(P0)), y2: Y(fy(P0)), class: "hair" }, ov);
+    svgEl("text", { x: X(r), y: Y(fy(limit(PHI, 3.09))) - 8, "text-anchor": "end", class: "halo" }, ov, "99.8% of chance");
+    svgEl("text", { x: X(r), y: Y(fy(limit(PHI, 1.96))) + 18, "text-anchor": "end", class: "halo" }, ov, "95%");
+    svgEl("circle", { cx: X(fx(TOP.pop)), cy: Y(fy(TOP.rate)), r: 9, fill: "none", stroke: C.ink, "stroke-width": 1.2 }, ov);
+    svgEl("text", { x: X(fx(TOP.pop)) + 14, y: Y(fy(TOP.rate)) + 5, class: "halo" }, ov, "top of the league table");
+    svgEl("text", { x: X(fx(OUT.pop)) - 10, y: Y(fy(OUT.rate)) - 14, "text-anchor": "end", class: "halo", style: "fill:" + C.madder }, ov, `the real outlier, ranked ${outRank}th`);
+  }
+  function reveal(guess) {
+    if (phase !== "ask") return;
+    phase = "shown"; $("#fn-guess").hidden = true;
+    ink.to(funnelTargets(), 1800); axes();
+    $("#fn-ask").textContent = "The same 380 districts, drawn as a funnel: each dot's rate against its size.";
+    $("#fn-verdict").textContent = (guess === "1" ? "That's what a league table invites. " : guess === "0" ? "Good instinct. " : "") +
+      `${name(TOP)} is simply small: ${TOP.deaths} deaths in ${TOP.pop.toLocaleString()} people, so its rate swings by chance and it sits inside the limits. The only district outside them ranked ${outRank}th. The funnel shows what the ranking hides.`;
+    $("#fn-res").hidden = false; go.hidden = false;
+    $("#fn-cap").textContent = "Fig. 5b. Funnel plot of the same 380 districts, with 95% and 99.8% limits around the national rate.";
+  }
+  $("#fn-guess").onclick = e => e.target.dataset.g && reveal(e.target.dataset.g);
+  go.onclick = () => next();
+  return {
+    enter() {
+      phase = "ask"; $("#fn-guess").hidden = false; $("#fn-res").hidden = true; go.hidden = true;
+      $("#fn-ask").textContent = `${name(TOP)} tops the table at ${TOP.rate.toFixed(1)} deaths per 100,000, double the national rate of ${P0}. Should it be investigated?`;
+      $("#fn-cap").textContent = "Fig. 5a. League table of 380 districts (simulated from Spiegelhalter's bowel-cancer example, ch. 9).";
+      ink.to(tableTargets(), 1500); axes();
+    },
+    resize() { ink.set(phase === "ask" ? tableTargets() : funnelTargets()); axes(); },
+    primary() { phase === "ask" ? reveal(null) : next(); },
+    label: i => i < DS.length ? `${name(DS[i])}: ${DS[i].deaths} deaths in ${DS[i].pop.toLocaleString()} people, ${DS[i].rate.toFixed(1)} per 100,000` : null,
   };
 })();
 
