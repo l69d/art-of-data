@@ -117,6 +117,19 @@ input[type=range] { width: 100%; accent-color: var(--guess); height: 28px; }
 .legend { margin: 0; font: 500 16px/1 var(--display); color: var(--ink-2); display: flex; align-items: center; gap: 8px; }
 .legend i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
 .legend i.ext { background: var(--ext); } .legend i.med { background: var(--med); margin-left: 12px; }
+/* finale */
+.finale { display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px 64px; align-items: center; }
+.finale-story { display: flex; flex-direction: column; gap: 22px; }
+.finale h2 { font: 700 clamp(44px, 6vw, 88px)/.92 var(--display); margin: 0; letter-spacing: -.02em; }
+.finale .lede { margin: 0; font-size: 21px; max-width: 56ch; }
+.facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.facts li { display: grid; grid-template-columns: 150px 1fr; gap: 20px; align-items: baseline; border-top: 1px solid var(--line); padding-top: 16px; }
+@media (max-width: 900px) { .finale { grid-template-columns: 1fr; } }
+.facts b { font: 700 44px/1 var(--display); font-variant-numeric: tabular-nums; }
+.facts span { color: var(--ink-2); }
+.finale-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+a.btn { text-decoration: none; }
+@media (max-width: 600px) { .facts li { grid-template-columns: 1fr; gap: 6px; } }
 .halo { paint-order: stroke; stroke: var(--surface); stroke-width: 5px; stroke-linejoin: round; }
 @media (max-width: 900px) { .duo { grid-template-columns: 1fr; } }
 svg text { font: 500 15px var(--display); fill: var(--ink-2); }
@@ -224,7 +237,25 @@ svg text { font: 500 15px var(--display); fill: var(--ink-2); }
     </div>
     <div class="stage"><canvas id="ts-c"></canvas></div>
   </section>
-  <section class="room" data-room="shipman"></section>
+  <section class="room" data-room="shipman">
+    <div class="finale">
+      <div class="finale-story">
+        <h2>Counting would have caught him</h2>
+        <p class="lede">Between 1975 and 1998 a family doctor in Manchester, Harold Shipman, killed at least 215 of his patients. The deaths sat in plain sight, in ordinary records, in the tame world where statistics works.</p>
+        <p class="lede">Weight, height and death rates live in Mediocristan, where patient counting beats gut feeling. Wealth, markets and pandemics live in Extremistan, where the past can't warn you. Knowing which world you're in comes before any statistic.</p>
+        <div class="finale-actions">
+          <a class="btn" href="../shipman-data/age_by_year.html">See the Shipman data</a>
+          <button class="btn ghost" id="again">Start again</button>
+        </div>
+        <p class="src">Spiegelhalter, <cite>The Art of Statistics</cite>, introduction and ch. 10. Taleb, <cite>The Black Swan</cite>.</p>
+      </div>
+      <ol class="facts">
+        <li><b>215</b><span>patients killed, mostly elderly. They died in the early afternoon, when he made his home visits.</span></li>
+        <li><b>~1,300</b><span>innocent GPs would be flagged if you tested all 25,000 UK doctors at the usual 5% threshold. It's the positive test again: check enough people and false alarms bury the signal.</span></li>
+        <li><b>1984</b><span>is when a strict threshold would still have flagged him: 105 deaths where 59.2 were expected. He wasn't stopped until 1998.</span></li>
+      </ol>
+    </div>
+  </section>
 </main>
 <div id="tip" role="tooltip"></div>
 
@@ -644,6 +675,9 @@ rooms.test = (() => {
   go.onclick = () => api.primary();
   return api;
 })();
+
+rooms.shipman = { primary() { location.hash = "#home"; } };
+$("#again").onclick = () => rooms.shipman.primary();
 
 // ---------- router, keys, idle ----------
 const order = ["home", "stadium", "turkey", "test", "shipman"];
