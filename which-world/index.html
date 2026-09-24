@@ -66,6 +66,10 @@ a { color: var(--ink); }
 .moral p:last-child { font-size: 22px; line-height: 1.35; margin-top: 4px; }
 .clip { border: 1px solid var(--hair); padding: 12px 14px; background: #f2f2ee; font: 700 22px/1.15 var(--serif); letter-spacing: -.01em; }
 .clip small { display: block; font: italic 400 14px var(--serif); color: var(--ink-2); margin-bottom: 6px; }
+.holes { border-collapse: collapse; font-size: 16px; font-variant-numeric: lining-nums tabular-nums; animation: in .6s ease both; }
+.holes td { padding: 3px 0; border-bottom: 1px solid var(--hair); }
+.holes td + td { text-align: right; padding-left: 24px; }
+.holes caption { text-align: left; font-style: italic; color: var(--ink-2); font-size: 15px; padding-bottom: 4px; }
 .cap { font-style: italic; color: var(--ink-2); font-size: 15px; margin-top: auto !important; padding-top: 16px; }
 .big { font: 400 clamp(48px, 5vw, 76px)/.9 var(--serif); margin: 0; font-variant-numeric: lining-nums tabular-nums; }
 .big.madder { color: var(--madder); }
@@ -119,6 +123,7 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
   <a class="mark" href="#home">Which world are you in?</a>
   <nav class="rail" aria-label="Plates">
     <a href="#stadium" aria-label="Plate I, the stadium"><i>I</i><span>The stadium</span></a>
+    <a href="#graveyard" aria-label="Plate III, the graveyard"><i>III</i><span>The graveyard</span></a>
   </nav>
 </header>
 
@@ -137,6 +142,11 @@ input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
   <section class="plate" data-plate="stadium">
     <div class="margin"><p class="label">Plate I</p><h2>The stadium</h2><div class="story"></div><p class="cap"></p></div>
     <div class="fig" id="st-fig"><svg class="ov" aria-hidden="true"></svg></div>
+  </section>
+
+  <section class="plate" data-plate="graveyard">
+    <div class="margin"><p class="label">Plate III</p><h2>The graveyard</h2><div class="story"></div><p class="cap"></p></div>
+    <div class="fig" id="gy-fig"><svg class="ov" aria-hidden="true"></svg></div>
   </section>
 </main>
 <div id="tip" role="tooltip"></div>
@@ -367,7 +377,7 @@ const record = {};
 const sleep = ms => new Promise(res => setTimeout(res, reduced ? Math.min(ms, 60) : ms));
 function storyOf(plate) {
   const host = $(`[data-plate=${plate}] .story`), run = RUN, alive = () => run === RUN && cur === plate;
-  const add = (tag, html, cls) => { if (!alive()) return null; const e = document.createElement(tag); if (cls) e.className = cls; e.innerHTML = html; host.appendChild(e); return e; };
+  const add = (tag, html, cls) => { if (!alive()) return null; const e = document.createElement(tag); if (cls) e.className = cls; e.innerHTML = html; host.appendChild(e); requestAnimationFrame(() => e.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" })); return e; };
   return {
     alive,
     clear() { if (alive()) host.innerHTML = ""; },
@@ -560,6 +570,132 @@ plates.stadium = (() => {
     leave() { ink.clearProps(); ov.innerHTML = ""; },
     resize() { if (phase === "log") { ink.retarget(logTargets().t); drawLogAxis(); } else ink.retarget(bowlTargets()); },
     label: i => i === NEW ? (mode === "weight" ? "The heaviest person imaginable: 400 kg" : "The richest person on Earth: $80 billion") : i < CROWD ? (mode === "weight" && phase !== "log" ? `Fan ${i + 1}: ${Math.round(W8[i])} kg` : `Guest ${i + 1}: ${money(CR.wealth[i])}`) : null,
+  };
+})();
+
+// ---------- Plate III: the graveyard (Wald's bombers, then the fund managers) ----------
+// A bomber seen from above, in units of its span: x runs nose-forward, z along the wings, y up.
+const PLANE = {
+  fuselage: (u, v) => { const x = -.47 + .94 * u, w = .042 * (1 - .7 * Math.pow(Math.abs(x) / .5, 3)); return [x, .03, (v - .5) * 2 * w]; },
+  engines: (u, v) => { const e = Math.min(3, Math.floor(u * 4)), f = u * 4 - e, a = f * 6.283, rr = Math.sqrt(v); return [.14 + .07 * rr * Math.cos(a), .025, [-.34, -.17, .17, .34][e] + .026 * rr * Math.sin(a)]; },
+  fuel: (u, v) => { const side = u < .5 ? -1 : 1, zz = .06 + ((u * 2) % 1) * .22; return [.07 - .15 * v, .02, side * zz]; },
+  rest: (u, v) => {
+    if (u < .72) { const side = u < .36 ? -1 : 1, zz = .28 + ((u / .36) % 1) * .22, ch = .15 - .08 * (zz - .28) / .22; return [.07 - ch * v, .02, side * zz]; }
+    const side = u < .86 ? -1 : 1, zz = ((u - .72) / .14 % 1) * .17; return [-.4 - .07 * v, .03, side * zz];
+  },
+};
+const OUTLINE = [ // hairline loops: fuselage, wings, tailplane, four nacelles
+  [...Array(40).keys()].map(i => { const t = i / 39 * Math.PI * 2, x = .47 * Math.cos(t), w = .042 * (1 - .7 * Math.pow(Math.abs(x) / .5, 3)); return [x, .03, w * Math.sin(t) * 1.05]; }),
+  [[.07, .02, -.5], [.07, .02, .5], [.0, .02, .5], [-.08, .02, .06], [-.08, .02, -.06], [.0, .02, -.5]],
+  [[-.4, .03, -.17], [-.4, .03, .17], [-.47, .03, .17], [-.47, .03, -.17]],
+  ...[-.34, -.17, .17, .34].map(z => [...Array(16).keys()].map(i => { const a = i / 16 * 6.283; return [.14 + .07 * Math.cos(a), .025, z + .026 * Math.sin(a)]; })),
+];
+plates.graveyard = (() => {
+  const fig = $("#gy-fig"), BM = bombers(), HITS = BM.hits.slice(0, INK);
+  const pct0 = a => Math.round(100 * a.filter(h => h.zone === "engines").length / a.length);
+  let act = 1, shownLost = false, year = 0, ghosts = [];
+  const frame = () => { const b = box(fig), S = Math.min(b.w * .85, b.h * 1.2); return { S, at: ([x, y, z]) => [b.x + b.w / 2 + x * S, b.y + b.h / 2 - y * S, z * S] }; };
+  function hitTargets() {
+    const { at } = frame();
+    return HITS.map((h, i) => {
+      const [x, y, z] = at(PLANE[h.zone](h.u, h.v));
+      return h.lost ? (shownLost ? (h.zone === "engines" ? { x, y: y - 3, z, r: 3.4, c: 1, a: 1 } : { x, y: y - 2, z, r: 1.6, c: 1, a: .45 }) : { x, y, z, r: 0, a: 0 }) : { x, y: y - 2, z, r: 2.1, c: i === 33 ? 2 : 0 };
+    });
+  }
+  function airframe(parent = ink.props, color = C.ink2, opacity = .5, lift = 0) {
+    const { at } = frame(), g = new THREE.Group(); parent.add(g);
+    OUTLINE.forEach(loop => {
+      const pts = loop.map(p => { const [x, y, z] = at(p); return new THREE.Vector3(x, -(y - lift), z); });
+      g.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false })));
+    });
+    return g;
+  }
+  // act 2: 1,024 managers as a field of lights on the ground; each year the losers go out
+  const SEAT = (() => { const r = rng(21), a = [...Array(MANAGERS).keys()]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; })();
+  function fieldTargets(y) {
+    const b = box(fig), sp = Math.min(b.w, b.h) * .95 / 32, cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+    return Array.from({ length: MANAGERS }, (_, i) => {
+      const x = cx + ((SEAT[i] % 32) - 15.5) * sp, z = (Math.floor(SEAT[i] / 32) - 15.5) * sp;
+      if (lasted(i) >= y) return i === MANAGERS - 1 && y === YEARS ? { x, y: cy - sp * .8, z, r: sp * .45, c: 1 } : { x, y: cy, z, r: sp * .24, c: 0 };
+      return { x, y: cy + sp * .35, z, r: sp * .18, c: i === 5 ? 2 : 3, a: i === 5 ? 1 : .16 };
+    });
+  }
+  async function story() {
+    const s = storyOf("graveyard");
+    act = 1; shownLost = false; year = 0; ghosts = [];
+    ink.to(hitTargets(), 900); airframe();
+    ink.pose(orbit(fig, { dist: 1.9, elev: 1.12, speed: .03, phase: -1.2 }), 2000);
+    s.cap("Fig. 3a. Bullet holes on the bombers that came home. The simulation is illustrative; the densities are Wald's, as told by Jordan Ellenberg (2014).");
+    s.say("New York, 1943. You are Abraham Wald, a statistician. Every day, bombers limp home from Europe full of holes, and the Air Force has mapped where they are. Armour is heavy: it can only go in one place.");
+    // the returning planes, one by one
+    const back = HITS.filter(h => !h.lost), order = HITS.map((h, i) => i).filter(i => !HITS[i].lost), t = hitTargets();
+    ink.to(order.reduce((acc, i) => (acc[i] = { ...t[i], r: 0, a: 0 }, acc), []), 10);
+    await sleep(900); if (!s.alive()) return;
+    const counter = s.say("Planes home: 0");
+    await tween(3200, kk => { const n = Math.round(order.length * kk), tt = [];
+      order.forEach((i, j) => { tt[i] = j < n ? t[i] : { ...t[i], r: 0, a: 0 }; }); ink.retarget(tt);
+      if (counter) counter.textContent = `Planes home: ${Math.round(BM.returned * kk)} of ${BM.returned}`; });
+    if (!s.alive()) return;
+    counter?.remove();
+    s.el("table", `<caption>Bullet holes per square foot, planes that came back</caption><tr><td>Engines</td><td>1.11</td></tr><tr><td>Fuselage</td><td>1.73</td></tr><tr><td>Fuel system</td><td>1.55</td></tr><tr><td>Rest of the plane</td><td>1.80</td></tr>`, "holes");
+    s.ask("The general asks you: where should the armour go?");
+    const c = await s.choose([
+      { label: "The wings and tail: that's where the holes are", right: false, reply: "Those planes took hits there and still flew home. The wings were never the problem." },
+      { label: "The fuselage", right: false, reply: "The fuselage is full of holes because a plane can survive them." },
+      { label: "The engines: they barely have any holes", right: true, reply: "Right. That was Wald's answer." },
+      { label: "Spread it evenly", right: false, reply: "Even armour protects the places that don't need it just as much as the one that does." },
+    ]);
+    if (!s.alive()) return;
+    s.say("You are only looking at the planes that came back. Where are the rest?");
+    // the planes that never came back rise as ghosts, and their holes bleed onto the map
+    ink.pose(orbit(fig, { dist: 2.3, elev: .8, speed: .03, phase: -1, lift: 90 }), 2400);
+    const { S } = frame();
+    for (let k = 0; k < 6; k++) ghosts.push(airframe(ink.props, C.madder, 0, 0));
+    shownLost = true; ink.to(hitTargets(), 2200);
+    await tween(3000, kk => ghosts.forEach((g, k) => { g.position.y = S * (.12 + .1 * k) * ease(kk); g.position.z = -S * .05 * k; g.children.forEach(l => { l.material.opacity = .5 * (1 - k / 7) * Math.min(1, kk * 2); }); }));
+    if (!s.alive()) return;
+    s.say(`Of 200 planes, ${BM.lost} never came back. ${pct0(HITS.filter(h => h.lost))}% of their hits were in the engines, against ${pct0(back)}% on the planes that made it home. The engine holes aren't missing because engines don't get hit. They're missing because those planes went down.`);
+    s.say(c.reply, "reply");
+    s.note("bomber", "Where to armour the bombers", c.label, c.right, "survivors");
+    await s.cont("Sixty years later"); if (!s.alive()) return;
+
+    // act 2: the fund managers
+    act = 2; s.clear(); ink.clearProps(); ghosts = [];
+    s.cap("Fig. 3b. 1,024 fund managers, one for every possible run of ten coin flips. The faint ones are the silent evidence (Taleb, ch. 8).");
+    ink.to(fieldTargets(0), 1800); ink.pose(orbit(fig, { dist: 1.6, elev: .6, speed: .03 }), 2200);
+    s.say("You run a pension fund. A manager walks in with a perfect record: ten years in a row beating the market.");
+    s.ask("Do you hand over the pension money?");
+    const d = await s.choose([
+      { label: "Yes. Ten years in a row is no fluke", right: false, reply: "Ten in a row is exactly what chance hands one manager in every 1,024." },
+      { label: "Ask how many managers started out", right: true, reply: "Right. The record means nothing until you know the size of the graveyard." },
+      { label: "Put it in a cheap index fund instead", right: true, reply: "Sensible. The genius and the coin look the same from here." },
+    ]);
+    if (!s.alive()) return;
+    s.say("Watch 1,024 managers who pick stocks by flipping a coin. Each year, the ones who lose to the market are fired.");
+    const line = s.say("Start: 1,024 managers");
+    for (year = 1; year <= YEARS; year++) {
+      await sleep(year === 1 ? 900 : 700); if (!s.alive()) return;
+      ink.to(fieldTargets(year), 650);
+      if (line) line.textContent = `Year ${year}: ${(MANAGERS >> year).toLocaleString()} still unbeaten`;
+    }
+    year = YEARS;
+    s.el("p", "1", "big madder");
+    s.say("Exactly one perfect record, every time. It is a coin, not a genius: one of the 1,024 possible runs is always all heads.");
+    s.say(d.reply, "reply");
+    s.note("manager", "The ten-year genius", d.label, d.right, "survivors");
+    s.moral("The evidence you see has already been filtered by what killed the rest. Before you learn from the survivors, go and count the graveyard.");
+    await s.cont("Next plate"); if (!s.alive()) return;
+    next();
+  }
+  return {
+    enter() { story(); },
+    resize() { if (act === 1) ink.retarget(hitTargets()); else ink.retarget(fieldTargets(year)); },
+    label: i => {
+      if (act === 2) { const l = lasted(i); return l >= year ? `Manager ${i + 1}: unbeaten for ${year} years` : `Manager ${i + 1}: fired after year ${l + 1}`; }
+      const h = HITS[i]; if (!h) return null;
+      const where = { engines: "an engine", fuel: "the fuel system", fuselage: "the fuselage", rest: "the wings or tail" }[h.zone];
+      return h.lost ? `A hit in ${where}, on a plane that never came back` : `A hit in ${where}, on a plane that came home`;
+    },
   };
 })();
 
