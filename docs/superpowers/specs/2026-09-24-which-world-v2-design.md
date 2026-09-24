@@ -12,7 +12,7 @@ Walk-up booth (hands-on) plus a talk to judges.
 
 ## Concept
 
-Seven **plates**, numbered like an atlas because they are a sequence, in two parts:
+Six **plates**, numbered like an atlas because they are a sequence, in two parts:
 *I. Which world are you in?* (the gut fails) and *II. See it better* (the picture fixes
 it). Each plate has up to three beats: **guess → the obvious picture → the same data
 drawn better**. One persistent **crowd of 1,024 ink dots** lives across the whole
@@ -29,10 +29,9 @@ plate hides one **black swan** (a pure black dot; hover says so).
 | IV | The Datasaurus | five datasets, identical mean, SD and correlation: similar? | the summary table | plot them: the dots morph dino → star → circle → bullseye → X | AoS ch. 2 (Datasaurus Dozen, Matejka & Fitzmaurice 2017) |
 | V | League table → funnel | investigate the district at the top of the league table? | 380 districts ranked by death rate | the same districts as a funnel plot: the "worst" is small and inside chance limits; the real outlier ranked lower | AoS ch. 9 (simulated from the book's setup) |
 | VI | The positive test + framing | chance a positive is real | 1,000 people → positives box: 9 of 108 = 8% | framing: "5% die" vs "95% survive" (Bristol) on one 100-dot array; bacon "+18%" vs 6 → 7 in 100 | AoS ch. 8, ch. 1 |
-| VII | Shipman | — | book figures | by 1984, 105 deaths drawn as dots against 59.2 expected; ~1,300 false alarms if you test 25,000 GPs naively | AoS intro, ch. 10 |
 
-Shipman ruling: `shipman-data/derived/case_decisions.csv` verdicts are regex-extracted
-and count 281 "unlawful killing" against the Inquiry's 215, so no per-year curve from it.
+**Parked (user, 2026-09-24):** the Shipman plate. Plate VI is the last plate and ends
+with the closing line and "Start again". The existing `shipman-data/` piece is untouched.
 
 ## Visual system (direction B, "Atlas plate")
 
@@ -63,7 +62,7 @@ and count 281 "unlawful killing" against the Inquiry's 215, so no per-year curve
 
 Build order (each step leaves a shippable page; v1 is on the branch history):
 engine + reskin + home + Stadium → Datasaurus → Graveyard → Funnel → Test + framing →
-Galton/turkey port → Shipman → docs/TALK. The talk demos I, III, IV, V.
+Galton/turkey port → docs/TALK. The talk demos I, III, IV, V.
 
 ## Verification
 
