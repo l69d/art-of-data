@@ -315,7 +315,7 @@ const anchor = (x, W) => x < W * .15 ? "start" : x > W * .85 ? "end" : "middle";
 // ---------- the ink: 1,024 dots on WebGL, shared by every plate ----------
 // World coordinates are viewport pixels: (x, -y, z). The flat pose puts the camera where z = 0 maps
 // 1:1 onto CSS pixels, so dots land exactly on SVG axes; scene poses orbit a subject for the stories.
-// target = {x, y, z?, r, c: 0 ink | 1 madder | 2 swan | 3 ink-2, a}
+// target = {x, y, z?, r, c: 0 ink | 1 madder | 2 swan | 3 ink-2 | 4 gold, a}
 const INK = 1024;
 const ink = (() => {
   const renderer = new THREE.WebGLRenderer({ canvas: $("#ink"), antialias: true, alpha: true });
@@ -323,7 +323,7 @@ const ink = (() => {
   const scene = new THREE.Scene(), FOV = 35, TAN = Math.tan(FOV * Math.PI / 360);
   const camera = new THREE.PerspectiveCamera(FOV, 1, 1, 2e6);
   let W = 1, H = 1, dFlat = 1;
-  const PAL = [C.ink, C.madder, "#000000", C.ink2].map(c => new THREE.Color(c));
+  const PAL = [C.ink, C.madder, "#000000", C.ink2, C.gold].map(c => new THREE.Color(c));
   const uniforms = { dpr: { value: DPR }, dFlat: { value: 1 }, paper: { value: new THREE.Color(C.paper) }, time: { value: 0 }, bob: { value: 0 } };
   const VERT = `attribute float size; attribute vec3 color; attribute float alpha; attribute float seed; uniform float dpr; uniform float dFlat; uniform float time; uniform float bob;
     varying vec3 vC; varying float vA; varying float vF;
@@ -567,14 +567,26 @@ function bowlProps(B) {
 
 // ---------- home ----------
 plates.home = (() => {
-  const fig = $("#home-fig");
-  let B;
-  const targets = () => { B = bowl(fig); return B.seats.map((p, i) => ({ x: p[0], y: p[1], z: p[2], r: B.r0, c: i === 137 ? 2 : 0 })); };
+  const fig = $("#home-fig"), N = INK, SW = 377;
+  const SEED = Array.from({ length: N }, (_, i) => [Math.sin(i * 12.99) * .5 + .5, Math.sin(i * 78.23) * .5 + .5, Math.sin(i * 37.72) * .5 + .5]);
+  // each bird rides a slowly twisting ribbon; the ribbon breathes and folds over time
+  function flock(t) {
+    const b = box(fig), R = Math.min(b.w, b.h) * .42, cx = b.x + b.w / 2, cy = b.y + b.h / 2, T = reduced ? 0 : t / 1000;
+    return SEED.map(([u, v, w], i) => {
+      const a = u * 6.283 + T * .16, twist = Math.sin(a * 2 + T * .3) * .9, band = (v - .5) * .5;
+      const x = Math.cos(a) * (1 + band * Math.cos(twist)), y = Math.sin(a * 2 + T * .2) * .28 + band * Math.sin(twist) * .6, z = Math.sin(a) * (.62 + band * Math.cos(twist) * .6);
+      return { x: cx + x * R, y: cy - y * R, z: z * R, r: i === SW ? 3.6 : 1.5 + w * 1.4, c: i === SW ? 2 : 0, a: .55 + .45 * w };
+    });
+  }
   return {
-    enter() { ink.to(targets(), 1600); setProps(() => bowlProps(B)); ink.pose(orbit(fig, { dist: 1.75, elev: .5, speed: .06 }), 2000); },
-    resize() { ink.retarget(targets()); },
+    enter() {
+      ink.to(flock(performance.now()), 1800); setProps(null); ink.pose(orbit(fig, { dist: 1.6, elev: .35, speed: .04 }), 2000);
+      const t0 = performance.now();
+      onRaf(t => { if (t - t0 > 1850) ink.retarget(flock(t)); });
+    },
+    resize() { ink.retarget(flock(performance.now())); },
     primary() { location.hash = "#bombers"; },
-    label: i => i < CROWD ? "One of a thousand people" : null,
+    label: i => i === SW ? null : i < N ? "One of a thousand" : null,
   };
 })();
 $("#start").onclick = () => plates.home.primary();
@@ -910,7 +922,7 @@ plates.letter = (() => {
   const SARAH = perm[10]; // the first false alarm when 1 in 100 are ill
   function cloudTargets() {
     const b = box(fig), r = rng(4);
-    return Array.from({ length: CROWD }, (_, i) => i === SARAH ? { x: b.x + b.w * .52, y: b.y + b.h * .42, z: b.w * .28, r: 5, c: 1 } : { x: b.x + b.w * (.1 + .8 * r()), y: b.y + b.h * (.1 + .6 * r()), z: (r() - .5) * b.w * .9, r: 2.4, c: i === 777 ? 2 : 3, a: i === 777 ? 1 : .55 });
+    return Array.from({ length: CROWD }, (_, i) => i === SARAH ? { x: b.x + b.w * .52, y: b.y + b.h * .42, z: b.w * .28, r: 5, c: 1 } : { x: b.x + b.w * (.1 + .8 * r()), y: b.y + b.h * (.1 + .6 * r()), z: (r() - .5) * b.w * .9, r: 1.6 + r() * 1.6, c: i === 777 ? 2 : 4, a: i === 777 ? 1 : .45 + r() * .4 });
   }
   function testTargets() {
     const Lo = layout();
