@@ -32,12 +32,15 @@ a { color: var(--ink); }
 #ink { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
 /* watercolour: three soft washes drift behind each scene, tinted per story */
 #wash { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; mix-blend-mode: multiply; transition: opacity 1.2s; }
-#wash i { position: absolute; border-radius: 50%; filter: blur(50px); opacity: .6; animation: drift 38s ease-in-out infinite alternate; transition: background 2.4s; }
+#wash i { position: absolute; border-radius: 50%; opacity: .6; animation: drift 38s ease-in-out infinite alternate; }
 #wash i:nth-child(1) { width: 62vw; height: 62vw; left: 34vw; top: -14vw; background: radial-gradient(circle, var(--w1), transparent 66%); }
 #wash i:nth-child(2) { width: 52vw; height: 52vw; left: 56vw; top: 28vh; background: radial-gradient(circle, var(--w2), transparent 66%); animation-duration: 47s; animation-delay: -12s; }
 #wash i:nth-child(3) { width: 46vw; height: 46vw; left: 24vw; top: 46vh; background: radial-gradient(circle, var(--w3), transparent 66%); animation-duration: 53s; animation-delay: -25s; }
 @keyframes drift { from { transform: translate(0, 0) scale(1); } to { transform: translate(-5vw, 4vh) scale(1.18); } }
-body { --w1: #cfd9ef; --w2: #f2dcc4; --w3: #e3d6ec; }
+@property --w1 { syntax: "<color>"; inherits: true; initial-value: #cfd9ef; }
+@property --w2 { syntax: "<color>"; inherits: true; initial-value: #f2dcc4; }
+@property --w3 { syntax: "<color>"; inherits: true; initial-value: #e3d6ec; }
+body { --w1: #cfd9ef; --w2: #f2dcc4; --w3: #e3d6ec; transition: --w1 2.4s, --w2 2.4s, --w3 2.4s; }
 body[data-wash=bombers] { --w1: #f4c7a9; --w2: #b8c6e7; --w3: #e6d0ef; }
 body[data-wash=stadium] { --w1: #c3cbea; --w2: #f1d8a2; --w3: #e9c4c2; }
 body[data-wash=turkey] { --w1: #f6d59c; --w2: #f3bfae; --w3: #cde2d3; }
@@ -375,7 +378,7 @@ const ink = (() => {
   const GOLD = new THREE.Color(C.gold), dust = cloud(220), DR = rng(31), DUST = Array.from({ length: 220 }, () => [DR() * 2 - 1, DR() * 2 - 1, DR() * 2 - 1, .6 + DR() * 1.8, DR()]);
   let bobTo = 0;
   (function frame(t) {
-    uniforms.time.value = reduced ? 0 : t / 1000; uniforms.bob.value += (bobTo - uniforms.bob.value) * .04;
+    uniforms.time.value = reduced ? 0 : t / 1000; uniforms.bob.value += (bobTo - uniforms.bob.value) * .04; if (Math.abs(bobTo - uniforms.bob.value) < .005) uniforms.bob.value = bobTo;
     const f = document.querySelector(".plate.on .fig"), fb = f ? f.getBoundingClientRect() : { left: W / 2, top: H / 2, width: 1, height: 1 }, s = uniforms.bob.value;
     DUST.forEach(([x, y, z, r, ph], i) => {
       const tt = reduced ? 0 : t / 1000, dx = Math.sin(tt * .05 + ph * 6.3) * .08, dy = ((y + tt * .012 * (1 + ph)) % 2 + 2) % 2 - 1;
@@ -455,7 +458,7 @@ function sketch(pts, { color = C.ink, opacity = .35, loop = false, parent = ink.
   parent.add(g); return g;
 }
 const hairline = (pts, o = {}) => sketch(pts, o);
-const fade = (g, k) => g.traverse(o => { if (o.material && o.userData.o0 !== undefined) o.material.opacity = o.userData.o0 * k; });
+const fade = (g, k) => { g.visible = k > .01; if (g.visible) g.traverse(o => { if (o.material && o.userData.o0 !== undefined) o.material.opacity = o.userData.o0 * k; }); };
 
 // ---------- the story runner ----------
 // Each plate's story is an async script. Leaving a plate bumps RUN, and every await checks it, so an old
@@ -466,6 +469,7 @@ const sleep = ms => new Promise(res => setTimeout(res, ms));
 function storyOf(plate, total = 8) {
   const host = $(`[data-plate=${plate}] .story`), bar = $(`[data-plate=${plate}] .progress i`), run = RUN, alive = () => run === RUN && cur === plate;
   let n = 0;
+  if (bar) bar.style.width = "0%";
   const target = () => host.querySelector(".card:last-child") || host;
   const add = (tag, html, cls) => { if (!alive()) return null; const e = document.createElement(tag); if (cls) e.className = cls; e.innerHTML = html; target().appendChild(e); requestAnimationFrame(() => e.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" })); return e; };
   const button = (label, cls) => { const g = add("div", "", "btns"); if (!g) return [null, null]; const b = document.createElement("button"); b.className = "btn " + cls; b.textContent = label; g.appendChild(b); return [g, b]; };
@@ -581,8 +585,7 @@ plates.home = (() => {
   return {
     enter() {
       ink.to(flock(performance.now()), 1800); setProps(null); ink.pose(orbit(fig, { dist: 1.6, elev: .35, speed: .04 }), 2000);
-      const t0 = performance.now();
-      onRaf(t => { if (t - t0 > 1850) ink.retarget(flock(t)); });
+      onRaf(t => { ink.retarget(flock(t)); });
     },
     resize() { ink.retarget(flock(performance.now())); },
     primary() { location.hash = "#bombers"; },
@@ -591,7 +594,7 @@ plates.home = (() => {
 })();
 $("#start").onclick = () => plates.home.primary();
 
-// ---------- Plate I: the stadium ----------
+// ---------- Plate II: the stadium ----------
 const CR = crowd();
 const MED = [...CR.wealth].sort((a, b) => a - b)[CROWD / 2];
 const money = v => v >= 1e6 ? "$" + (v / 1e6).toFixed(1).replace(/\.0$/, "") + " million" : "$" + (Math.round(v / 100) * 100).toLocaleString();
@@ -627,6 +630,7 @@ plates.stadium = (() => {
   }
   // every fortune as a column over its seat, and the richest guest's column: built once, then grown in place
   let SC = null;
+  const RED = new THREE.Color(C.madder), GOLDC = new THREE.Color(C.gold);
   function columns() {
     unit = B.a * .03 / MED;
     const P = new Float32Array(CROWD * 6), geo = new THREE.BufferGeometry();
@@ -641,11 +645,14 @@ plates.stadium = (() => {
   function raise() {
     if (!SC) return;
     const { P, geo, tower, beam, lanterns, LR } = SC, t = reduced ? 0 : performance.now() / 1000;
-    B.seats.forEach((p, i) => { P.set([p[0], -p[1], p[2], p[0], -p[1] + CR.wealth[i] * unit * cols, p[2]], i * 6); });
-    geo.attributes.position.needsUpdate = true;
+    if (SC.cols !== cols) {
+      SC.cols = cols;
+      B.seats.forEach((p, i) => { const j = i * 6; P[j] = P[j + 3] = p[0]; P[j + 1] = -p[1]; P[j + 4] = -p[1] + CR.wealth[i] * unit * cols; P[j + 2] = P[j + 5] = p[2]; });
+      geo.attributes.position.needsUpdate = true;
+    }
     tower.visible = towerK > 0; tower.scale.y = Math.max(.001, towerK); tower.position.set(B.cx, -B.cy + tower.scale.y / 2, 0);
     // a soft madder glow along the column, and paper lanterns rising over the gala
-    const red = new THREE.Color(C.madder), gold = new THREE.Color(C.gold);
+    const red = RED, gold = GOLDC;
     for (let k = 0; k < 40; k++) beam.put(k, B.cx, B.cy - towerK * k / 40, 0, B.r0 * 9, red, towerK > 0 ? .18 : 0);
     beam.commit();
     LR.forEach(([a, b, c, d], k) => { const th = a * 6.283, rr = B.a * (.3 + 1.1 * b), h = ((c + t * .018 * (.5 + d)) % 1); lanterns.put(k, B.cx + rr * Math.cos(th), B.cy - B.a * (.1 + 1.6 * h), rr * .62 * Math.sin(th), B.r0 * (1.6 + 1.4 * d), gold, mode === "wealth" ? .55 * Math.sin(Math.PI * h) : 0); });
@@ -673,7 +680,7 @@ plates.stadium = (() => {
     const { b, base, x, peak } = logTargets(), gg = svgEl("g", { class: "log" }, ov), X = v => x(v) - b.x, Y = base - b.y + 6;
     svgEl("line", { x1: 0, x2: b.w, y1: Y, y2: Y, class: "ink" }, gg);
     [[1e2, "$100"], [1e4, "$10,000"], [1e6, "$1 million"], [1e8, "$100 million"], [1e10, "$10 billion"]].forEach(([v, l]) => {
-      svgEl("line", { x1: X(v), x2: X(v), y1: Y, y2: Y + 6, class: "ink" }, gg); svgEl("text", { x: X(v), y: Y + 24, "text-anchor": "middle" }, gg, l);
+      svgEl("line", { x1: X(v), x2: X(v), y1: Y, y2: Y + 6, class: "ink" }, gg); svgEl("text", { x: X(v), y: Y + 24, "text-anchor": v === 1e2 ? "start" : "middle" }, gg, l);
     });
     svgEl("text", { x: 0, y: Y + 50 }, gg, "net worth, logarithmic scale: each step is ten times the last");
     svgEl("text", { x: X(RICHEST_USD), y: Y - 22, "text-anchor": "end", style: "fill:" + C.madder }, gg, "the richest guest");
@@ -681,7 +688,7 @@ plates.stadium = (() => {
   }
   const bigLine = cls => { const l = host$("stadium").querySelector(".card .line"); if (l) l.className = cls; };
   async function story() {
-    const s = storyOf("stadium", 11), who = { weight: "the heaviest fan", wealth: "the richest guest" };
+    const s = storyOf("stadium", 10), who = { weight: "the heaviest fan", wealth: "the richest guest" };
     mode = "weight"; phase = "bowl"; fill = 0; walk = 0; grow = 0; cols = 0; towerK = 0; ov.innerHTML = "";
     ink.to(bowlTargets(), 1400); setProps(scenery); ink.pose(orbit(fig, { dist: 1.75, elev: .62, speed: .04 }), 2200);
     s.cap("Fig. 2a. One thousand fans, and one more. After Taleb, The Black Swan, ch. 3.");
@@ -708,7 +715,7 @@ plates.stadium = (() => {
     const tw = share(HEAVIEST_KG, W8);
     s.card(pct(tw), "Kick-off"); bigLine("big");
     await tween(1600, kk => { grow = ease(kk); ink.nudge(NEW, { r: B.r0 * Math.sqrt(1 + 4 * grow) }); drawBar(tw, grow, who.weight); }); if (!s.alive()) return;
-    s.say(`The heaviest person imaginable adds ${pct(tw)} to the stadium's weight.`);
+    s.say(`The heaviest person imaginable adds ${pct(tw)} to the crowd's weight.`);
     s.say(c1.reply, "reply");
     s.note("weight", "The heaviest fan walks in", c1.label, c1.right, "Mediocristan");
     await s.cont("Later that night"); if (!s.alive()) return;
@@ -717,7 +724,7 @@ plates.stadium = (() => {
     s.cap("Fig. 2b. The same thousand, and the richest person on Earth, at Taleb's 2007 figure of $80 billion.");
     s.card("The same thousand are now guests at your charity gala. You have one night to raise money for the children's hospital.", "Midnight");
     ink.to(bowlTargets(), 1400);
-    onRaf(() => raise());
+    onRaf(() => { if (phase === "log") return false; raise(); });
     await tween(2600, k => { cols = ease(k); }); if (!s.alive()) return;
     s.say("Over each seat stands a column: that guest's fortune. Most are modest. A few are tall.", "note");
     await s.cont(); if (!s.alive()) return;
@@ -834,7 +841,7 @@ plates.bombers = (() => {
   }
   const table = (rows, head, cols) => `<caption>${head}</caption>${cols ? `<thead><tr><th></th>${cols.map(c => `<th>${c}</th>`).join("")}</tr></thead>` : ""}${rows.map(([n, a, b, hot]) => `<tr${hot ? ' class="hot"' : ""}><td>${n}</td><td>${a}</td>${b !== undefined ? `<td>${b}</td>` : ""}</tr>`).join("")}`;
   async function story() {
-    const s = storyOf("bombers", 11);
+    const s = storyOf("bombers", 8);
     shownBack = 0; shownLost = false; ghostK = 0; drift = 0; fleet = 0;
     ink.to(hitTargets(), 900); setProps(build);
     ink.pose(orbit(fig, { dist: 1.9, elev: .95, speed: .03, phase: -1.2 }), 2200);
@@ -844,7 +851,7 @@ plates.bombers = (() => {
 
     s.card("You are Abraham Wald, a mathematician who fled Vienna. You work for the Statistical Research Group: a room of statisticians in Manhattan, helping to win a war.", "New York, 1943");
     await s.cont(); if (!s.alive()) return;
-    s.card("Over Germany, American bombers are being shot down faster than they can be built. Every plane that doesn't come back is ten men.", "The air war");
+    s.card("Over Germany, on the worst raids of 1943, one bomber in six doesn't come back. Every plane that doesn't come back is ten men.", "The air war");
     ink.pose(orbit(fig, { dist: 2.3, elev: .45, speed: .03, phase: -1.4, lift: 60 }), 2600);
     await tween(2400, k => { fleet = k; }); if (!s.alive()) return;
     await s.cont(); if (!s.alive()) return;
@@ -905,7 +912,7 @@ plates.letter = (() => {
   const inN = p => { const n = Math.round(1 / p); return n >= 2 ? `1 in ${n.toLocaleString()}` : pct(p, 0); };
   let phase = "cloud", prev = .01, res, people, k1 = 0, k2 = 0, fa = null, fb = null;
   function assign() {
-    res = screen(CROWD, prev);
+    res = screen(CROWD, prev); SARAH = perm[res.ill];
     people = Array.from({ length: CROWD }, () => ({ ill: false, pos: false }));
     perm.slice(0, res.ill).forEach((p, i) => { people[p].ill = true; people[p].pos = i < res.tp; });
     perm.slice(res.ill, res.ill + res.fp).forEach(p => { people[p].pos = true; });
@@ -919,7 +926,7 @@ plates.letter = (() => {
     return { b, cols, cell, top: b.y + 46, box: { x: bx, y: b.y + 46, w: bw, h: Math.min(full, Math.ceil(Math.max(res.pos, 1) / bcols) * bc + 2 * pad) }, bc, bcols, pad };
   }
   // before the test: the patients drift as a cloud above the figure
-  const SARAH = perm[10]; // the first false alarm when 1 in 100 are ill
+  let SARAH = perm[10]; // always the first false alarm: set in assign()
   function cloudTargets() {
     const b = box(fig), r = rng(4);
     return Array.from({ length: CROWD }, (_, i) => i === SARAH ? { x: b.x + b.w * .52, y: b.y + b.h * .42, z: b.w * .28, r: 5, c: 1 } : { x: b.x + b.w * (.1 + .8 * r()), y: b.y + b.h * (.1 + .6 * r()), z: (r() - .5) * b.w * .9, r: 1.6 + r() * 1.6, c: i === 777 ? 2 : 4, a: i === 777 ? 1 : .45 + r() * .4 });
@@ -977,7 +984,7 @@ plates.letter = (() => {
   }
   const draw = () => { if (phase === "frame") { ink.retarget(frameTargets()); frameLabels(); } else if (phase === "grid") { ink.retarget(testTargets()); testLabels(); } else ink.retarget(cloudTargets()); };
   async function story() {
-    const s = storyOf("letter", 11);
+    const s = storyOf("letter", 7);
     phase = "cloud"; prev = .01; k1 = k2 = 0; fa = fb = null; assign(); ov.innerHTML = "";
     ink.to(cloudTargets(), 1600); ink.pose(orbit(fig, { dist: 1.5, elev: .35, speed: .05 }), 2000);
     s.cap("Fig. 5a. Screening 1,000 people (Spiegelhalter, ch. 8). Sarah is invented; her odds are not.");
@@ -1052,7 +1059,7 @@ plates.letter = (() => {
   };
 })();
 
-// ---------- Plate II: the turkey ----------
+// ---------- Plate III: the turkey ----------
 // 1,000 fed days wind up a spiral tower; the camera rides up it. Day 1,001 falls the whole height.
 plates.turkey = (() => {
   const fig = $("#tk-fig"), T = turkey(), DAYS = 1000, LAST = DAYS; // dot 1,000 is day 1,001
@@ -1085,7 +1092,7 @@ plates.turkey = (() => {
   }
   function placeSun() { if (!SUN) return; const { x, base, Ht, z } = SUN.userData; SUN.position.set(x, -(base - Ht * (.1 + .95 * sunK)), z); }
   async function story() {
-    const s = storyOf("turkey", 8);
+    const s = storyOf("turkey", 6);
     shown = 0; fallen = 0; doom = false; sunK = 0;
     ink.to(targets(), 600); setProps(farm); ink.pose(ride(0), 1800);
     s.cap("Fig. 3. A thousand and one days (Taleb, The Black Swan, ch. 4). The turkey's confidence is Laplace's rule of succession; the turkey is simulated.");
@@ -1193,7 +1200,7 @@ plates.dino = (() => {
   }
   const scenery = () => { if (stage === "desk" || stage === "sheets") sheets(); };
   async function story() {
-    const s = storyOf("dino", 8);
+    const s = storyOf("dino", 6);
     set = 0; flat = false; auto = false; fan = 0; stage = "desk"; ov.innerHTML = "";
     ink.to(sheetTargets(), 900); setProps(scenery); ink.pose(orbit(fig, { dist: 1.5, elev: .45, speed: .02, phase: .15 }), 2000);
     s.cap("Fig. 4. The Datasaurus Dozen (Matejka and Fitzmaurice, 2017): five of its thirteen sets, as cited by Spiegelhalter, ch. 2.");
@@ -1241,7 +1248,7 @@ plates.dino = (() => {
   };
 })();
 
-// ---------- Plate VII: your record ----------
+// ---------- Plate VI: your record ----------
 plates.record = (() => {
   const fig = $("#rc-fig");
   const ORDER = ["bomber", "weight", "wealth", "turkey", "dino", "gp", "press", "headline"];
@@ -1291,13 +1298,19 @@ function show() {
   document.querySelectorAll(".plate").forEach(s => s.classList.toggle("on", s.dataset.plate === id));
   document.querySelectorAll(".rail a").forEach(a => a.hash === "#" + id ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
   const host = $(`[data-plate=${id}] .story`); if (host) host.innerHTML = "";
-  cur = id; look.yaw = look.pitch = 0; window.scrollTo(0, 0); plates[id]?.enter?.();
+  cur = id; layoutKey = ""; look.yaw = look.pitch = 0; window.scrollTo(0, 0); plates[id]?.enter?.();
 }
 addEventListener("hashchange", show);
 // props (scenery) are rebuilt with the layout: plates register a builder with setProps
 let propFn = null;
 function setProps(fn) { propFn = fn; ink.clearProps(); fn && fn(); }
-const ro = new ResizeObserver(() => { plates[cur]?.resize?.(); if (propFn) { ink.clearProps(); propFn(); } });
+let layoutKey = "";
+const ro = new ResizeObserver(() => {
+  const f = document.querySelector(".plate.on .fig"), r = f ? f.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };
+  const key = [innerWidth, innerHeight, r.left, r.top, r.width, r.height].map(Math.round).join();
+  if (key === layoutKey) return;
+  layoutKey = key; plates[cur]?.resize?.(); if (propFn) { ink.clearProps(); propFn(); }
+});
 ro.observe($("#ink"));
 document.querySelectorAll(".fig, .margin").forEach(f => ro.observe(f));
 

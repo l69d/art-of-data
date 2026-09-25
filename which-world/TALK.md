@@ -15,7 +15,8 @@ bombers, in full, shows one moment from the stadium, then shows the record.
 
 *Plate I. Read the cards; let the formation cross, and the planes come home.*
 
-> "New York, 1943. You're Abraham Wald. Every bomber that doesn't come back is ten men.
+> "New York, 1943. You're Abraham Wald. On the worst raids, one bomber in six doesn't come
+> back, and every plane that doesn't come back is ten men.
 > The Air Force has counted every bullet hole on every plane that came home."
 
 At the hangar, point at the table:
@@ -43,7 +44,7 @@ Let the ghosts drift into the clouds, and read the moral.
 
 ## 2:35 Your record (20 s)
 
-*Plate VI: the judges' own choices, marked, around a turning globe of ink.*
+*Click "VI Your record" in the top rail (pressing → would start each plate on the way). The judges' own choices, marked, around a turning globe of ink.*
 
 > "Every call you made, and the world it belonged to. The turkey, the Datasaurus and
 > Sarah's letter are waiting at the booth. Which world you're in, and how you draw it,
