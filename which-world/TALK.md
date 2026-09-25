@@ -1,58 +1,55 @@
 # Talk: Which world are you in? (about 3 minutes)
 
 Open `index.html?talk` fullscreen. Hand the judges the mouse: they make every choice,
-and you read the cards aloud and press Space. The script plays Plate I and the heart of
-Plate III, then shows the record.
+and you read the cards aloud and press Space. The script plays Plate I, the missing
+bombers, in full, shows one moment from the stadium, then shows the record.
 
 ## 0:00 Open (15 s)
 
-*Title plate, with the stadium turning slowly.*
+*The title plate: a murmuration of ink birds, one black swan among them.*
 
-> "Six short stories about data. In each one, you sit in someone's seat and make the
+> "Five short stories about data. In each one you sit in someone's seat and make the
 > call. Take the mouse."
 
-## 0:15 The stadium (70 s)
+## 0:15 The missing bombers (100 s)
 
-*Plate I. Read the cards; let the judge press "Open the gates" and watch the fans pour in.*
+*Plate I. Read the cards; let the formation cross, and the planes come home.*
 
-> "You're the engineer. The heaviest person imaginable just bought the last ticket.
-> What do you do?"
+> "New York, 1943. You're Abraham Wald. Every bomber that doesn't come back is ten men.
+> The Air Force has counted every bullet hole on every plane that came home."
 
-Reveal: **0.5%**. "The stand never noticed."
+At the hangar, point at the table:
 
-> "Midnight. Same thousand people, now at your charity gala. The richest person on Earth
-> walks in. Where do you spend your evening?"
+> "Two holes per plane in the wings and tail. One engine hit for every five planes. Armour
+> is heavy, and the general can protect one place. Where does it go?"
 
-Let the judge **hold** to raise the fortune: the column leaves the sky, **99.9%**, 18 km
-tall at this scale.
+Let the judge choose. Then the red ghost formation rises:
 
-> "Taleb calls these two worlds Mediocristan and Extremistan. Your gut used one rule for
-> both."
+> "These are the planes that never came back. Look at the table: every part was hit
+> about as often on both groups of planes, except the engines. One hit per plane on the
+> planes that went down. The engine holes weren't missing because engines don't get
+> hit. They were missing because those planes never made it home to be counted."
 
-Press "Draw it on a log scale": the thousand come back. "A better picture is half the
-insight."
+Let the ghosts drift into the clouds, and read the moral.
 
-## 1:25 The bomber (60 s)
+## 1:55 The stadium, briefly (40 s)
 
-*Plate III. Skip ahead to "The general's office" with → and Space if time is short.*
+*Press → to Plate II and run it quickly, or just describe it.*
 
-> "1943. You're Abraham Wald. The bombers come home with holes everywhere except the
-> engines. Where does the armour go?"
+> "Same trap, other direction. The heaviest person imaginable adds half a percent to a
+> stadium's weight. The richest person on Earth holds 99.9% of the gala's wealth: a
+> column eighteen kilometres tall on this scale. Taleb calls these two worlds
+> Mediocristan and Extremistan, and our gut uses one rule for both."
 
-After the choice, the red ghost formation rises:
+## 2:35 Your record (20 s)
 
-> "The engine holes aren't missing because engines don't get hit. They're missing
-> because those planes went down. The same trap hires fund managers today."
+*Plate VI: the judges' own choices, marked, around a turning globe of ink.*
 
-## 2:25 Your record (25 s)
+> "Every call you made, and the world it belonged to. The turkey, the Datasaurus and
+> Sarah's letter are waiting at the booth. Which world you're in, and how you draw it,
+> decide half the answer."
 
-*Plate VII: the judges' own choices, marked, around a turning globe of ink.*
+## 2:55 Close (5 s)
 
-> "Every call you made, and the world it belonged to. The turkey, the analyst, the
-> minister and the GP are waiting at the booth. Which world you're in, and how you draw
-> it, decide half the answer."
-
-## 2:50 Close (10 s)
-
-> "One offline HTML file in three.js, built with Claude from two books. Every number on
-> screen is checked against them by a test."
+> "One offline HTML file in three.js, built with Claude from two books and a war story.
+> The key numbers on screen are checked by tests."

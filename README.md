@@ -11,11 +11,11 @@ the data needs 3D, scale, or motion.
 | piece | dataset | built with |
 |---|---|---|
 | [Shipman deaths by age](https://l69d.github.io/art-of-data/shipman-data/age_by_year.html) | [Shipman Inquiry case decisions](shipman-data/) — 531 deaths, 1974–1998 | SVG + vanilla JS |
-| [Which world are you in?](https://l69d.github.io/art-of-data/which-world/) | [The Datasaurus Dozen, Wald's bombers + figures from *The Black Swan* and *The Art of Statistics*](which-world/) — six stories you play from the driver's seat, and your record | three.js (vendored) + SVG, offline |
+| [Which world are you in?](https://l69d.github.io/art-of-data/which-world/) | [Wald's bombers, the Datasaurus Dozen + figures from *The Black Swan* and *The Art of Statistics*](which-world/) — five dreamy stories you play from the driver's seat | three.js (vendored) + SVG, offline |
 
 ![Shipman deaths by age](shipman-data/shipman-scatter.png)
 
-![Which world are you in? Plate III, the bombers that never came back](which-world/preview.png)
+![Which world are you in? Plate I, the bombers that never came back](which-world/preview.png)
 
 ## Layout
 
@@ -64,3 +64,8 @@ One folder per dataset. Each one holds:
   a ghost formation, a sun over the turkey's tower, a ministry with its press pack, report
   sheets, Sarah). Review fixes from v3: idle reset clears the record, scrollbar-safe renderer,
   phone layout.
+- **2026-09-25** — Which world are you in? v5: trimmed to five stories with Wald's bombers
+  first; Wald told by the bullet count (holes per plane, part by part: engines 0.2 on the
+  planes that came home, 1.0 on the ones that didn't); a dreamy, hand-inked look (watercolour
+  washes, glowing floating points, gold dust, sketched lines, paper clouds and lanterns, a
+  murmuration on the title page). The league table and the fund managers were cut.

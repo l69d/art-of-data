@@ -987,7 +987,7 @@ plates.letter = (() => {
     await s.cont(); if (!s.alive()) return;
     s.card("She sits down holding the letter from the screening service. Her hands are shaking. She hasn't opened it.", "11:42 am");
     await s.cont("Open the letter"); if (!s.alive()) return;
-    s.card("POSITIVE", "The letter"); const l = host$("letter").querySelector(".card .line"); if (l) l.className = "big madder";
+    s.card("POSITIVE", "11:43 am"); const l = host$("letter").querySelector(".card .line"); if (l) l.className = "big madder";
     s.say("The disease is rare: 1 person in 100 has it. The test catches 90% of real cases, and wrongly flags 10% of healthy people.");
     s.say("Sarah looks up at you: <em>“Doctor, how worried should I be?”</em>");
     s.ask("What do you tell her?");
