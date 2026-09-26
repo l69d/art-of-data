@@ -1,0 +1,1340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Which World Are You In?</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="Five short stories about data. Take the seat, make the call, watch it play out. After Taleb's The Black Swan and Spiegelhalter's The Art of Statistics.">
+<style>
+:root {
+  color-scheme: light;
+  --paper: #e7e9ea;
+  --ink: #1d2a44;
+  --ink-2: #46506a;
+  --hair: rgba(29, 42, 68, .35);
+  --madder: #b3261e;
+  --gold: #c19a46;
+  --serif: "Iowan Old Style", Charter, Georgia, serif;
+  --ui: "Avenir Next", system-ui, sans-serif;
+  --hatch: repeating-linear-gradient(135deg, rgba(29, 42, 68, .045) 0 1px, transparent 1px 7px);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body {
+  background: var(--hatch), var(--paper); background-attachment: fixed; color: var(--ink);
+  font: 18px/1.55 var(--serif); overflow-x: hidden; font-variant-numeric: lining-nums;
+}
+button, input { font: inherit; color: inherit; }
+a { color: var(--ink); }
+:focus-visible { outline: 2px solid var(--madder); outline-offset: 3px; }
+#ink { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+/* watercolour: three soft washes drift behind each scene, tinted per story */
+#wash { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; mix-blend-mode: multiply; transition: opacity 1.2s; }
+#wash i { position: absolute; border-radius: 50%; opacity: .6; animation: drift 38s ease-in-out infinite alternate; }
+#wash i:nth-child(1) { width: 62vw; height: 62vw; left: 34vw; top: -14vw; background: radial-gradient(circle, var(--w1), transparent 66%); }
+#wash i:nth-child(2) { width: 52vw; height: 52vw; left: 56vw; top: 28vh; background: radial-gradient(circle, var(--w2), transparent 66%); animation-duration: 47s; animation-delay: -12s; }
+#wash i:nth-child(3) { width: 46vw; height: 46vw; left: 24vw; top: 46vh; background: radial-gradient(circle, var(--w3), transparent 66%); animation-duration: 53s; animation-delay: -25s; }
+@keyframes drift { from { transform: translate(0, 0) scale(1); } to { transform: translate(-5vw, 4vh) scale(1.18); } }
+@property --w1 { syntax: "<color>"; inherits: true; initial-value: #cfd9ef; }
+@property --w2 { syntax: "<color>"; inherits: true; initial-value: #f2dcc4; }
+@property --w3 { syntax: "<color>"; inherits: true; initial-value: #e3d6ec; }
+body { --w1: #cfd9ef; --w2: #f2dcc4; --w3: #e3d6ec; transition: --w1 2.4s, --w2 2.4s, --w3 2.4s; }
+body[data-wash=bombers] { --w1: #f4c7a9; --w2: #b8c6e7; --w3: #e6d0ef; }
+body[data-wash=stadium] { --w1: #c3cbea; --w2: #f1d8a2; --w3: #e9c4c2; }
+body[data-wash=turkey] { --w1: #f6d59c; --w2: #f3bfae; --w3: #cde2d3; }
+body[data-wash=dino] { --w1: #c5e4d7; --w2: #d7d0ef; --w3: #f1e2bd; }
+body[data-wash=letter] { --w1: #f1c6cd; --w2: #d5cfef; --w3: #ebe1c7; }
+@media (prefers-reduced-motion: reduce) { #wash i { animation: none; } }
+body.flat .plate.on .fig { cursor: default; }
+
+/* rail */
+.top {
+  position: fixed; inset: 0 0 auto 0; z-index: 5;
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  padding: 16px 36px 12px; background: var(--hatch), var(--paper); background-attachment: fixed;
+  border-bottom: 1px solid var(--hair);
+}
+.mark { font-style: italic; text-decoration: none; color: var(--ink-2); font-size: 16px; }
+.rail { display: flex; gap: 18px; }
+.rail a { text-decoration: none; color: var(--ink-2); font-size: 15px; padding-bottom: 2px; border-bottom: 1px solid transparent; }
+.rail a[aria-current="page"] { color: var(--ink); border-color: var(--ink); }
+.rail i { margin-right: 6px; }
+
+/* plates */
+.plate {
+  position: relative; z-index: 1; display: none; min-height: 100vh;
+  padding: 84px 36px 32px; grid-template-columns: minmax(300px, 380px) 1fr; gap: 44px;
+}
+.plate.on { display: grid; }
+.margin {
+  display: flex; flex-direction: column; gap: 14px; padding: 10px 18px 0 0; margin-right: -18px;
+  background: var(--hatch), var(--paper); background-attachment: fixed; position: relative; z-index: 2;
+  box-shadow: 36px 0 36px -18px var(--paper);
+}
+.label { font-style: italic; color: var(--ink-2); margin: 0; }
+.margin h2 { font: 400 clamp(34px, 3.4vw, 50px)/1.04 var(--serif); margin: 0; letter-spacing: -.01em; }
+.margin p { margin: 0; max-width: 38ch; }
+.story { display: flex; flex-direction: column; gap: 12px; outline: none; }
+.progress { height: 1px; background: var(--hair); position: relative; margin: 2px 0 6px; }
+.progress i { position: absolute; left: 0; top: -1px; height: 3px; width: 0; background: var(--ink); transition: width .8s ease; }
+.card { display: flex; flex-direction: column; gap: 14px; animation: in .7s ease both; }
+.card .when { font-style: italic; color: var(--madder); font-size: 17px; }
+.card .line { font-size: 23px; line-height: 1.42; max-width: 32ch; }
+.card .note { color: var(--ink-2); font-style: italic; }
+.btn.hold { background: linear-gradient(to right, rgba(179, 38, 30, .25) var(--p, 0%), transparent var(--p, 0%)); color: var(--ink); border-color: var(--ink); user-select: none; -webkit-user-select: none; touch-action: none; }
+.plate.on .fig { cursor: grab; touch-action: pan-y; } .plate.on .fig.dragging { cursor: grabbing; }
+.story p { animation: in .6s ease both; }
+.story .ask { font-size: 21px; }
+.story .reply { font-style: italic; }
+@keyframes in { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { .story *, .story { animation: none !important; } }
+.moral { margin: 8px 0 0; padding: 14px 0 0; border-top: 1px solid var(--ink); animation: in .8s ease both; }
+.moral p:last-child { font-size: 22px; line-height: 1.35; margin-top: 4px; }
+.clip { border: 1px solid var(--hair); padding: 12px 14px; background: #f2f2ee; font: 700 22px/1.15 var(--serif); letter-spacing: -.01em; }
+.clip small { display: block; font: italic 400 14px var(--serif); color: var(--ink-2); margin-bottom: 6px; }
+.holes { border-collapse: collapse; font-size: 16px; font-variant-numeric: lining-nums tabular-nums; animation: in .6s ease both; }
+.holes td { padding: 3px 0; border-bottom: 1px solid var(--hair); }
+.holes td + td { text-align: right; padding-left: 24px; }
+.holes tr.hot td { color: var(--madder); }
+.holes th { font-weight: 400; font-style: italic; color: var(--ink-2); font-size: 14px; text-align: right; padding: 0 0 4px 16px; }
+.holes caption { text-align: left; font-style: italic; color: var(--ink-2); font-size: 15px; padding-bottom: 4px; }
+.stats { border-collapse: collapse; font-size: 15px; font-variant-numeric: lining-nums tabular-nums; animation: in .6s ease both; }
+.stats th { font-weight: 400; font-style: italic; color: var(--ink-2); text-align: right; padding: 0 0 4px 12px; border-bottom: 1px solid var(--hair); }
+.stats td { text-align: right; padding: 3px 0 3px 12px; }
+.stats th:first-child, .stats td:first-child { text-align: left; padding-left: 0; }
+.stats tr.on td { color: var(--madder); }
+.rec { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.rec li { display: grid; grid-template-columns: 1.6em 1fr; gap: 2px 10px; padding-bottom: 10px; border-bottom: 1px solid var(--hair); animation: in .6s ease both; }
+.rec b { grid-row: span 2; font: 400 22px/1 var(--serif); }
+.rec b.ok { color: var(--ink); } .rec b.no { color: var(--madder); } .rec b.na { color: var(--ink-2); }
+.rec span { font-size: 16px; } .rec small { font-style: italic; color: var(--ink-2); font-size: 15px; }
+.cap { font-style: italic; color: var(--ink-2); font-size: 15px; margin-top: auto !important; padding-top: 16px; }
+.big { font: 400 clamp(48px, 5vw, 76px)/.9 var(--serif); margin: 0; font-variant-numeric: lining-nums tabular-nums; }
+.big.madder { color: var(--madder); }
+.fig { position: sticky; top: 84px; height: calc(100vh - 116px); min-height: 480px; align-self: start; }
+.fig svg.ov { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+svg text { font: italic 15px var(--serif); fill: var(--ink-2); }
+svg .hair { stroke: var(--hair); stroke-width: 1; fill: none; }
+svg .ink { stroke: var(--ink); stroke-width: 1; fill: none; }
+svg text.halo { paint-order: stroke; stroke: var(--paper); stroke-width: 5px; stroke-linejoin: round; }
+
+/* controls */
+.guess { display: grid; gap: 4px; }
+.guess label { font-size: 15px; color: var(--ink-2); font-style: italic; }
+.guess output { font: 400 34px/1 var(--serif); font-variant-numeric: lining-nums tabular-nums; }
+input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
+.btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.opts { flex-direction: column; align-items: stretch; animation: in .6s ease both; }
+.btn {
+  align-self: start; cursor: pointer; font: 600 16px/1.2 var(--ui); letter-spacing: .01em; text-align: left;
+  background: var(--ink); color: var(--paper); border: 1px solid var(--ink); border-radius: 3px; padding: 12px 18px;
+}
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--hair); }
+.opts .btn { align-self: stretch; font-weight: 500; }
+.opts .btn:hover:not(:disabled) { border-color: var(--ink); }
+.btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn:disabled:not([aria-pressed="true"]) { opacity: .45; cursor: default; }
+
+/* home */
+[data-plate=home] .margin { justify-content: flex-end; padding-bottom: 40px; background: none; }
+[data-plate=home] h1 { font: 400 clamp(58px, 7.4vw, 112px)/.92 var(--serif); margin: 0; letter-spacing: -.02em; }
+[data-plate=home] .sub { font-size: 21px; max-width: 30ch; }
+
+#tip {
+  position: fixed; z-index: 9; pointer-events: none; display: none;
+  background: var(--paper); border: 1px solid var(--hair); padding: 5px 9px;
+  font: italic 15px var(--serif); white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .plate { grid-template-columns: 1fr; padding: 72px 16px 24px; gap: 20px; }
+  .margin { margin-right: 0; padding-right: 0; }
+  .fig { order: -1; top: 72px; height: 46vh; min-height: 300px; z-index: 3; background: var(--hatch), var(--paper); background-attachment: fixed; }
+  #ink { z-index: 4; clip-path: inset(72px 0 calc(100% - 72px - max(46vh, 300px)) 0); }
+  .top { padding: 12px 16px 10px; }
+  .rail span { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="wash" aria-hidden="true"><i></i><i></i><i></i></div>
+<canvas id="ink" aria-hidden="true"></canvas>
+<header class="top">
+  <a class="mark" href="#home">Which world are you in?</a>
+  <nav class="rail" aria-label="Plates">
+    <a href="#bombers" aria-label="Plate I, the missing bombers"><i>I</i><span>The missing bombers</span></a>
+    <a href="#stadium" aria-label="Plate II, the stadium"><i>II</i><span>The stadium</span></a>
+    <a href="#turkey" aria-label="Plate III, the turkey"><i>III</i><span>The turkey</span></a>
+    <a href="#dino" aria-label="Plate IV, the Datasaurus"><i>IV</i><span>The Datasaurus</span></a>
+    <a href="#letter" aria-label="Plate V, the letter"><i>V</i><span>The letter</span></a>
+    <a href="#record" aria-label="Your record"><i>VI</i><span>Your record</span></a>
+  </nav>
+</header>
+
+<main>
+  <section class="plate" data-plate="home">
+    <div class="margin">
+      <p class="label">Five short stories about data</p>
+      <h1>Which world are you in?</h1>
+      <p class="sub">Take the seat. Make the call. Watch what happens.</p>
+      <p class="note">Click to continue, or press Space. Drag any scene to look around.</p>
+      <div class="btns"><button class="btn go" id="start">Begin</button></div>
+      <p class="cap">After Nassim Taleb, <cite>The Black Swan</cite>, and David Spiegelhalter, <cite>The Art of Statistics</cite>.</p>
+    </div>
+    <div class="fig" id="home-fig"></div>
+  </section>
+
+  <section class="plate" data-plate="stadium">
+    <div class="margin"><p class="label">Plate II</p><h2>The stadium</h2><div class="progress"><i></i></div><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
+    <div class="fig" id="st-fig"><svg class="ov" aria-hidden="true"></svg></div>
+  </section>
+
+  <section class="plate" data-plate="turkey">
+    <div class="margin"><p class="label">Plate III</p><h2>The turkey</h2><div class="progress"><i></i></div><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
+    <div class="fig" id="tk-fig"><svg class="ov" aria-hidden="true"></svg></div>
+  </section>
+
+  <section class="plate" data-plate="bombers">
+    <div class="margin"><p class="label">Plate I</p><h2>The missing bombers</h2><div class="progress"><i></i></div><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
+    <div class="fig" id="bm-fig"><svg class="ov" aria-hidden="true"></svg></div>
+  </section>
+
+  <section class="plate" data-plate="dino">
+    <div class="margin"><p class="label">Plate IV</p><h2>The Datasaurus</h2><div class="progress"><i></i></div><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
+    <div class="fig" id="dn-fig"><svg class="ov" aria-hidden="true"></svg></div>
+  </section>
+
+
+  <section class="plate" data-plate="letter">
+    <div class="margin"><p class="label">Plate V</p><h2>The letter</h2><div class="progress"><i></i></div><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
+    <div class="fig" id="ts-fig"><svg class="ov" aria-hidden="true"></svg></div>
+  </section>
+  <section class="plate" data-plate="record">
+    <div class="margin"><p class="label">Plate VI</p><h2>Your record</h2><div class="progress"><i></i></div><div class="story" aria-live="polite" tabindex="-1"></div><p class="cap"></p></div>
+    <div class="fig" id="rc-fig"></div>
+  </section>
+</main>
+<div id="tip" role="tooltip"></div>
+
+<script src="three.min.js"></script>
+<script id="model">
+const CROWD = 1000, HEAVIEST_KG = 400, RICHEST_USD = 80e9;
+function rng(seed) { return () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function gauss(r) { let u = 0; while (!u) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); }
+const sum = a => a.reduce((x, y) => x + y, 0);
+function crowd(seed = 7) {
+  const r = rng(seed), weight = [], wealth = [];
+  for (let i = 0; i < CROWD; i++) { weight.push(Math.min(160, Math.max(45, 80 + 15 * gauss(r)))); wealth.push(Math.exp(gauss(r))); }
+  const k = 80e6 / sum(wealth); // $80k each; Taleb's "a few million" in total would make the richest share even larger
+  return { weight, wealth: wealth.map(w => w * k) };
+}
+const share = (extra, arr) => extra / (extra + sum(arr));
+function screen(n, prev, sens = 0.9, spec = 0.9) {
+  const ill = Math.round(n * prev), well = n - ill, tp = Math.round(ill * sens), fp = Math.round(well * (1 - spec));
+  return { ill, well, tp, fp, pos: tp + fp, ppv: tp + fp ? tp / (tp + fp) : 0 };
+}
+function fit(xs, ys) {
+  const n = xs.length, mx = sum(xs) / n, my = sum(ys) / n; let sxy = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < n; i++) { const dx = xs[i] - mx, dy = ys[i] - my; sxy += dx * dy; sxx += dx * dx; syy += dy * dy; }
+  const slope = sxy / sxx; return { slope, intercept: my - slope * mx, r: sxy / Math.sqrt(sxx * syy), mx, my };
+}
+// Laplace's rule of succession: after d safe days, P(safe tomorrow) = (d+1)/(d+2)
+function turkey(days = 1000) {
+  const weight = [], confidence = [];
+  for (let d = 1; d <= days; d++) { weight.push(5 + 15 * (1 - Math.exp(-d / 250))); confidence.push((d + 1) / (d + 2)); }
+  return { weight, confidence };
+}
+
+// a Poisson draw (Knuth; normal approximation for large means)
+function poisson(r, mean) {
+  if (mean > 40) return Math.max(0, Math.round(mean + Math.sqrt(mean) * gauss(r)));
+  let k = 0, p = 1; const L = Math.exp(-mean); do { k++; p *= r(); } while (p > L); return k - 1;
+}
+// Plate I: Wald's bombers, 1943. 200 sorties; where a hit lands decides whether the plane comes home.
+// Zone shares follow the airframe's area; lethality is illustrative (engines kill most). Seeded.
+const ZONES = [["engines", .12, .6], ["fuel", .10, .15], ["fuselage", .30, .03], ["rest", .48, .01]];
+function bombers(seed = 5) {
+  const r = rng(seed), hits = []; let lost = 0;
+  for (let p = 0; p < 200; p++) {
+    const n = 1 + poisson(r, 3), mine = []; let live = 1;
+    for (let k = 0; k < n; k++) {
+      let x = r(), z = ZONES[0]; for (const zz of ZONES) { if (x < zz[1]) { z = zz; break; } x -= zz[1]; }
+      live *= 1 - z[2]; mine.push({ plane: p, zone: z[0], u: r(), v: r() });
+    }
+    const down = r() > live; if (down) lost++;
+    mine.forEach(h => { h.lost = down; hits.push(h); });
+  }
+  return { hits, returned: 200 - lost, lost };
+}
+// average hits per plane in each zone, for the planes that came home and the planes that didn't
+function bomberCounts(B) {
+  const out = {};
+  for (const [z] of ZONES) out[z] = { back: B.hits.filter(h => !h.lost && h.zone === z).length / B.returned, lost: B.hits.filter(h => h.lost && h.zone === z).length / B.lost };
+  return out;
+}
+const BACON = { base: 6, rel: .18 }; // lifetime bowel-cancer risk per 100, and the "18% higher" headline
+
+// Plate IV: five of the Datasaurus Dozen, [x, y]: derived/datasaurus.csv (see README to regenerate)
+// the summary table as displayed: mean x, mean y, SD x, SD y, r, to one decimal
+const dinoRow = k => { const a = DINO[k], xs = a.map(p => p[0]), ys = a.map(p => p[1]), sd = v => { const mu = sum(v) / v.length; return Math.sqrt(sum(v.map(q => (q - mu) ** 2)) / (v.length - 1)); }; return [sum(xs) / a.length, sum(ys) / a.length, sd(xs), sd(ys), fit(xs, ys).r].map(v => v.toFixed(1)); };
+const DINO = {dino:[[55.3846,97.1795],[51.5385,96.0256],[46.1538,94.4872],[42.8205,91.4103],[40.7692,88.3333],[38.7179,84.8718],[35.641,79.8718],[33.0769,77.5641],[28.9744,74.4872],[26.1538,71.4103],[23.0769,66.4103],[22.3077,61.7949],[22.3077,57.1795],[23.3333,52.9487],[25.8974,51.0256],[29.4872,51.0256],[32.8205,51.0256],[35.3846,51.4103],[40.2564,51.4103],[44.1026,52.9487],[46.6667,54.1026],[50.0,55.2564],[53.0769,55.641],[56.6667,56.0256],[59.2308,57.9487],[61.2821,62.1795],[61.5385,66.4103],[61.7949,69.1026],[57.4359,55.2564],[54.8718,49.8718],[52.5641,46.0256],[48.2051,38.3333],[49.4872,42.1795],[51.0256,44.1026],[45.3846,36.4103],[42.8205,32.5641],[38.7179,31.4103],[35.1282,30.2564],[32.5641,32.1795],[30.0,36.7949],[33.5897,41.4103],[36.6667,45.641],[38.2051,49.1026],[29.7436,36.0256],[29.7436,32.1795],[30.0,29.1026],[32.0513,26.7949],[35.8974,25.2564],[41.0256,25.2564],[44.1026,25.641],[47.1795,28.718],[49.4872,31.4103],[51.5385,34.8718],[53.5897,37.5641],[55.1282,40.641],[56.6667,42.1795],[59.2308,44.4872],[62.3077,46.0256],[64.8718,46.7949],[67.9487,47.9487],[70.5128,53.718],[71.5385,60.641],[71.5385,64.4872],[69.4872,69.4872],[46.9231,79.8718],[48.2051,84.1026],[50.0,85.2564],[53.0769,85.2564],[55.3846,86.0256],[56.6667,86.0256],[56.1538,82.9487],[53.8462,80.641],[51.2821,78.718],[50.0,78.718],[47.9487,77.5641],[29.7436,59.8718],[29.7436,62.1795],[31.2821,62.5641],[57.9487,99.4872],[61.7949,99.1026],[64.8718,97.5641],[68.4615,94.1026],[70.7692,91.0256],[72.0513,86.4103],[73.8462,83.3333],[75.1282,79.1026],[76.6667,75.2564],[77.6923,71.4103],[79.7436,66.7949],[81.7949,60.2564],[83.3333,55.2564],[85.1282,51.4103],[86.4103,47.5641],[87.9487,46.0256],[89.4872,42.5641],[93.3333,39.8718],[95.3846,36.7949],[98.2051,33.718],[56.6667,40.641],[59.2308,38.3333],[60.7692,33.718],[63.0769,29.1026],[64.1026,25.2564],[64.359,24.1026],[74.359,22.9487],[71.2821,22.9487],[67.9487,22.1795],[65.8974,20.2564],[63.0769,19.1026],[61.2821,19.1026],[58.7179,18.3333],[55.1282,18.3333],[52.3077,18.3333],[49.7436,17.5641],[47.4359,16.0256],[44.8718,13.718],[48.7179,14.8718],[51.2821,14.8718],[54.1026,14.8718],[56.1538,14.1026],[52.0513,12.5641],[48.7179,11.0256],[47.1795,9.8718],[46.1538,6.0256],[50.5128,9.4872],[53.8462,10.2564],[57.4359,10.2564],[60.0,10.641],[64.1026,10.641],[66.9231,10.641],[71.2821,10.641],[74.359,10.641],[78.2051,10.641],[67.9487,8.718],[68.4615,5.2564],[68.2051,2.9487],[37.6923,25.7692],[39.4872,25.3846],[91.2821,41.5385],[50.0,95.7692],[47.9487,95.0],[44.1026,92.6923]],star:[[58.2136,91.8819],[58.1961,92.215],[58.7182,90.3105],[57.2784,89.9076],[58.082,92.0081],[57.4894,88.0853],[28.0887,63.5108],[28.0855,63.5902],[28.0873,63.1233],[27.578,62.821],[27.7799,63.5181],[28.589,63.0241],[28.7391,62.7209],[27.0246,62.9019],[28.8013,63.389],[27.1865,63.5587],[29.2851,63.3836],[39.4029,51.1509],[28.8113,61.3579],[34.304,56.5421],[29.6028,60.1573],[49.1162,63.66],[39.6175,62.9252],[43.2331,63.1652],[64.8928,65.8142],[62.4901,74.5843],[68.9881,63.2321],[62.1056,75.9909],[32.4618,62.8819],[41.3272,49.0703],[44.0071,46.4497],[44.0741,34.5532],[44.0013,33.9042],[45.0063,38.299],[44.4438,36.0191],[42.1787,26.4921],[44.0446,35.6622],[41.6405,27.0931],[41.9383,24.9915],[44.0539,33.5564],[39.2067,51.5337],[28.7044,61.7775],[31.7087,58.8378],[42.8117,30.0204],[43.3006,31.5264],[40.3986,16.347],[40.4357,20.2327],[40.9365,16.913],[39.6616,15.6094],[40.8993,20.7985],[41.9686,26.4971],[40.3834,21.3912],[56.5381,32.4442],[52.9707,29.0402],[54.621,30.3445],[65.099,27.2416],[63.056,29.7091],[70.9601,41.2595],[69.8958,43.4538],[70.5959,41.9647],[69.647,44.0444],[77.393,63.3715],[64.4008,67.4487],[63.869,70.2137],[56.5944,86.927],[56.5313,87.4998],[59.6522,87.8095],[56.6365,85.6375],[58.6723,90.0772],[58.2216,90.411],[57.9147,89.9538],[55.3155,80.2519],[54.5757,77.5363],[54.4131,78.2291],[55.0745,79.8175],[29.433,60.8018],[29.4227,63.0685],[29.0056,63.3908],[58.4618,90.2653],[57.9978,92.1599],[57.5495,90.7489],[59.5299,88.3273],[58.2494,92.1297],[58.0245,91.6944],[58.3821,90.5535],[62.5668,77.7439],[72.1758,63.1289],[79.4728,63.4087],[80.3577,63.2954],[78.7572,53.3326],[82.5402,56.5411],[86.4359,59.7928],[79.4887,53.6517],[81.5304,56.0254],[79.1868,53.2348],[77.8991,51.8225],[75.1307,23.3724],[76.058,16.3837],[57.6147,33.8224],[56.1714,32.118],[66.2879,26.1171],[67.8817,24.236],[64.0281,27.6727],[77.4967,14.9485],[77.6347,14.4619],[77.8637,14.6107],[77.3382,15.8901],[76.1804,15.9126],[77.2527,15.1515],[77.4134,15.2219],[76.7318,16.2168],[49.4711,25.063],[42.4765,18.3385],[43.5951,19.9942],[50.34,26.4714],[40.749,16.1821],[38.3865,14.5802],[38.404,14.4519],[38.7643,14.3656],[41.4701,17.278],[47.1554,22.3779],[39.5826,17.6485],[41.7402,17.8293],[39.3119,15.6407],[41.6798,17.7459],[39.0875,15.1223],[41.4815,18.0474],[77.6061,15.1629],[75.9827,16.3069],[76.9458,15.8585],[77.5437,15.2539],[77.5847,15.83],[76.8223,15.5952],[77.3486,15.7745],[77.5732,14.7806],[77.9726,14.9557],[41.5289,24.9164],[43.7226,19.0773],[79.3261,52.9004],[56.664,87.9401],[57.8218,90.6932],[58.2432,92.1043]],circle:[[55.993,79.2773],[50.0323,79.0131],[51.2885,82.4359],[51.1705,79.1653],[44.3779,78.1646],[45.0103,77.8809],[48.5598,78.7884],[42.1423,76.8806],[41.027,76.4096],[34.5753,72.7248],[31.1686,69.2454],[32.6443,70.7326],[26.6666,62.981],[26.4593,62.6347],[25.538,60.6302],[26.3207,62.3963],[26.1634,62.0268],[25.2138,60.2734],[26.8595,63.1418],[31.7607,69.7977],[39.7933,75.808],[45.6174,78.12],[53.7715,79.3029],[56.4514,79.2471],[66.0937,77.0178],[56.9258,79.2063],[58.9883,78.9173],[57.9023,79.0809],[64.8129,77.4869],[60.3498,78.7294],[48.8906,16.8065],[47.5495,17.0714],[30.8894,26.329],[28.9728,29.0505],[35.1614,22.7868],[45.8704,17.4894],[32.8314,24.7975],[39.4856,20.0331],[33.4462,24.1906],[21.8636,46.0526],[25.1659,35.7666],[22.9595,51.2877],[25.5861,60.8466],[26.3143,33.2972],[33.0373,24.5645],[36.4689,21.8761],[26.5136,32.9187],[36.0271,22.1954],[42.681,18.5425],[45.0411,17.7345],[47.3524,17.1347],[53.8462,16.3873],[55.1296,16.3532],[52.1881,16.4182],[58.6727,16.6634],[82.1443,33.1952],[75.6866,24.7415],[85.345,52.8864],[83.8447,58.6161],[85.6648,45.5428],[77.931,68.6901],[73.0318,73.1206],[70.1028,75.6832],[57.1447,79.1941],[46.9625,78.6666],[50.5649,79.0773],[53.7197,79.3069],[54.2002,79.325],[47.8752,78.6759],[51.4735,79.1599],[52.7512,79.2937],[48.5622,78.7824],[53.0812,79.2973],[56.4754,79.1678],[49.5709,79.0381],[37.6277,74.5575],[32.2637,70.3166],[32.5424,70.7024],[52.825,85.5781],[58.5283,78.9787],[56.2658,79.2529],[57.0759,79.1939],[54.2564,79.3139],[62.6857,78.1747],[68.0856,76.1123],[65.1181,77.3992],[68.7456,75.7901],[63.0902,78.0414],[77.2046,69.3121],[82.0339,62.6819],[81.5779,63.8949],[85.1801,53.7817],[84.2868,57.2562],[85.6225,45.0242],[85.6045,50.7623],[84.4248,38.7614],[85.571,44.5601],[84.6267,39.4871],[73.3962,22.8162],[73.5074,22.857],[63.3565,17.7241],[72.959,22.5115],[64.0208,17.8836],[61.1245,17.1164],[75.6742,24.7825],[69.5136,20.2794],[58.5721,16.6427],[70.9819,21.1459],[65.223,18.3972],[65.315,18.3337],[64.0102,17.9245],[57.1409,16.5986],[56.3652,16.3265],[43.0462,18.4026],[52.0818,16.4539],[42.879,18.4894],[51.567,16.4857],[58.8391,16.6376],[60.7558,17.0332],[54.7612,16.3662],[53.5699,16.3397],[48.9146,16.7986],[52.6461,16.3848],[49.8385,16.6763],[52.6841,16.408],[65.8072,18.1408],[60.6739,17.0518],[63.3947,17.7005],[64.802,18.2169],[65.0259,18.2878],[65.7556,18.5162],[69.9677,20.539],[68.8928,20.0324],[61.8265,17.2697],[60.788,17.0462],[61.9156,17.2822],[45.029,17.7244],[39.9214,19.7018],[84.7943,55.5687],[55.663,83.3565],[50.4922,78.9975],[51.4671,79.2018]],bullseye:[[51.2039,83.3398],[58.9745,85.4998],[51.8721,85.8297],[48.1799,85.0451],[41.6832,84.0179],[37.8904,82.5675],[39.549,80.8126],[39.6496,82.6645],[34.7506,80.0111],[27.5608,72.8478],[24.6355,71.6107],[20.9595,66.0415],[20.6891,62.7213],[19.2882,62.0631],[20.0245,61.3426],[35.4695,43.1159],[36.8943,47.7066],[39.0555,55.547],[46.9571,65.2404],[37.3105,45.2588],[40.0097,60.9866],[48.0144,65.7128],[53.7038,66.3895],[63.0675,64.035],[62.048,63.8459],[59.84,64.4768],[55.1609,65.2373],[61.2798,65.7664],[60.8349,64.6038],[61.5206,64.7919],[36.9165,41.0952],[38.5022,41.5672],[48.6644,30.6807],[50.2853,30.3379],[42.2763,34.5276],[54.0318,29.6723],[37.3294,39.602],[41.3895,37.2961],[40.0747,34.6237],[35.3497,47.1411],[34.7637,47.6248],[37.0266,44.4623],[36.4556,40.7918],[35.5377,48.7294],[20.4089,32.203],[23.4957,25.3225],[29.5575,21.3648],[33.0082,15.9851],[53.9804,29.351],[52.2343,29.7117],[59.5031,30.6697],[41.1638,34.3158],[48.993,32.0304],[59.2693,29.6407],[45.4692,33.8312],[62.6913,30.2904],[73.4287,48.5779],[70.8464,52.2823],[71.539,45.5218],[67.6209,38.0066],[72.471,51.1221],[64.8122,62.8109],[60.8537,65.4991],[67.7895,61.3637],[41.6096,83.8487],[53.003,84.6748],[54.7142,84.0431],[44.2917,82.9094],[49.1917,85.8762],[53.1014,84.5477],[51.5998,84.8198],[54.3797,84.2404],[46.4808,83.5182],[53.1747,84.2606],[45.272,85.2371],[36.0334,53.3717],[28.2712,72.8402],[25.0548,71.5486],[64.7589,82.3152],[63.1445,85.2367],[50.4247,85.1747],[70.645,82.4309],[63.149,83.9469],[62.824,84.9662],[70.2369,82.1712],[70.0427,80.385],[72.5706,80.9712],[75.1307,79.9841],[83.2939,70.7784],[79.6643,73.9323],[88.4321,64.6242],[89.1156,64.0015],[89.0922,57.7682],[91.726,52.6234],[91.7355,48.9702],[91.5079,53.3127],[88.239,31.4774],[88.5305,30.476],[55.3652,30.4459],[62.5603,30.4471],[58.0067,30.2537],[55.0671,29.0115],[61.6148,29.9944],[68.5431,35.6578],[77.7061,20.3043],[68.453,13.0355],[68.2572,12.3846],[70.2555,13.2504],[65.0443,11.0008],[60.0922,11.8721],[52.992,9.9067],[50.1446,12.2115],[46.5086,11.2071],[43.807,11.3189],[57.8179,10.9451],[50.9405,9.6915],[63.4973,11.9141],[50.0165,11.9339],[58.6368,11.9747],[54.7303,11.4129],[65.8755,11.7324],[57.061,9.9206],[46.8199,10.4947],[38.3594,13.4313],[47.3154,12.8535],[55.0519,11.95],[50.516,9.7656],[49.6774,10.3831],[67.2807,14.1287],[66.173,12.0379],[61.0885,10.0845],[66.0531,13.3802],[72.67,15.2342],[61.5035,10.8284],[68.995,13.9943],[78.2499,17.8832],[36.482,15.1628],[50.9677,29.6798],[91.1911,46.6743],[55.8638,85.3365],[49.2806,84.0488],[43.3685,84.3322]],x_shape:[[38.3378,92.4727],[35.7519,94.1168],[32.7672,88.5183],[33.7296,88.6223],[37.2382,83.7249],[36.0272,82.0408],[39.2393,79.2637],[39.7845,82.2606],[35.166,84.1565],[40.6221,78.5421],[39.1819,79.819],[42.4309,75.1336],[43.0813,75.3467],[44.3607,70.4742],[44.3248,71.0459],[47.5522,66.4604],[48.6649,64.961],[46.2806,68.0284],[50.5632,62.6238],[52.631,59.9639],[54.6362,57.4938],[51.346,61.6006],[57.1349,53.878],[54.1712,58.0598],[50.9424,62.0974],[66.5129,59.0713],[64.3979,56.1749],[68.6866,62.2373],[65.0278,57.0963],[53.3045,40.8838],[52.9452,40.3846],[45.2257,30.5552],[50.8433,37.7446],[49.6593,36.2734],[47.1428,32.0251],[41.2701,21.7218],[47.1301,31.3099],[40.916,23.5416],[38.6602,21.6895],[42.6126,24.1951],[41.209,24.1287],[50.6492,37.4838],[52.1319,39.3646],[39.7973,16.0835],[43.5499,24.3072],[36.7147,17.3818],[37.2246,17.9801],[40.5124,22.9622],[40.2221,20.6146],[44.125,23.3662],[42.3463,24.5583],[44.1891,28.7726],[45.8142,31.057],[46.6431,31.4072],[52.1899,39.3678],[51.1003,38.0957],[65.4008,42.614],[64.852,43.1337],[63.4038,44.8475],[65.3715,42.696],[61.908,53.1904],[71.8267,65.6862],[72.6546,66.8783],[76.8886,72.1655],[43.7446,71.268],[39.0542,83.119],[39.9317,79.9392],[39.7628,76.406],[41.3234,80.2119],[41.7873,83.9881],[39.7556,79.6571],[40.7499,77.2047],[43.8569,77.6098],[42.3678,73.6383],[39.463,78.46],[44.5173,70.3693],[41.6361,76.2492],[45.4229,69.0955],[42.0029,97.8376],[76.1056,95.305],[79.2026,92.4072],[84.8482,95.4248],[81.5645,83.7929],[85.4462,83.0783],[80.3125,76.5162],[80.7662,79.8961],[82.6701,81.7115],[77.1636,73.5237],[74.0707,68.4796],[74.1142,71.9264],[68.9421,62.6352],[73.242,67.3533],[71.867,34.3292],[71.5692,34.6992],[71.4829,34.6805],[78.1285,23.1392],[78.7898,25.5972],[77.7815,23.4472],[48.5306,34.1525],[65.5308,42.2811],[70.118,36.4482],[70.4723,36.0881],[76.7911,28.072],[72.4094,33.0393],[76.2713,25.5695],[76.9533,27.7706],[75.1077,30.017],[75.9693,29.0389],[75.2839,24.8748],[77.0522,27.9056],[42.8268,25.557],[42.0807,24.9465],[39.8783,18.3249],[36.4755,17.7189],[37.1031,15.4456],[34.149,13.5239],[37.5794,15.0159],[41.0643,12.2145],[42.1953,20.9194],[36.6056,15.7489],[39.4312,19.3238],[37.5621,11.9284],[34.2381,13.7132],[34.1409,4.5777],[36.6593,17.682],[40.6437,20.2409],[36.7925,13.3921],[75.9483,22.7448],[76.8407,20.9185],[81.9505,19.8746],[81.6437,16.5918],[84.6102,14.2478],[84.1029,8.9807],[80.18,19.0888],[80.5733,8.3656],[79.0043,10.6282],[40.0482,24.2615],[34.7946,13.9697],[79.2218,22.0946],[36.0309,93.1217],[34.4996,86.61],[31.1069,89.4616]]};
+</script>
+
+<script>
+const $ = (s, root = document) => root.querySelector(s);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const C = { ink: css("--ink"), ink2: css("--ink-2"), madder: css("--madder"), paper: css("--paper"), hair: css("--hair"), gold: css("--gold") };
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const pct = (x, d = 1) => (x * 100).toFixed(d).replace(/\.0+$/, "") + "%";
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, k) => a + (b - a) * k;
+
+// animation frames belong to the current plate; leaving it cancels them
+let frames = new Set();
+function onRaf(fn) {
+  const id = { v: 0 };
+  const loop = t => { if (fn(t) === false) { frames.delete(id); return; } id.v = requestAnimationFrame(loop); };
+  id.v = requestAnimationFrame(loop); frames.add(id); return id;
+}
+function stopAll() { frames.forEach(f => cancelAnimationFrame(f.v)); frames.clear(); }
+function tween(ms, fn) {
+  return new Promise(res => { const t0 = performance.now(); onRaf(t => { const k = reduced ? 1 : Math.min(1, (t - t0) / ms); fn(k); if (k >= 1) { res(); return false; } }); });
+}
+// a figure's box in viewport coordinates (figures are sticky, so the ink never needs to follow scroll)
+function box(el) { const r = el.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; }
+
+const NS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs, parent, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const a in attrs) e.setAttribute(a, attrs[a]);
+  if (text != null) e.textContent = text;
+  parent && parent.appendChild(e); return e;
+}
+const anchor = (x, W) => x < W * .15 ? "start" : x > W * .85 ? "end" : "middle";
+
+// ---------- the ink: 1,024 dots on WebGL, shared by every plate ----------
+// World coordinates are viewport pixels: (x, -y, z). The flat pose puts the camera where z = 0 maps
+// 1:1 onto CSS pixels, so dots land exactly on SVG axes; scene poses orbit a subject for the stories.
+// target = {x, y, z?, r, c: 0 ink | 1 madder | 2 swan | 3 ink-2 | 4 gold, a}
+const INK = 1024;
+const ink = (() => {
+  const renderer = new THREE.WebGLRenderer({ canvas: $("#ink"), antialias: true, alpha: true });
+  const DPR = Math.min(2, devicePixelRatio || 1); renderer.setPixelRatio(DPR);
+  const scene = new THREE.Scene(), FOV = 35, TAN = Math.tan(FOV * Math.PI / 360);
+  const camera = new THREE.PerspectiveCamera(FOV, 1, 1, 2e6);
+  let W = 1, H = 1, dFlat = 1;
+  const PAL = [C.ink, C.madder, "#000000", C.ink2, C.gold].map(c => new THREE.Color(c));
+  const uniforms = { dpr: { value: DPR }, dFlat: { value: 1 }, paper: { value: new THREE.Color(C.paper) }, time: { value: 0 }, bob: { value: 0 } };
+  const VERT = `attribute float size; attribute vec3 color; attribute float alpha; attribute float seed; uniform float dpr; uniform float dFlat; uniform float time; uniform float bob;
+    varying vec3 vC; varying float vA; varying float vF;
+    void main() { vec3 q = position; q.y += sin(time * .9 + seed * 6.2831) * bob * 3.; q.x += cos(time * .6 + seed * 12.566) * bob * 1.6; q.z += sin(time * .5 + seed * 3.1) * bob * 2.;
+      vec4 mv = modelViewMatrix * vec4(q, 1.); float d = -mv.z; gl_Position = projectionMatrix * mv;
+      gl_PointSize = max(2., 3. * size * dpr * dFlat / d); vC = color; vA = alpha; vF = clamp((d - dFlat * 1.15) / (dFlat * 3.), 0., .8); }`;
+  // the core fills the inner 1/1.5 of the sprite; beyond it, a faint halo of the same ink
+  const FRAG = `uniform vec3 paper; varying vec3 vC; varying float vA; varying float vF;
+    void main() { vec2 p = gl_PointCoord * 2. - 1.; float r = length(p) * 1.5; if (r > 1.5) discard;
+      float core = smoothstep(1., .78, r), halo = exp(-r * r * 1.4) * .32;
+      vec3 c = mix(vC, paper, vF) * mix(.9, 1., min(r, 1.)); gl_FragColor = vec4(c, vA * max(core, halo)); }`;
+  // soft points: no hard core, only a Gaussian bloom (for clouds and mist)
+  const FRAG_SOFT = `uniform vec3 paper; varying vec3 vC; varying float vA; varying float vF;
+    void main() { vec2 p = gl_PointCoord * 2. - 1.; float r2 = dot(p, p); if (r2 > 1.) discard; gl_FragColor = vec4(mix(vC, paper, vF * .5), vA * exp(-r2 * 3.2)); }`;
+  // a cloud of ink points; the crowd is one, props can make their own
+  function cloud(n, parent = scene, soft = false) {
+    const g = new THREE.BufferGeometry(), P = new Float32Array(n * 3), S = new Float32Array(n), K = new Float32Array(n * 3), A = new Float32Array(n);
+    g.setAttribute("position", new THREE.BufferAttribute(P, 3)); g.setAttribute("size", new THREE.BufferAttribute(S, 1));
+    g.setAttribute("color", new THREE.BufferAttribute(K, 3)); g.setAttribute("alpha", new THREE.BufferAttribute(A, 1));
+    const E = new Float32Array(n); for (let i = 0; i < n; i++) E[i] = (Math.sin(i * 12.9898) * 43758.5453) % 1; g.setAttribute("seed", new THREE.BufferAttribute(E, 1));
+    const pts = new THREE.Points(g, new THREE.ShaderMaterial({ uniforms, vertexShader: VERT, fragmentShader: soft ? FRAG_SOFT : FRAG, transparent: true, depthWrite: false }));
+    pts.frustumCulled = false; parent.add(pts);
+    return {
+      pts, n,
+      put(i, x, y, z, r, col, a) { P[i * 3] = x; P[i * 3 + 1] = -y; P[i * 3 + 2] = z; S[i] = r; K[i * 3] = col.r; K[i * 3 + 1] = col.g; K[i * 3 + 2] = col.b; A[i] = a; },
+      commit() { for (const k of ["position", "size", "color", "alpha"]) g.attributes[k].needsUpdate = true; },
+    };
+  }
+  const crowd = cloud(INK);
+  // hand-inked grain: each dot keeps a slight size and alpha wobble
+  const gr = rng(99), GRAIN = Array.from({ length: INK }, () => [.88 + .24 * gr(), .82 + .18 * gr()]);
+  const D = Array.from({ length: INK }, () => ({ x: innerWidth * .6, y: innerHeight * .5, z: 0, r: 0, c: 0, a: 0 }));
+  let from = D.map(d => ({ ...d })), to = D.map(d => ({ ...d })), t0 = 0, dur = 0;
+  const fill = t => D.map((d, i) => t[i] ? { z: 0, r: 2.4, c: 0, a: 1, ...t[i] } : { ...d, a: 0 });
+  const col = new THREE.Color();
+
+  // camera poses: {p: [x, y, z], l: [x, y, z], shift} in world coordinates; shift moves the picture sideways
+  const flatPose = () => ({ p: [W / 2, -H / 2, dFlat], l: [W / 2, -H / 2, 0], shift: 0 });
+  let poseFn = flatPose, poseFrom = flatPose(), pt0 = 0, pdur = 0, cur = flatPose();
+  const props = new THREE.Group(); scene.add(props);
+
+  function resize() {
+    const el = renderer.domElement; W = el.clientWidth || innerWidth; H = el.clientHeight || innerHeight; renderer.setSize(W, H, false);
+    camera.aspect = W / H; dFlat = H / (2 * TAN); uniforms.dFlat.value = dFlat; camera.updateProjectionMatrix();
+  }
+  resize(); addEventListener("resize", resize); new ResizeObserver(resize).observe(renderer.domElement); // a scrollbar narrows the canvas without a window resize
+
+  // gold dust: a few hundred motes drifting slowly around whichever figure is on screen
+  const GOLD = new THREE.Color(C.gold), dust = cloud(220), DR = rng(31), DUST = Array.from({ length: 220 }, () => [DR() * 2 - 1, DR() * 2 - 1, DR() * 2 - 1, .6 + DR() * 1.8, DR()]);
+  let bobTo = 0;
+  (function frame(t) {
+    uniforms.time.value = reduced ? 0 : t / 1000; uniforms.bob.value += (bobTo - uniforms.bob.value) * .04; if (Math.abs(bobTo - uniforms.bob.value) < .005) uniforms.bob.value = bobTo;
+    const f = document.querySelector(".plate.on .fig"), fb = f ? f.getBoundingClientRect() : { left: W / 2, top: H / 2, width: 1, height: 1 }, s = uniforms.bob.value;
+    DUST.forEach(([x, y, z, r, ph], i) => {
+      const tt = reduced ? 0 : t / 1000, dx = Math.sin(tt * .05 + ph * 6.3) * .08, dy = ((y + tt * .012 * (1 + ph)) % 2 + 2) % 2 - 1;
+      dust.put(i, fb.left + fb.width * (.5 + (x + dx) * .62), fb.top + fb.height * (.5 + dy * .55), z * fb.width * .6, r, GOLD, s * (.35 + .4 * Math.sin(tt * .7 + ph * 9) ** 2));
+    });
+    dust.commit();
+    const k = dur ? ease(Math.min(1, (t - t0) / dur)) : 1;
+    for (let i = 0; i < INK; i++) {
+      const f = from[i], g = to[i], d = D[i];
+      d.x = lerp(f.x, g.x, k); d.y = lerp(f.y, g.y, k); d.z = lerp(f.z, g.z, k); d.r = lerp(f.r, g.r, k); d.a = lerp(f.a, g.a, k); d.c = k < .5 ? f.c : g.c;
+      col.copy(PAL[f.c]).lerp(PAL[g.c], k);
+      crowd.put(i, d.x, d.y, d.z, d.r * GRAIN[i][0], col, d.a * (g.c === 0 ? GRAIN[i][1] : 1));
+    }
+    crowd.commit();
+    const pk = pdur ? ease(Math.min(1, (t - pt0) / pdur)) : 1, target = poseFn(t);
+    cur = { p: target.p.map((v, j) => lerp(poseFrom.p[j], v, pk)), l: target.l.map((v, j) => lerp(poseFrom.l[j], v, pk)), shift: lerp(poseFrom.shift, target.shift, pk) };
+    camera.position.set(...cur.p); camera.lookAt(...cur.l);
+    if (Math.abs(cur.shift) > .5) camera.setViewOffset(W, H, -cur.shift, 0, W, H); else camera.clearViewOffset();
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  })(performance.now());
+
+  const v = new THREE.Vector3();
+  return {
+    D, cloud, props, get dFlat() { return dFlat; }, get W() { return W; },
+    to(t, ms = 1100) { from = D.map(d => ({ ...d })); to = fill(t); t0 = performance.now(); dur = reduced ? 0 : ms; },
+    set(t) { to = fill(t); from = to.map(d => ({ ...d })); dur = 0; },
+    retarget(t) { to = fill(t); }, // layout changed: a running tween bends toward the new spots, a finished one moves at once
+    nudge(i, p) { Object.assign(to[i], p); Object.assign(from[i], p); },
+    // move the camera: fn(t) returns a pose each frame (orbits drift, the flat pose follows scroll)
+    pose(fn, ms = 1600, bob = 1) { document.body.classList.toggle("flat", !bob); poseFrom = { p: [...cur.p], l: [...cur.l], shift: cur.shift }; poseFn = fn; pt0 = performance.now(); pdur = reduced ? 0 : ms; bobTo = reduced ? 0 : bob; },
+    flat(ms = 1400) { this.pose(flatPose, ms, 0); },
+    clearProps() { props.children.slice().forEach(o => { props.remove(o); o.traverse(n => { n.geometry?.dispose(); n.material?.dispose(); }); }); },
+    // screen position of a world point
+    screen(x, y, z) { v.set(x, -y, z).project(camera); return [(v.x + 1) / 2 * W, (1 - v.y) / 2 * H, camera.position.distanceTo(v.set(x, -y, z))]; },
+    pick(cx, cy) {
+      let best = -1, bd = Infinity;
+      D.forEach((d, i) => {
+        if (d.a < .1) return;
+        const [sx, sy, dist] = this.screen(d.x, d.y, d.z), rr = Math.min(d.r * dFlat / dist, 24) + 4, q = (sx - cx) ** 2 + (sy - cy) ** 2;
+        if (q < rr * rr && q < bd) { bd = q; best = i; }
+      });
+      return best;
+    },
+  };
+})();
+
+// drag on any story scene to look around; the offsets ride on top of the camera's own drift
+const look = { yaw: 0, pitch: 0 };
+(() => {
+  let drag = null;
+  document.querySelectorAll(".fig").forEach(f => {
+    f.addEventListener("pointerdown", e => { if (e.button === 0) { drag = { x: e.clientX, y: e.clientY }; f.setPointerCapture(e.pointerId); f.classList.add("dragging"); } });
+    f.addEventListener("pointermove", e => { if (!drag) return; look.yaw = clamp(look.yaw - (e.clientX - drag.x) * .006, -Math.PI, Math.PI); look.pitch = clamp(look.pitch + (e.clientY - drag.y) * .004, -.35, .35); drag = { x: e.clientX, y: e.clientY }; });
+    const end = () => { drag = null; f.classList.remove("dragging"); };
+    f.addEventListener("pointerup", end); f.addEventListener("pointercancel", end);
+  });
+})();
+// an orbit around a subject centred on a figure: the camera circles slowly, the picture shifts to sit over the figure
+function orbit(fig, { dist = 2.4, elev = .5, speed = .05, phase = 0, lift = 0 } = {}) {
+  const t0 = performance.now();
+  return t => {
+    const b = box(fig), cx = b.x + b.w / 2, cy = -(b.y + b.h / 2) + lift, R = Math.max(b.w, b.h) * dist;
+    const th = phase + look.yaw + (reduced ? 0 : (t - t0) / 1000 * speed), el = clamp(elev + look.pitch, -.15, 1.45);
+    return { p: [cx + R * Math.cos(el) * Math.sin(th), cy + R * Math.sin(el), R * Math.cos(el) * Math.cos(th)], l: [cx, cy, 0], shift: (b.x + b.w / 2) - ink.W / 2 };
+  };
+}
+// hairline props in world coordinates (points given as [x, y, z] in document pixels)
+const hj = (x, y, z, k) => { const v = Math.sin(x * 12.9898 + y * 78.233 + z * 37.719 + k * 4.1) * 43758.5453; return v - Math.floor(v) - .5; };
+function sketch(pts, { color = C.ink, opacity = .35, loop = false, parent = ink.props, wobble = 1.2 } = {}) {
+  const g = new THREE.Group();
+  [[0, 1], [1, .45]].forEach(([k, o]) => {
+    const geo = new THREE.BufferGeometry().setFromPoints(pts.map(([x, y, z]) => new THREE.Vector3(x + hj(x, y, z, k) * wobble * (1 + k), -(y + hj(y, z, x, k) * wobble * (1 + k)), z + hj(z, x, y, k) * wobble)));
+    const line = new (loop ? THREE.LineLoop : THREE.Line)(geo, new THREE.LineBasicMaterial({ color, transparent: true, opacity: opacity * o, depthWrite: false }));
+    line.userData.o0 = opacity * o; g.add(line);
+  });
+  parent.add(g); return g;
+}
+const hairline = (pts, o = {}) => sketch(pts, o);
+const fade = (g, k) => { g.visible = k > .01; if (g.visible) g.traverse(o => { if (o.material && o.userData.o0 !== undefined) o.material.opacity = o.userData.o0 * k; }); };
+
+// ---------- the story runner ----------
+// Each plate's story is an async script. Leaving a plate bumps RUN, and every await checks it, so an old
+// script never touches the page again. Space presses the visible Continue button, never an option.
+let RUN = 0, AC = new AbortController(); // AC: event listeners owned by the current plate
+const record = {}, clearRecord = () => { for (const k in record) delete record[k]; };
+const sleep = ms => new Promise(res => setTimeout(res, ms));
+function storyOf(plate, total = 8) {
+  const host = $(`[data-plate=${plate}] .story`), bar = $(`[data-plate=${plate}] .progress i`), run = RUN, alive = () => run === RUN && cur === plate;
+  let n = 0;
+  if (bar) bar.style.width = "0%";
+  const target = () => host.querySelector(".card:last-child") || host;
+  const add = (tag, html, cls) => { if (!alive()) return null; const e = document.createElement(tag); if (cls) e.className = cls; e.innerHTML = html; target().appendChild(e); requestAnimationFrame(() => e.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" })); return e; };
+  const button = (label, cls) => { const g = add("div", "", "btns"); if (!g) return [null, null]; const b = document.createElement("button"); b.className = "btn " + cls; b.textContent = label; g.appendChild(b); return [g, b]; };
+  return {
+    alive,
+    clear() { if (alive()) host.innerHTML = ""; },
+    // a new card: the old one goes, a place or time line, then the narration
+    card(html, when) {
+      if (!alive()) return null;
+      host.innerHTML = ""; n++; if (bar) bar.style.width = Math.max(parseFloat(bar.style.width) || 0, Math.min(100, 100 * n / total)) + "%";
+      const c = document.createElement("div"); c.className = "card"; host.appendChild(c);
+      if (when) add("p", when, "when");
+      if (html) add("p", html, "line");
+      return c;
+    },
+    say: (html, cls) => add("p", html, cls),
+    el: (tag, html, cls) => add(tag, html, cls),
+    ask: html => add("p", html, "ask"),
+    choose(opts) {
+      return new Promise(res => {
+        const g = add("div", "", "btns opts"); if (!g) return;
+        g.setAttribute("role", "group"); g.setAttribute("aria-label", [...host.querySelectorAll(".ask")].pop()?.textContent || "Your choice");
+        opts.forEach(o => {
+          const b = document.createElement("button"); b.className = "btn ghost"; b.textContent = o.label;
+          b.onclick = () => { g.querySelectorAll("button").forEach(x => { x.disabled = true; x.setAttribute("aria-pressed", x === b); if (x !== b) x.remove(); }); host.focus({ preventScroll: true }); res(o); };
+          g.appendChild(b);
+        });
+      });
+    },
+    cont(label = "Continue") {
+      return new Promise(res => {
+        const [g, b] = button(label, "go"); if (!b) return;
+        b.onclick = () => { g.remove(); host.focus({ preventScroll: true }); res(); };
+      });
+    },
+    // press the button n times (Space works too); onTap(i) plays each press
+    taps(label, times, onTap) {
+      return new Promise(res => {
+        const [g, b] = button(label, "go"); if (!b) return;
+        let i = 0;
+        b.onclick = () => { if (!alive()) return; onTap(i++); if (i >= times) { g.remove(); host.focus({ preventScroll: true }); res(); } };
+      });
+    },
+    // press and hold (mouse, touch or Space) to push k from 0 to 1 over ms; onK(k) draws it
+    hold(label, ms, onK) {
+      return new Promise(res => {
+        const [g, b] = button(label, "hold"); if (!b) return;
+        let k = 0, down = false, last = 0;
+        const on = e => { if (e) e.preventDefault(); down = true; last = performance.now(); }, off = () => { down = false; };
+        b.addEventListener("pointerdown", on); b.addEventListener("pointerup", off); b.addEventListener("pointerleave", off);
+        const ac = new AbortController(), sig = AbortSignal.any ? AbortSignal.any([AC.signal, ac.signal]) : AC.signal;
+        const kd = e => { if (!alive()) return ac.abort(); if (e.key === " " && !e.repeat) on(e); }, ku = e => { if (e.key === " ") off(); };
+        addEventListener("keydown", kd, { signal: sig }); addEventListener("keyup", ku, { signal: sig });
+        b.onclick = e => { if (e.detail === 0) { k = 1; onK(1); } }; // Enter, or a screen reader's click
+        onRaf(t => {
+          if (!alive()) { ac.abort(); return false; }
+          if (down) { k = Math.min(1, k + Math.max(0, t - last) / (reduced ? 1 : ms)); last = t; b.style.setProperty("--p", (k * 100).toFixed(1) + "%"); onK(k); }
+          if (k >= 1) { ac.abort(); g.remove(); host.focus({ preventScroll: true }); res(); return false; }
+        });
+      });
+    },
+    moral(text) { const c = this.card(""); if (!c) return null; if (bar) bar.style.width = "100%"; return add("blockquote", `<p class="label">Moral of the story</p><p>${text}</p>`, "moral"); },
+    cap(text) { if (alive()) $(`[data-plate=${plate}] .cap`).textContent = text; },
+    note(key, q, choice, right, world) { record[key] = { q, choice, right, world }; },
+  };
+}
+
+const tipEl = $("#tip");
+function tip(e, text) {
+  if (!text) { tipEl.style.display = "none"; return; }
+  tipEl.textContent = text; tipEl.style.display = "block";
+  tipEl.style.left = Math.min(e.clientX + 14, innerWidth - tipEl.offsetWidth - 8) + "px"; tipEl.style.top = (e.clientY + 16) + "px";
+}
+
+const plates = {};
+const host$ = plate => $(`[data-plate=${plate}] .story`);
+const SWAN = "A black swan.";
+
+// ---------- a stadium bowl in 3D: 1,000 seats on rising tiers around a pitch ----------
+function bowl(fig, n = CROWD) {
+  const b = box(fig), a = Math.min(b.w, b.h * 1.6) * .42, cx = b.x + b.w / 2, cy = b.y + b.h / 2, R = 10, seats = [];
+  const rings = []; for (let k = 0; k < R; k++) rings.push({ ra: a * (.55 + .45 * k / (R - 1)), up: k * a * .055 });
+  const per = rings.map(r => r.ra), tot = sum(per); let left = n;
+  rings.forEach((r, k) => {
+    const m = k === R - 1 ? left : Math.round(n * r.ra / tot); left -= m;
+    for (let i = 0; i < m; i++) { const th = (i + (k % 2) * .5) / m * 2 * Math.PI; seats.push([cx + r.ra * Math.cos(th), cy - r.up, r.ra * .62 * Math.sin(th)]); }
+  });
+  return { seats, cx, cy, a, rings, r0: a * 2 * Math.PI / (n / R) * .15 };
+}
+function bowlProps(B) {
+  [0, B.rings.length - 1].forEach(k => {
+    const r = B.rings[k], pts = []; for (let i = 0; i < 96; i++) { const th = i / 96 * 2 * Math.PI; pts.push([B.cx + r.ra * Math.cos(th), B.cy - r.up, r.ra * .62 * Math.sin(th)]); }
+    hairline(pts, { loop: true, opacity: .25 });
+  });
+  const pw = B.a * .42, pd = B.a * .2;
+  hairline([[B.cx - pw, B.cy, -pd], [B.cx + pw, B.cy, -pd], [B.cx + pw, B.cy, pd], [B.cx - pw, B.cy, pd]], { loop: true, opacity: .3 });
+  hairline([[B.cx, B.cy, -pd], [B.cx, B.cy, pd]], { opacity: .3 });
+}
+
+// ---------- home ----------
+plates.home = (() => {
+  const fig = $("#home-fig"), N = INK, SW = 377;
+  const SEED = Array.from({ length: N }, (_, i) => [Math.sin(i * 12.99) * .5 + .5, Math.sin(i * 78.23) * .5 + .5, Math.sin(i * 37.72) * .5 + .5]);
+  // each bird rides a slowly twisting ribbon; the ribbon breathes and folds over time
+  function flock(t) {
+    const b = box(fig), R = Math.min(b.w, b.h) * .42, cx = b.x + b.w / 2, cy = b.y + b.h / 2, T = reduced ? 0 : t / 1000;
+    return SEED.map(([u, v, w], i) => {
+      const a = u * 6.283 + T * .16, twist = Math.sin(a * 2 + T * .3) * .9, band = (v - .5) * .5;
+      const x = Math.cos(a) * (1 + band * Math.cos(twist)), y = Math.sin(a * 2 + T * .2) * .28 + band * Math.sin(twist) * .6, z = Math.sin(a) * (.62 + band * Math.cos(twist) * .6);
+      return { x: cx + x * R, y: cy - y * R, z: z * R, r: i === SW ? 3.6 : 1.5 + w * 1.4, c: i === SW ? 2 : 0, a: .55 + .45 * w };
+    });
+  }
+  return {
+    enter() {
+      ink.to(flock(performance.now()), 1800); setProps(null); ink.pose(orbit(fig, { dist: 1.6, elev: .35, speed: .04 }), 2000);
+      onRaf(t => { ink.retarget(flock(t)); });
+    },
+    resize() { ink.retarget(flock(performance.now())); },
+    primary() { location.hash = "#bombers"; },
+    label: i => i === SW ? null : i < N ? "One of a thousand" : null,
+  };
+})();
+$("#start").onclick = () => plates.home.primary();
+
+// ---------- Plate II: the stadium ----------
+const CR = crowd();
+const MED = [...CR.wealth].sort((a, b) => a - b)[CROWD / 2];
+const money = v => v >= 1e6 ? "$" + (v / 1e6).toFixed(1).replace(/\.0$/, "") + " million" : "$" + (Math.round(v / 100) * 100).toLocaleString();
+plates.stadium = (() => {
+  const fig = $("#st-fig"), ov = $("[data-plate=stadium] svg.ov"), NEW = CROWD, W8 = CR.weight;
+  let B, mode = "weight", phase = "bowl", fill = 1, walk = 1, grow = 0, cols = 0, towerK = 0, unit = 0;
+  const mean = a => sum(a) / CROWD;
+  // fans stream in through the gates: each seat's fan starts outside the stadium and arrives in turn
+  const ORDER = (() => { const r = rng(17); return Array.from({ length: CROWD }, () => r()); })();
+  function bowlTargets() {
+    B = bowl(fig);
+    const arr = mode === "weight" ? W8 : CR.wealth, mu = mean(arr);
+    const t = B.seats.map((p, i) => {
+      const k = clamp((fill - ORDER[i] * .75) / .25, 0, 1), e = ease(k), th = Math.atan2(p[2] / .62, p[0] - B.cx), out = B.a * 1.45;
+      const ox = B.cx + out * Math.cos(th), oz = out * .62 * Math.sin(th);
+      return { x: lerp(ox, p[0], e), y: lerp(B.cy + 10, p[1], e), z: lerp(oz, p[2], e), r: B.r0 * Math.sqrt(arr[i] / mu), c: i === 137 ? 2 : 0, a: k > 0 ? 1 : 0 };
+    });
+    // the newcomer walks from the players' tunnel to the centre spot
+    const e = ease(walk);
+    t[NEW] = { x: B.cx, y: B.cy - 4, z: lerp(B.a * .62 * 1.1, 0, e), r: B.r0 * (mode === "weight" ? Math.sqrt(1 + 4 * grow) : 1.4), c: 1, a: walk > 0 ? 1 : 0 };
+    return t;
+  }
+  // floodlights: four towers, each throwing a fan of hairline beams onto the pitch
+  function floodlights() {
+    [[1, 1], [1, -1], [-1, 1], [-1, -1]].forEach(([sx, sz]) => {
+      const x = B.cx + sx * B.a * .92, z = sz * B.a * .62 * .98, top = B.cy - B.a * .62;
+      hairline([[x, B.cy, z], [x, top, z]], { opacity: .5 });
+      for (let k = 0; k < 9; k++) hairline([[x, top, z], [B.cx + (k - 4) * B.a * .05, B.cy, (k % 3 - 1) * B.a * .08]], { opacity: .12 });
+      const lamp = ink.cloud(6, ink.props);
+      for (let k = 0; k < 6; k++) lamp.put(k, x + (k % 3 - 1) * 5, top - Math.floor(k / 3) * 5, z, 2.2, new THREE.Color(C.ink), .9);
+      lamp.commit();
+    });
+  }
+  // every fortune as a column over its seat, and the richest guest's column: built once, then grown in place
+  let SC = null;
+  const RED = new THREE.Color(C.madder), GOLDC = new THREE.Color(C.gold);
+  function columns() {
+    unit = B.a * .03 / MED;
+    const P = new Float32Array(CROWD * 6), geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(P, 3));
+    const lines = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: .45, depthWrite: false }));
+    const tower = new THREE.Mesh(new THREE.CylinderGeometry(B.r0 * 2.2, B.r0 * 2.2, 1, 24), new THREE.MeshBasicMaterial({ color: C.madder }));
+    const beam = ink.cloud(40, ink.props, true), lanterns = ink.cloud(70, ink.props, true);
+    ink.props.add(lines, tower);
+    SC = { P, geo, tower, beam, lanterns, LR: Array.from({ length: 70 }, (_, i) => [Math.sin(i * 7.1) * .5 + .5, Math.sin(i * 3.7) * .5 + .5, Math.sin(i * 5.3) * .5 + .5, Math.sin(i * 9.9) * .5 + .5]) };
+    raise();
+  }
+  function raise() {
+    if (!SC) return;
+    const { P, geo, tower, beam, lanterns, LR } = SC, t = reduced ? 0 : performance.now() / 1000;
+    if (SC.cols !== cols) {
+      SC.cols = cols;
+      B.seats.forEach((p, i) => { const j = i * 6; P[j] = P[j + 3] = p[0]; P[j + 1] = -p[1]; P[j + 4] = -p[1] + CR.wealth[i] * unit * cols; P[j + 2] = P[j + 5] = p[2]; });
+      geo.attributes.position.needsUpdate = true;
+    }
+    tower.visible = towerK > 0; tower.scale.y = Math.max(.001, towerK); tower.position.set(B.cx, -B.cy + tower.scale.y / 2, 0);
+    // a soft madder glow along the column, and paper lanterns rising over the gala
+    const red = RED, gold = GOLDC;
+    for (let k = 0; k < 40; k++) beam.put(k, B.cx, B.cy - towerK * k / 40, 0, B.r0 * 9, red, towerK > 0 ? .18 : 0);
+    beam.commit();
+    LR.forEach(([a, b, c, d], k) => { const th = a * 6.283, rr = B.a * (.3 + 1.1 * b), h = ((c + t * .018 * (.5 + d)) % 1); lanterns.put(k, B.cx + rr * Math.cos(th), B.cy - B.a * (.1 + 1.6 * h), rr * .62 * Math.sin(th), B.r0 * (1.6 + 1.4 * d), gold, mode === "wealth" ? .55 * Math.sin(Math.PI * h) : 0); });
+    lanterns.commit();
+  }
+  const scenery = () => { if (phase === "log") return; bowlProps(B); floodlights(); columns(); };
+  const LO = 2, HI = 11;
+  function logTargets() {
+    const b = box(fig), base = b.y + b.h - 170, x = v => b.x + b.w * (Math.log10(v) - LO) / (HI - LO), bins = {};
+    const t = CR.wealth.map((v, i) => { const bin = Math.floor(Math.log10(v) / .05), n = bins[bin] = (bins[bin] || 0) + 1; return { x: x(10 ** ((bin + .5) * .05)), y: base - (n - .5) * 5.2, r: 2.1, c: i === 137 ? 2 : 0 }; });
+    t[NEW] = { x: x(RICHEST_USD), y: base - 2.6, r: 4, c: 1 };
+    return { t, b, base, x, peak: Math.max(...Object.values(bins)) };
+  }
+  function drawBar(truthV, kk, who) {
+    ov.querySelectorAll(".bar").forEach(e => e.remove());
+    if (kk <= 0) return;
+    const b = fig.getBoundingClientRect(), W = b.width, y = 8, h = 14, gg = svgEl("g", { class: "bar" }, ov), xs = Math.max(2, truthV * kk * W);
+    svgEl("rect", { x: 0, y, width: xs, height: h, fill: C.madder }, gg);
+    if (W - xs > 3) svgEl("rect", { x: xs + 2, y, width: W - xs - 2, height: h, fill: "none", stroke: C.ink, "stroke-width": 1 }, gg);
+    if (kk >= 1) { svgEl("text", { x: 0, y: y + h + 22 }, gg, `${who}: ${pct(truthV)}`); svgEl("text", { x: W, y: y + h + 22, "text-anchor": "end" }, gg, `the other 1,000 together: ${pct(1 - truthV)}`); }
+  }
+  function drawLogAxis() {
+    ov.innerHTML = "";
+    if (phase !== "log") return;
+    const { b, base, x, peak } = logTargets(), gg = svgEl("g", { class: "log" }, ov), X = v => x(v) - b.x, Y = base - b.y + 6;
+    svgEl("line", { x1: 0, x2: b.w, y1: Y, y2: Y, class: "ink" }, gg);
+    [[1e2, "$100"], [1e4, "$10,000"], [1e6, "$1 million"], [1e8, "$100 million"], [1e10, "$10 billion"]].forEach(([v, l]) => {
+      svgEl("line", { x1: X(v), x2: X(v), y1: Y, y2: Y + 6, class: "ink" }, gg); svgEl("text", { x: X(v), y: Y + 24, "text-anchor": v === 1e2 ? "start" : "middle" }, gg, l);
+    });
+    svgEl("text", { x: 0, y: Y + 50 }, gg, "net worth, logarithmic scale: each step is ten times the last");
+    svgEl("text", { x: X(RICHEST_USD), y: Y - 22, "text-anchor": "end", style: "fill:" + C.madder }, gg, "the richest guest");
+    svgEl("text", { x: X(MED), y: Y - 6 - peak * 5.2 - 14, "text-anchor": "middle" }, gg, "the other 1,000");
+  }
+  const bigLine = cls => { const l = host$("stadium").querySelector(".card .line"); if (l) l.className = cls; };
+  async function story() {
+    const s = storyOf("stadium", 10), who = { weight: "the heaviest fan", wealth: "the richest guest" };
+    mode = "weight"; phase = "bowl"; fill = 0; walk = 0; grow = 0; cols = 0; towerK = 0; ov.innerHTML = "";
+    ink.to(bowlTargets(), 1400); setProps(scenery); ink.pose(orbit(fig, { dist: 1.75, elev: .62, speed: .04 }), 2200);
+    s.cap("Fig. 2a. One thousand fans, and one more. After Taleb, The Black Swan, ch. 3.");
+
+    s.card("You are the structural engineer for tonight's match. The stand you signed off holds a thousand people, with a margin.", "Saturday, 6:30 pm");
+    s.say("The floodlights are warming up. The gates open at seven.", "note");
+    await s.cont("Open the gates"); if (!s.alive()) return;
+    s.card("They pour in: a thousand people of every size, filling the stands row by row.", "7:00 pm");
+    await tween(4200, k => { fill = k; ink.set(bowlTargets()); }); if (!s.alive()) return;
+    s.say("Drag the stadium to look around. Every dot is a fan, drawn by weight.", "note");
+    await s.cont(); if (!s.alive()) return;
+
+    s.card("The box office calls. The last ticket has gone to the heaviest person you can imagine.", "7:52 pm");
+    await sleep(900); if (!s.alive()) return;
+    s.say("They are walking out of the tunnel now, towards the centre spot.");
+    await tween(3000, k => { walk = k; ink.set(bowlTargets()); }); if (!s.alive()) return;
+    s.ask("The stand is rated for the crowd, with a margin. What do you do?");
+    const c1 = await s.choose([
+      { label: "Reinforce the stand", right: false, reply: "You spent the evening bracing steel for half a percent." },
+      { label: "Refuse them entry", right: false, reply: "You turned a fan away to save half a percent of the load." },
+      { label: "Nothing. Let them in", right: true, reply: "Right. The stand never noticed." },
+    ]);
+    if (!s.alive()) return;
+    const tw = share(HEAVIEST_KG, W8);
+    s.card(pct(tw), "Kick-off"); bigLine("big");
+    await tween(1600, kk => { grow = ease(kk); ink.nudge(NEW, { r: B.r0 * Math.sqrt(1 + 4 * grow) }); drawBar(tw, grow, who.weight); }); if (!s.alive()) return;
+    s.say(`The heaviest person imaginable adds ${pct(tw)} to the crowd's weight.`);
+    s.say(c1.reply, "reply");
+    s.note("weight", "The heaviest fan walks in", c1.label, c1.right, "Mediocristan");
+    await s.cont("Later that night"); if (!s.alive()) return;
+
+    drawBar(0, 0); mode = "wealth"; walk = 0; grow = 0;
+    s.cap("Fig. 2b. The same thousand, and the richest person on Earth, at Taleb's 2007 figure of $80 billion.");
+    s.card("The same thousand are now guests at your charity gala. You have one night to raise money for the children's hospital.", "Midnight");
+    ink.to(bowlTargets(), 1400);
+    onRaf(() => { if (phase === "log") return false; raise(); });
+    await tween(2600, k => { cols = ease(k); }); if (!s.alive()) return;
+    s.say("Over each seat stands a column: that guest's fortune. Most are modest. A few are tall.", "note");
+    await s.cont(); if (!s.alive()) return;
+
+    s.card("The doors open. The richest person on Earth walks in.", "12:20 am");
+    await tween(3000, k => { walk = k; ink.set(bowlTargets()); }); if (!s.alive()) return;
+    s.ask("You have one evening. Where do you spend it?");
+    const c2 = await s.choose([
+      { label: "Working the room: a thousand small cheques add up", right: false, reply: "The whole room together holds a tenth of a percent of the wealth. The person you walked past holds the rest." },
+      { label: "With the one person", right: true, reply: "Right. One conversation is worth more than the other thousand put together." },
+      { label: "Split my time evenly", right: false, reply: "Even time is wildly uneven value: one guest holds almost everything." },
+    ]);
+    if (!s.alive()) return;
+    const tx = share(RICHEST_USD, CR.wealth), km = RICHEST_USD / MED / 1e5, b = box(fig), H = Math.min(RICHEST_USD * unit, 40 * b.h);
+    s.card("Now raise their fortune beside the others, to the same scale.", "12:21 am");
+    ink.pose(orbit(fig, { dist: 1.9, elev: .07, speed: .015, lift: b.h * .3 }), 2400);
+    await s.hold("Hold to raise it", 5200, k => { towerK = H * k * k; }); if (!s.alive()) return;
+    s.card(pct(tx), "12:22 am"); bigLine("big madder");
+    s.say(`If a typical fortune in the room were a column one centimetre tall, this one would be ${Math.round(km)} kilometres tall. It left the sky some time ago.`);
+    s.say(c2.reply, "reply");
+    s.note("wealth", "The richest guest walks in", c2.label, c2.right, "Extremistan");
+    await s.cont(); if (!s.alive()) return;
+    s.moral("In Mediocristan, no single person can move the total. In Extremistan, one person <em>is</em> the total. Before you plan, ask which world you are counting in.");
+    await s.cont("Draw it on a log scale"); if (!s.alive()) return;
+
+    phase = "log"; drawBar(0, 0); setProps(null); ink.flat(1600); ink.to(logTargets().t, 1800); drawLogAxis();
+    s.cap("Fig. 2c. The same 1,001 fortunes on a logarithmic scale.");
+    s.card(`On an ordinary scale the thousand vanish. On a logarithmic one, where each step is ten times the last, they come back: from ${money(Math.min(...CR.wealth))} to ${money(Math.max(...CR.wealth))}.`, "Drawn better");
+    s.say(`And the richest guest sits alone, ${Math.round(RICHEST_USD / MED / 1e5) / 10} million times the typical fortune. Drawing it better is half the insight.`);
+    await s.cont("Next plate"); if (!s.alive()) return;
+    next();
+  }
+  return {
+    enter() { story(); },
+    leave() { ov.innerHTML = ""; },
+    resize() { if (phase === "log") { ink.retarget(logTargets().t); drawLogAxis(); } else ink.retarget(bowlTargets()); },
+    label: i => i === NEW ? (mode === "weight" ? "The heaviest person imaginable: 400 kg" : "The richest person on Earth: $80 billion, Taleb's 2007 figure") : i < CROWD ? (mode === "weight" && phase !== "log" ? `Fan ${i + 1}: ${Math.round(W8[i])} kg` : `Guest ${i + 1}: ${money(CR.wealth[i])}`) : null,
+  };
+})();
+
+// A bomber seen from above, in units of its span: x runs nose-forward, z along the wings, y up.
+const PLANE = {
+  fuselage: (u, v) => { const x = -.47 + .94 * u, w = .042 * (1 - .7 * Math.pow(Math.abs(x) / .5, 3)); return [x, .03, (v - .5) * 2 * w]; },
+  engines: (u, v) => { const e = Math.min(3, Math.floor(u * 4)), f = u * 4 - e, a = f * 6.283, rr = Math.sqrt(v); return [.14 + .07 * rr * Math.cos(a), .025, [-.34, -.17, .17, .34][e] + .026 * rr * Math.sin(a)]; },
+  fuel: (u, v) => { const side = u < .5 ? -1 : 1, zz = .06 + ((u * 2) % 1) * .22; return [.07 - .15 * v, .02, side * zz]; },
+  rest: (u, v) => {
+    if (u < .72) { const side = u < .36 ? -1 : 1, zz = .28 + ((u / .36) % 1) * .22, ch = .15 - .08 * (zz - .28) / .22; return [.07 - ch * v, .02, side * zz]; }
+    const side = u < .86 ? -1 : 1, zz = ((u - .72) / .14 % 1) * .17; return [-.4 - .07 * v, .03, side * zz];
+  },
+};
+const OUTLINE = [ // hairline loops: fuselage, wings, tailplane, four nacelles
+  [...Array(40).keys()].map(i => { const t = i / 39 * Math.PI * 2, x = .47 * Math.cos(t), w = .042 * (1 - .7 * Math.pow(Math.abs(x) / .5, 3)); return [x, .03, w * Math.sin(t) * 1.05]; }),
+  [[.07, .02, -.5], [.07, .02, .5], [.0, .02, .5], [-.08, .02, .06], [-.08, .02, -.06], [.0, .02, -.5]],
+  [[-.4, .03, -.17], [-.4, .03, .17], [-.47, .03, .17], [-.47, .03, -.17]],
+  ...[-.34, -.17, .17, .34].map(z => [...Array(16).keys()].map(i => { const a = i / 16 * 6.283; return [.14 + .07 * Math.cos(a), .025, z + .026 * Math.sin(a)]; })),
+];
+// ---------- Plate I: the missing bombers ----------
+// Wald, 1943. A bomber drifts through paper clouds; the hits on the planes that came home gather on it;
+// then the planes that never came back rise as a red ghost formation and drift away into the clouds.
+plates.bombers = (() => {
+  const fig = $("#bm-fig"), BM = bombers(), HITS = BM.hits.slice(0, INK), K = bomberCounts(BM);
+  const one = v => v.toFixed(1);
+  let shownBack = Infinity, shownLost = false, ghostK = 0, drift = 0, fleet = 0, spin = 0;
+  const BACK = []; HITS.forEach((h, i) => { if (!h.lost) BACK[i] = BACK.filter(v => v !== undefined).length; });
+  const frame = () => { const b = box(fig), S = Math.min(b.w * .78, b.h * 1.1); return { b, S, at: ([x, y, z]) => [b.x + b.w / 2 + x * S, b.y + b.h / 2 - y * S, z * S] }; };
+  function hitTargets() {
+    const { at } = frame();
+    return HITS.map((h, i) => {
+      const [x, y, z] = at(PLANE[h.zone](h.u, h.v));
+      if (!h.lost) return BACK[i] < shownBack ? { x, y: y - 2, z, r: 2.2, c: i === 33 ? 2 : 0 } : { x, y, z, r: 0, a: 0 };
+      return shownLost ? (h.zone === "engines" ? { x, y: y - 3, z, r: 3.6, c: 1, a: 1 } : { x, y: y - 2, z, r: 1.6, c: 1, a: .4 }) : { x, y, z, r: 0, a: 0 };
+    });
+  }
+  // an engraved, hand-drawn airframe; spinning propellers are collected in `blades`
+  let blades = [];
+  function airframe({ color = C.ink2, opacity = .55, scale = 1, props = true } = {}) {
+    const { b, S } = frame(), cx = b.x + b.w / 2, cy = b.y + b.h / 2, g = new THREE.Group(); ink.props.add(g);
+    const at = ([x, y, z]) => [cx + x * S * scale, cy - y * S * scale, z * S * scale];
+    OUTLINE.forEach(loop => sketch(loop.map(at), { color, opacity, loop: true, parent: g, wobble: .8 * scale }));
+    if (props) [-.34, -.17, .17, .34].forEach(zz => {
+      const [x, y, z] = at([.215, .025, zz]), L = S * scale * .035, p = new THREE.Group();
+      p.position.set(x, -y, z);
+      [0, Math.PI / 2].forEach(a => { const m = new THREE.LineBasicMaterial({ color, transparent: true, opacity: Math.min(1, opacity * 1.4), depthWrite: false }), l = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -L * Math.cos(a), -L * Math.sin(a)), new THREE.Vector3(0, L * Math.cos(a), L * Math.sin(a))]), m); l.userData.o0 = m.opacity; p.add(l); });
+      g.add(p); blades.push(p);
+    });
+    return g;
+  }
+  // the scene is built once (and again on resize); each frame only moves and fades what is already there
+  const PUFFS = (() => { const r = rng(44); return Array.from({ length: 8 }, () => ({ x: r() * 2 - 1, y: -.25 - r() * .45, z: r() * 2 - 1.2, s: .7 + r() * .8, pts: Array.from({ length: 16 }, () => [r() * 6.283, Math.sqrt(r()), r() - .5, .04 + r() * .04]) })); })();
+  const WHITE = new THREE.Color("#fbfaf6");
+  let SC = null;
+  function build() {
+    blades = [];
+    const { S } = frame();
+    SC = { S, sky: ink.cloud(PUFFS.length * 16, ink.props, true), main: airframe({ color: C.ink, opacity: .7 }), fleet: [], ghosts: [] };
+    for (let k = 0; k < 5; k++) SC.fleet.push(airframe({ opacity: .3, scale: .16, props: false }));
+    for (let k = 0; k < 6; k++) SC.ghosts.push(airframe({ color: C.madder, opacity: .5 * (1 - k / 7), props: false }));
+    animate();
+  }
+  function animate() {
+    if (!SC) return;
+    const { b } = frame(), S = SC.S, t = reduced ? 0 : performance.now() / 1000;
+    blades.forEach(p => { p.rotation.x = spin; });
+    PUFFS.forEach((pf, j) => {
+      const cx = b.x + b.w / 2 + ((pf.x + t * .012 + 1.2) % 2.4 - 1.2) * b.w * .4, cy = b.y + b.h / 2 - pf.y * S, cz = pf.z * S;
+      pf.pts.forEach(([a, d, e, rr], k) => SC.sky.put(j * 16 + k, cx + Math.cos(a) * d * S * .16 * pf.s, cy + Math.sin(a) * d * S * .04 * pf.s, cz + e * S * .1 * pf.s, S * rr * pf.s, WHITE, .42));
+    });
+    SC.sky.commit();
+    SC.fleet.forEach((g, k) => { g.position.set(((t * .03 + k * .09) % 1.6 - .8) * S * 1.4 - k * S * .1, S * (.42 + .05 * (k % 2)), -S * (1.1 + .12 * k)); fade(g, fleet); });
+    SC.ghosts.forEach((g, k) => {
+      g.position.set(-S * drift * (.2 + .05 * k), S * (.12 + .1 * k) * ease(ghostK) + S * drift * (.35 + .1 * k), -S * .05 * k - S * drift * (.6 + .25 * k));
+      fade(g, Math.min(1, ghostK * 2) * (1 - drift * .9));
+    });
+  }
+  const table = (rows, head, cols) => `<caption>${head}</caption>${cols ? `<thead><tr><th></th>${cols.map(c => `<th>${c}</th>`).join("")}</tr></thead>` : ""}${rows.map(([n, a, b, hot]) => `<tr${hot ? ' class="hot"' : ""}><td>${n}</td><td>${a}</td>${b !== undefined ? `<td>${b}</td>` : ""}</tr>`).join("")}`;
+  async function story() {
+    const s = storyOf("bombers", 8);
+    shownBack = 0; shownLost = false; ghostK = 0; drift = 0; fleet = 0;
+    ink.to(hitTargets(), 900); setProps(build);
+    ink.pose(orbit(fig, { dist: 1.9, elev: .95, speed: .03, phase: -1.2 }), 2200);
+    // propellers turn, clouds drift, the fleet and the ghosts move: transforms only, nothing rebuilt
+    onRaf(() => { spin += reduced ? 0 : .32; animate(); });
+    s.cap("Fig. 1. The reasoning is Abraham Wald's (Statistical Research Group, 1943). The 200 sorties are an illustrative simulation.");
+
+    s.card("You are Abraham Wald, a mathematician who fled Vienna. You work for the Statistical Research Group: a room of statisticians in Manhattan, helping to win a war.", "New York, 1943");
+    await s.cont(); if (!s.alive()) return;
+    s.card("Over Germany, on the worst raids of 1943, one bomber in six doesn't come back. Every plane that doesn't come back is ten men.", "The air war");
+    ink.pose(orbit(fig, { dist: 2.3, elev: .45, speed: .03, phase: -1.4, lift: 60 }), 2600);
+    await tween(2400, k => { fleet = k; }); if (!s.alive()) return;
+    await s.cont(); if (!s.alive()) return;
+    s.card("The Air Force sends you its survey: every bullet hole, on every bomber that made it home.", "Monday morning");
+    ink.pose(orbit(fig, { dist: 1.9, elev: .95, speed: .03, phase: -1.2 }), 2400);
+    const counter = s.say("Planes home: 0", "note"); counter?.setAttribute("aria-hidden", "true");
+    await tween(4200, kk => { fleet = 1 - kk; shownBack = Math.round(HITS.filter(h => !h.lost).length * kk); ink.retarget(hitTargets()); if (counter) counter.textContent = `Planes home: ${Math.round(BM.returned * kk)} of ${BM.returned}`; });
+    if (!s.alive()) return;
+    counter?.removeAttribute("aria-hidden");
+    await s.cont(); if (!s.alive()) return;
+    s.card("You count the holes on each plane that came home, part by part. Drag the plane to turn it around.", "The hangar");
+    s.el("table", table([["Engines", one(K.engines.back)], ["Fuel system", one(K.fuel.back)], ["Fuselage", one(K.fuselage.back)], ["Wings and tail", one(K.rest.back)]], "Bullet holes per plane, planes that came home"), "holes");
+    s.say(`About one engine hit for every ${Math.round(1 / K.engines.back)} planes. The wings and tail take almost two each.`, "note");
+    await s.cont("Report to the general"); if (!s.alive()) return;
+
+    s.card("The general has a problem. Armour is heavy: a heavier bomber is slower, climbs worse and burns more fuel. He can armour one place.", "The general's office");
+    s.ask("Where should the armour go?");
+    const c = await s.choose([
+      { label: "The wings and tail: that's where the holes are", right: false, reply: "Those planes took hits there and still flew home. The wings were never the problem." },
+      { label: "The fuselage", right: false, reply: "The fuselage is full of holes because a plane can survive them." },
+      { label: "The engines: they barely have any holes", right: true, reply: "Right. That was Wald's answer." },
+      { label: "Spread it evenly", right: false, reply: "Even armour protects the places that don't need it just as much as the one that does." },
+    ]);
+    if (!s.alive()) return;
+    s.card("You are only looking at the planes that came back. Where are the rest?", "Wald's question");
+    ink.pose(orbit(fig, { dist: 2.4, elev: .7, speed: .03, phase: -1, lift: 90 }), 2600);
+    shownLost = true; ink.to(hitTargets(), 2400);
+    await tween(3200, kk => { ghostK = kk; }); if (!s.alive()) return;
+    s.el("table", table([["Engines", one(K.engines.back), one(K.engines.lost), true], ["Fuel system", one(K.fuel.back), one(K.fuel.lost)], ["Fuselage", one(K.fuselage.back), one(K.fuselage.lost)], ["Wings and tail", one(K.rest.back), one(K.rest.lost)]], "Bullet holes per plane", [`came home (${BM.returned})`, `never came back (${BM.lost})`]), "holes two");
+    s.say("Every part of the plane was hit about as often on both, except the engines. The planes hit in the engines never came home to be counted.");
+    s.say(c.reply, "reply");
+    s.note("bomber", "Where to armour the bombers", c.label, c.right, "survivors");
+    await s.cont(); if (!s.alive()) return;
+    s.card("The missing planes drift away into the clouds. They were never in the survey. They were the whole story.", "Afterwards");
+    await tween(3400, kk => { drift = ease(kk); }); if (!s.alive()) return;
+    await s.cont(); if (!s.alive()) return;
+    s.moral("The evidence you see has already been filtered by what it's evidence of. Armour the holes you can't see.");
+    await s.cont("Next plate"); if (!s.alive()) return;
+    next();
+  }
+  return {
+    enter() { story(); },
+    resize() { ink.retarget(hitTargets()); },
+    label: i => {
+      const h = HITS[i]; if (!h) return null;
+      const where = { engines: "an engine", fuel: "the fuel system", fuselage: "the fuselage", rest: "the wings or tail" }[h.zone];
+      return h.lost ? `A hit in ${where}, on a plane that never came back` : `A hit in ${where}, on a plane that came home`;
+    },
+  };
+})();
+
+
+// ---------- Plate V: the letter (a positive test), then framing ----------
+plates.letter = (() => {
+  const fig = $("#ts-fig"), ov = $("[data-plate=letter] svg.ov");
+  const PREVS = [.001, .005, .01, .02, .05, .1, .2, .5];
+  const perm = (() => { const r = rng(11), a = [...Array(CROWD).keys()]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; })();
+  const inN = p => { const n = Math.round(1 / p); return n >= 2 ? `1 in ${n.toLocaleString()}` : pct(p, 0); };
+  let phase = "cloud", prev = .01, res, people, k1 = 0, k2 = 0, fa = null, fb = null;
+  function assign() {
+    res = screen(CROWD, prev); SARAH = perm[res.ill];
+    people = Array.from({ length: CROWD }, () => ({ ill: false, pos: false }));
+    perm.slice(0, res.ill).forEach((p, i) => { people[p].ill = true; people[p].pos = i < res.tp; });
+    perm.slice(res.ill, res.ill + res.fp).forEach(p => { people[p].pos = true; });
+    people.map((p, i) => i).filter(i => people[i].pos).sort((a, b) => people[b].ill - people[a].ill).forEach((i, j) => { people[i].slot = j; });
+  }
+  // 1,000 people on the left; everyone who tests positive files into the box on the right
+  function layout() {
+    const b = box(fig), gw = b.w * .58, H = b.h - 80, cols = clamp(Math.round(Math.sqrt(CROWD * gw / H)), 20, 50), rows = Math.ceil(CROWD / cols);
+    const cell = Math.min(gw / cols, H / rows), bx = b.x + gw + cell * 3, bw = b.x + b.w - bx, pad = 12, full = rows * cell;
+    const bc = Math.min(cell, Math.sqrt((bw - 2 * pad) * (full - 2 * pad) / Math.max(res.pos, 1)) * .95), bcols = Math.max(1, Math.floor((bw - 2 * pad) / bc));
+    return { b, cols, cell, top: b.y + 46, box: { x: bx, y: b.y + 46, w: bw, h: Math.min(full, Math.ceil(Math.max(res.pos, 1) / bcols) * bc + 2 * pad) }, bc, bcols, pad };
+  }
+  // before the test: the patients drift as a cloud above the figure
+  let SARAH = perm[10]; // always the first false alarm: set in assign()
+  function cloudTargets() {
+    const b = box(fig), r = rng(4);
+    return Array.from({ length: CROWD }, (_, i) => i === SARAH ? { x: b.x + b.w * .52, y: b.y + b.h * .42, z: b.w * .28, r: 5, c: 1 } : { x: b.x + b.w * (.1 + .8 * r()), y: b.y + b.h * (.1 + .6 * r()), z: (r() - .5) * b.w * .9, r: 1.6 + r() * 1.6, c: i === 777 ? 2 : 4, a: i === 777 ? 1 : .45 + r() * .4 });
+  }
+  function testTargets() {
+    const Lo = layout();
+    return people.map((p, i) => {
+      const hx = Lo.b.x + (i % Lo.cols + .5) * Lo.cell, hy = Lo.top + (Math.floor(i / Lo.cols) + .5) * Lo.cell;
+      const c = k1 ? (p.ill ? 1 : 0) : 3, a = k1 ? (k2 && !p.pos ? .25 : 1) : .45, r = Lo.cell * .32;
+      if (!(p.pos && k2)) return { x: hx, y: hy, r: i === SARAH ? r * 1.5 : r, c: i === 777 ? 2 : c, a: i === 777 || i === SARAH ? 1 : a };
+      const j = p.slot, sx = Lo.box.x + Lo.pad + (j % Lo.bcols + .5) * Lo.bc, sy = Lo.box.y + Lo.pad + (Math.floor(j / Lo.bcols) + .5) * Lo.bc;
+      return { x: sx, y: sy, r: Lo.bc * (i === SARAH ? .45 : .32), c, a: 1 };
+    });
+  }
+  function testLabels() {
+    ov.innerHTML = "";
+    if (phase !== "grid") return;
+    const Lo = layout(), X = v => v - Lo.b.x, Y = v => v - Lo.b.y;
+    svgEl("text", { x: 0, y: 24 }, ov, "1,000 people tested");
+    if (!k2) return;
+    svgEl("rect", { x: X(Lo.box.x), y: Y(Lo.box.y), width: Lo.box.w, height: Lo.box.h, class: "ink", rx: 2 }, ov);
+    svgEl("text", { x: X(Lo.box.x), y: 24, style: "fill:" + C.ink }, ov, `tested positive: ${res.pos}`);
+    svgEl("text", { x: X(Lo.box.x), y: Y(Lo.box.y + Lo.box.h) + 24, style: "fill:" + C.madder }, ov, `${res.tp} have it`);
+    svgEl("text", { x: X(Lo.box.x + Lo.box.w), y: Y(Lo.box.y + Lo.box.h) + 24, "text-anchor": "end" }, ov, `${res.fp} don't`);
+    const t = testTargets()[SARAH];
+    svgEl("circle", { cx: X(t.x), cy: Y(t.y), r: 9, fill: "none", stroke: C.madder, "stroke-width": 1.5 }, ov);
+    svgEl("text", { x: X(t.x) + 12, y: Y(t.y) - 12, class: "halo", style: "fill:" + C.madder }, ov, "Sarah");
+  }
+  // two 10 x 10 arrays: the same facts, framed two ways
+  const frameBox = () => { const r = fig.getBoundingClientRect(), sp = Math.min(r.width * .34 / 10, (r.height - 240) / 10); return { sp, top: (r.height - 10 * sp) / 2 + 20 }; };
+  function frameTargets() {
+    const b = box(fig), { sp, top } = frameBox(), t = [];
+    const at = (cx, i) => ({ x: cx + ((i % 10) - 4.5) * sp, y: b.y + top + (Math.floor(i / 10) + .5) * sp, r: sp * .24 });
+    for (let i = 0; i < 100; i++) {
+      const dies = i >= 95; // the heart-surgery array: 5 of 100
+      if (fa) t[i] = { ...at(b.x + b.w * .25, i), c: dies ? 1 : 0, a: fa === "die" ? (dies ? 1 : .18) : (dies ? .18 : 1) };
+      const ill = i >= 93, extra = i === 93; // the bacon array: 6 get it anyway, 1 more with bacon
+      if (fb) t[100 + i] = { ...at(b.x + b.w * .75, i), c: ill ? 1 : 0, a: fb === "rel" ? .12 : ill ? 1 : .35, r: sp * (extra && fb === "abs" ? .38 : .24) };
+    }
+    if (fa) t[3] = { ...t[3], c: 2, a: 1 };
+    return t;
+  }
+  function frameLabels() {
+    ov.innerHTML = "";
+    const b = fig.getBoundingClientRect(), { sp, top } = frameBox(), q = s => `“${s}”`;
+    if (fa) {
+      svgEl("text", { x: b.width * .25, y: top - 62, "text-anchor": "middle", style: "font-size:24px;fill:" + C.ink }, ov, fa === "die" ? q("5% of children die") : q("95% of children survive"));
+      svgEl("text", { x: b.width * .25, y: top - 34, "text-anchor": "middle" }, ov, "after heart surgery");
+    }
+    if (fb) {
+      svgEl("text", { x: b.width * .75, y: top - 62, "text-anchor": "middle", style: "font-size:24px;fill:" + C.ink }, ov, fb === "rel" ? q("Bacon raises your cancer risk by 18%") : q("One extra case in every 100 bacon eaters"));
+      svgEl("text", { x: b.width * .75, y: top - 34, "text-anchor": "middle" }, ov, "lifetime risk of bowel cancer");
+      if (fb === "rel") svgEl("text", { x: b.width * .75, y: top + sp * 5 + sp * 1.3, "text-anchor": "middle", style: `font:400 ${sp * 4}px var(--serif);fill:${C.madder}` }, ov, "+18%");
+    }
+  }
+  const draw = () => { if (phase === "frame") { ink.retarget(frameTargets()); frameLabels(); } else if (phase === "grid") { ink.retarget(testTargets()); testLabels(); } else ink.retarget(cloudTargets()); };
+  async function story() {
+    const s = storyOf("letter", 7);
+    phase = "cloud"; prev = .01; k1 = k2 = 0; fa = fb = null; assign(); ov.innerHTML = "";
+    ink.to(cloudTargets(), 1600); ink.pose(orbit(fig, { dist: 1.5, elev: .35, speed: .05 }), 2000);
+    s.cap("Fig. 5a. Screening 1,000 people (Spiegelhalter, ch. 8). Sarah is invented; her odds are not.");
+
+    s.card("You are a GP. Your next patient is Sarah, 52, a primary-school teacher. Last month she went for a routine screening test.", "Tuesday, 11:40 am");
+    s.say("She was one of a thousand people screened that month. She's the red one.", "note");
+    await s.cont(); if (!s.alive()) return;
+    s.card("She sits down holding the letter from the screening service. Her hands are shaking. She hasn't opened it.", "11:42 am");
+    await s.cont("Open the letter"); if (!s.alive()) return;
+    s.card("POSITIVE", "11:43 am"); const l = host$("letter").querySelector(".card .line"); if (l) l.className = "big madder";
+    s.say("The disease is rare: 1 person in 100 has it. The test catches 90% of real cases, and wrongly flags 10% of healthy people.");
+    s.say("Sarah looks up at you: <em>“Doctor, how worried should I be?”</em>");
+    s.ask("What do you tell her?");
+    const c = await s.choose([
+      { label: "“It's 90% likely you have it”", right: false, reply: "You've just frightened a woman who is probably healthy." },
+      { label: "“It's about 50–50”", right: false, reply: "Still far too high. Most positives are false alarms." },
+      { label: "“Probably not. Let's do a second test”", right: true, reply: "Right. A positive here is far more likely to be a false alarm than the disease." },
+    ]);
+    if (!s.alive()) return;
+    s.card("Watch all thousand people take the same test.", "What a positive really means");
+    phase = "grid"; ink.flat(1600); ink.to(testTargets(), 1800); testLabels();
+    await sleep(1900); if (!s.alive()) return;
+    k1 = 1; ink.to(testTargets(), 900); await sleep(1100); if (!s.alive()) return;
+    k2 = 1; ink.to(testTargets(), 1700); testLabels(); await sleep(1800); if (!s.alive()) return;
+    s.el("p", pct(res.ppv, 0), "big");
+    const said = () => `At ${inN(prev)}, ${res.ppv < .5 ? "only " : ""}${res.tp} of the ${res.pos} people who tested positive actually have the disease. The ${res.well.toLocaleString()} healthy people produce ${res.fp} false alarms${res.ppv < .5 ? `, drowning the ${res.tp} real cases` : ""}.`;
+    const sub = s.say(said());
+    s.say("Sarah was one of the false alarms. Her second test came back clear.", "note");
+    s.say(c.reply, "reply");
+    s.note("gp", "Sarah's positive test", c.label, c.right, "drawn better");
+    s.el("div", `<label for="ts-prev">Now change how common the disease is</label><output id="ts-prev-out" for="ts-prev">${inN(prev)}</output><input type="range" id="ts-prev" min="0" max="7" step="1" value="2">`, "guess");
+    const pin = $("#ts-prev"), pout = $("#ts-prev-out"), big = [...host$("letter").querySelectorAll(".big")].pop();
+    if (pin) pin.oninput = () => { prev = PREVS[+pin.value]; pout.value = inN(prev); assign(); ink.retarget(testTargets()); testLabels(); if (big) big.textContent = pct(res.ppv, 0); if (sub) sub.textContent = said(); };
+    await s.cont("Same facts, other words"); if (!s.alive()) return;
+
+    // framing: you pick the words, then see the other wording on the same dots
+    phase = "frame"; ink.to([], 900); ov.innerHTML = "";
+    s.cap("Fig. 5b. Framing: the numbers don't change, the words do (Spiegelhalter, ch. 1 and 2).");
+    s.card("That afternoon you're asked to help the hospital's press office. Last year, 5 in every 100 children who had heart surgery here died.", "3:00 pm");
+    s.ask("Which line goes in the press release?");
+    const f1 = await s.choose([{ label: "“5% of children die”", v: "die" }, { label: "“95% of children survive”", v: "live" }]);
+    if (!s.alive()) return;
+    fa = f1.v; ink.to(frameTargets(), 900); frameLabels(); await sleep(2400); if (!s.alive()) return;
+    fa = fa === "die" ? "live" : "die"; ink.to(frameTargets(), 900); frameLabels();
+    s.say("Same hundred children, the other way round. Parents told “5% die” feel very differently from parents told “95% survive”.");
+    s.note("press", "The surgery press release", f1.label, null, "framing");
+    await s.cont(); if (!s.alive()) return;
+    s.card("On your way home, the evening paper calls. A study finds that eating bacon every day raises your lifetime risk of bowel cancer by 18%.", "6:30 pm");
+    s.ask("If you wrote the headline, which would it be?");
+    const f2 = await s.choose([{ label: "“Bacon raises your cancer risk by 18%”", v: "rel" }, { label: "“One extra case in every 100 bacon eaters”", v: "abs" }]);
+    if (!s.alive()) return;
+    fb = f2.v; ink.to(frameTargets(), 900); frameLabels(); await sleep(2400); if (!s.alive()) return;
+    fb = fb === "rel" ? "abs" : "rel"; ink.to(frameTargets(), 900); frameLabels(); await sleep(1800); if (!s.alive()) return;
+    fb = "abs"; ink.to(frameTargets(), 900); frameLabels();
+    s.say(`Same study. Out of 100 people, ${BACON.base} would get bowel cancer anyway; with bacon every day, ${Math.round(BACON.base * (1 + BACON.rel))}. That is the whole “18%”.`);
+    s.note("headline", "The bacon headline", f2.label, null, "framing");
+    await s.cont(); if (!s.alive()) return;
+    s.moral("When something is rare, most alarms are false. And the same fact can frighten or reassure. Ask for the count out of 100 before you feel anything.");
+    await s.cont("See your record"); if (!s.alive()) return;
+    next();
+  }
+  return {
+    enter() { story(); },
+    leave() { ov.innerHTML = ""; },
+    resize() { draw(); },
+    label: i => {
+      if (phase === "frame") return i < 100 ? (i >= 95 ? "A child who died" : "A child who survived") : i < 200 ? (i === 193 ? "The one extra case from bacon" : i >= 194 ? "Would get bowel cancer anyway" : "Won't get bowel cancer") : null;
+      if (i >= CROWD) return null;
+      const p = people[i]; if (i === SARAH) return phase === "cloud" ? "Sarah, 52" : `Sarah: ${p.ill ? "has it" : "doesn't have it"}${k2 ? (p.pos ? ", tested positive" : ", tested negative") : ""}`;
+      return phase === "cloud" ? "A patient" : `Patient ${i + 1}: ${k1 ? (p.ill ? "has it" : "doesn't have it") : "not yet tested"}${k2 ? (p.pos ? ", tested positive" : ", tested negative") : ""}`;
+    },
+  };
+})();
+
+// ---------- Plate III: the turkey ----------
+// 1,000 fed days wind up a spiral tower; the camera rides up it. Day 1,001 falls the whole height.
+plates.turkey = (() => {
+  const fig = $("#tk-fig"), T = turkey(), DAYS = 1000, LAST = DAYS; // dot 1,000 is day 1,001
+  let shown = 0, fallen = 0, doom = false;
+  const tower = () => { const b = box(fig), R = Math.min(b.w, b.h) * .26, Ht = b.h * 1.5; return { b, R, Ht, cx: b.x + b.w / 2, base: b.y + b.h * .92 }; };
+  function targets() {
+    const { R, Ht, cx, base } = tower(), t = [];
+    for (let d = 0; d < DAYS; d++) {
+      const th = d / DAYS * Math.PI * 2 * 14;
+      t[d] = d < shown ? { x: cx + R * Math.cos(th), y: base - Ht * d / DAYS, z: R * Math.sin(th), r: 1.6 + 1.4 * T.weight[d] / 20, c: d === 400 ? 2 : 0, a: .9 } : { x: cx + R * Math.cos(th), y: base - Ht * d / DAYS, z: R * Math.sin(th), r: 0, a: 0 };
+    }
+    const th = DAYS / DAYS * Math.PI * 2 * 14;
+    t[LAST] = doom ? { x: cx + R * Math.cos(th), y: lerp(base - Ht, base, fallen), z: R * Math.sin(th), r: 4.5, c: 1 } : { x: cx, y: base - Ht, z: 0, r: 0, a: 0 };
+    return t;
+  }
+  const ride = k => { const { b, Ht } = tower(); return orbit(fig, { dist: 1.3, elev: .22, speed: .09, lift: -b.h * .42 + Ht * k }); };
+  // the farm at dawn: a horizon on the ground and a glowing, hatched sun that climbs as the days pass
+  let sunK = 0, SUN = null;
+  function farm() {
+    const { R, Ht, cx, base } = tower(), pts = [], ring = [], sr = R * .35;
+    for (let i = 0; i < 96; i++) { const a = i / 96 * Math.PI * 2; pts.push([cx + R * 2.6 * Math.cos(a), base + 4, R * 2.6 * Math.sin(a)]); }
+    hairline(pts, { loop: true, opacity: .3 });
+    SUN = new THREE.Group(); ink.props.add(SUN);
+    for (let i = 0; i < 48; i++) { const a = i / 48 * Math.PI * 2; ring.push([sr * Math.cos(a), sr * Math.sin(a), 0]); }
+    sketch(ring, { loop: true, color: C.madder, opacity: .6, parent: SUN });
+    for (let k = -3; k <= 3; k++) { const yy = k * sr / 4, half = Math.sqrt(Math.max(0, sr * sr - yy * yy)); sketch([[-half, yy, 0], [half, yy, 0]], { color: C.madder, opacity: .3, parent: SUN }); }
+    const glow = ink.cloud(1, SUN, true); glow.put(0, 0, 0, 0, sr * 1.6, new THREE.Color(C.gold), .55); glow.commit();
+    SUN.userData = { x: cx + R * 1.9, base, Ht, z: -R * 1.5 };
+    placeSun();
+  }
+  function placeSun() { if (!SUN) return; const { x, base, Ht, z } = SUN.userData; SUN.position.set(x, -(base - Ht * (.1 + .95 * sunK)), z); }
+  async function story() {
+    const s = storyOf("turkey", 6);
+    shown = 0; fallen = 0; doom = false; sunK = 0;
+    ink.to(targets(), 600); setProps(farm); ink.pose(ride(0), 1800);
+    s.cap("Fig. 3. A thousand and one days (Taleb, The Black Swan, ch. 4). The turkey's confidence is Laplace's rule of succession; the turkey is simulated.");
+    s.card("You are a turkey. You hatched on a farm in Virginia. At dawn, the farmer comes out with a bucket of grain.", "Day 1, dawn");
+    const line = s.say("Your belly is empty.", "note");
+    await s.taps("Eat", 3, i => {
+      shown = i + 1; ink.retarget(targets());
+      if (line) line.textContent = `Day ${shown}: fed. You are ${pct(T.confidence[shown - 1], 0)} sure he'll come tomorrow.`;
+    });
+    if (!s.alive()) return;
+    s.card("He comes every morning. He even whistles. Each day you are fed, you grow a little more certain he means you well.", "Day 4");
+    await s.cont("Let the days pass"); if (!s.alive()) return;
+    s.card("The days blur into seasons.", "Day 5");
+    const when = host$("turkey").querySelector(".card .when"), mile = s.say("", "note");
+    const MILES = [[100, "The farmer knows your name."], [365, "A whole year of kindness."], [700, "You've never been happier. Or heavier."], [950, "Autumn again. The best grain yet."]];
+    let rider = 0;
+    ink.pose(t => ride(rider)(t), 400);
+    await tween(9000, k => {
+      shown = Math.max(4, Math.round(DAYS * k)); rider = k; sunK = k; ink.retarget(targets()); placeSun();
+      if (when) when.textContent = `Day ${shown.toLocaleString()}`;
+      const m = MILES.filter(([d]) => shown >= d).pop(); if (mile && m) mile.textContent = m[1];
+    });
+    if (!s.alive()) return;
+    s.card(`You have been fed a thousand times. By your own data, you are ${pct(T.confidence[DAYS - 1])} sure of tomorrow.`, "Day 1,000, evening");
+    s.ask("Tomorrow is the fourth Thursday in November. What do you do?");
+    const c = await s.choose([
+      { label: "Relax. A thousand good days can't be wrong", right: false, reply: "A thousand good days were exactly what made you so sure, and so wrong." },
+      { label: "Stay alert", right: true, reply: "Right to be wary: nothing in a thousand days of data could have warned you." },
+      { label: "Run", right: true, reply: "Run. The one day that mattered was never in the data." },
+    ]);
+    if (!s.alive()) return;
+    s.card("Thanksgiving.", "Day 1,001"); const l = host$("turkey").querySelector(".card .line"); if (l) l.className = "big madder";
+    doom = true; ink.retarget(targets()); await sleep(600); if (!s.alive()) return;
+    // the last day falls the whole height of the tower, and the camera follows it down
+    ink.pose(t => ride(1 - fallen)(t), 300);
+    await tween(2600, k => { fallen = k * k; ink.retarget(targets()); });
+    if (!s.alive()) return;
+    s.say(`By its own data the turkey was ${pct(T.confidence[DAYS - 1])} sure it would be fed, and it was never surer than on its last evening.`);
+    s.say(c.reply, "reply");
+    s.note("turkey", "The turkey's thousandth evening", c.label, c.right, "Extremistan");
+    await s.cont(); if (!s.alive()) return;
+    s.moral("A thousand calm days are not evidence of safety. In Extremistan the day that matters is not in the data, and your confidence can peak just when the risk does.");
+    await s.cont("Next plate"); if (!s.alive()) return;
+    next();
+  }
+  return {
+    enter() { story(); },
+    resize() { ink.retarget(targets()); },
+    label: i => i < DAYS && i < shown ? `Day ${i + 1}: fed, ${pct(T.confidence[i])} sure of tomorrow` : i === LAST && doom ? "Day 1,001" : null,
+  };
+})();
+
+// ---------- Plate IV: the Datasaurus ----------
+plates.dino = (() => {
+  const fig = $("#dn-fig"), ov = $("[data-plate=dino] svg.ov"), N = 142;
+  const SETS = [["dino", "a dinosaur"], ["star", "a star"], ["circle", "a circle"], ["bullseye", "a bullseye"], ["x_shape", "an X"]], L = "ABCDE";
+  let set = 0, flat = false, auto = false;
+  const Z = (() => { const r = rng(8); return Array.from({ length: N }, () => (r() - .5) * 2); })();
+  const plot = () => { const b = box(fig), sz = Math.min(b.w - 60, b.h - 90); return { b, x: b.x + (b.w - sz) / 2 + 20, y: b.y + (b.h - sz) / 2 - 10, s: sz }; };
+  function targets() {
+    const p = plot();
+    return DINO[SETS[set][0]].map(([x, y], i) => ({ x: p.x + p.s * x / 100, y: p.y + p.s * (1 - y / 100), z: flat ? 0 : Z[i] * p.s * .9, r: 3.2, c: i === 0 ? 2 : 0 }));
+  }
+  function axes() {
+    ov.innerHTML = "";
+    if (!flat) return;
+    const p = plot(), X = v => p.x - p.b.x + p.s * v / 100, Y = v => p.y - p.b.y + p.s * (1 - v / 100);
+    svgEl("line", { x1: X(0), x2: X(100), y1: Y(0), y2: Y(0), class: "ink" }, ov);
+    svgEl("line", { x1: X(0), x2: X(0), y1: Y(0), y2: Y(100), class: "ink" }, ov);
+    [0, 20, 40, 60, 80, 100].forEach(v => {
+      svgEl("line", { x1: X(v), x2: X(v), y1: Y(0), y2: Y(0) + 5, class: "ink" }, ov); svgEl("text", { x: X(v), y: Y(0) + 22, "text-anchor": "middle" }, ov, v);
+      svgEl("line", { x1: X(0) - 5, x2: X(0), y1: Y(v), y2: Y(v), class: "ink" }, ov); svgEl("text", { x: X(0) - 10, y: Y(v) + 5, "text-anchor": "end" }, ov, v);
+    });
+    svgEl("text", { x: X(100), y: Y(100) - 6, "text-anchor": "end", style: "fill:" + C.madder }, ov, `branch ${L[set]}: ${SETS[set][1]}`);
+  }
+  function pick(j) {
+    set = j; ink.to(targets(), 1300); axes();
+    document.querySelectorAll("#dn-table tbody tr").forEach((tr, i) => tr.classList.toggle("on", i === j));
+    document.querySelectorAll("#dn-tabs button").forEach((b, i) => b.setAttribute("aria-pressed", i === j));
+  }
+  // five report sheets on the desk; each prints its 142 numbers as rows of ink dots
+  let fan = 0, stage = "desk";
+  function sheet(k) {
+    const b = box(fig), sw = Math.min(b.w * .2, b.h * .32), sh = sw * 1.4, cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+    const e = ease(fan), x = cx + (k - 2) * sw * .92 * e, y = cy + Math.abs(k - 2) * sh * .06 * e, z = -Math.abs(k - 2) * sw * .35 * e + k * 2;
+    return { x, y, z, sw, sh };
+  }
+  function sheetTargets() {
+    const t = [];
+    for (let k = 0; k < 5; k++) {
+      const S = sheet(k);
+      for (let j = 0; j < N; j++) {
+        const col = j % 10, row = Math.floor(j / 10);
+        t[k * N + j] = { x: S.x - S.sw * .38 + col * S.sw * .084, y: S.y - S.sh * .3 + row * S.sh * .045, z: S.z + 1, r: 1.3, c: k === 0 && j === 0 ? 2 : 3, a: stage === "desk" ? 0 : .8 };
+      }
+    }
+    return t;
+  }
+  function sheets() {
+    for (let k = 0; k < 5; k++) {
+      const S = sheet(k), x0 = S.x - S.sw / 2, x1 = S.x + S.sw / 2, y0 = S.y - S.sh / 2, y1 = S.y + S.sh / 2;
+      hairline([[x0, y0, S.z], [x1, y0, S.z], [x1, y1, S.z], [x0, y1, S.z]], { loop: true, opacity: .55 });
+      hairline([[x0 + S.sw * .1, y0 + S.sh * .1, S.z], [x0 + S.sw * .5, y0 + S.sh * .1, S.z]], { opacity: .5 });
+    }
+  }
+  const scenery = () => { if (stage === "desk" || stage === "sheets") sheets(); };
+  async function story() {
+    const s = storyOf("dino", 6);
+    set = 0; flat = false; auto = false; fan = 0; stage = "desk"; ov.innerHTML = "";
+    ink.to(sheetTargets(), 900); setProps(scenery); ink.pose(orbit(fig, { dist: 1.5, elev: .45, speed: .02, phase: .15 }), 2000);
+    s.cap("Fig. 4. The Datasaurus Dozen (Matejka and Fitzmaurice, 2017): five of its thirteen sets, as cited by Spiegelhalter, ch. 2.");
+    s.card("You are an analyst for a chain of five regional branches. Their quarterly figures have just landed on your desk: 142 pairs of numbers each.", "Monday, 9:00 am");
+    await s.cont("Open the reports"); if (!s.alive()) return;
+    stage = "sheets";
+    await tween(1600, k => { fan = k; ink.set(sheetTargets()); setProps(scenery); }); if (!s.alive()) return;
+    s.card("You summarise each branch the way the board likes it: an average, a spread and a correlation for each column.", "9:20 am");
+    s.el("table", `<thead><tr><th>branch</th><th>mean x</th><th>mean y</th><th>SD x</th><th>SD y</th><th>r</th></tr></thead><tbody>${SETS.map(([k], j) => `<tr><td>${L[j]}</td>${dinoRow(k).map(v => `<td>${v}</td>`).join("")}</tr>`).join("")}</tbody>`, "stats").id = "dn-table";
+    s.say("Identical, all five, to one decimal place.", "note");
+    await s.cont("Take it to the boss"); if (!s.alive()) return;
+    s.card("Your boss has five minutes and one question: <em>“They're the same kind of branch, so one strategy for all five. Agreed?”</em>", "10:00 am, the boss's office");
+    s.ask("What do you say?");
+    const c = await s.choose([
+      { label: "Agreed. The numbers are identical", right: false, reply: "Identical numbers, completely different branches. The table could never have told you." },
+      { label: "Not until I've drawn them", right: true, reply: "Right. One chart and the “same” branches fall apart." },
+    ]);
+    if (!s.alive()) return;
+    s.card("Back at your desk, you lift branch A's numbers off the page, a cloud of 142 points, and turn them over.", "10:05 am");
+    stage = "cloud"; setProps(null);
+    ink.to(targets(), 1800); ink.pose(orbit(fig, { dist: 1.25, elev: .35, speed: .12, phase: 1.2 }), 2000);
+    await sleep(2600); if (!s.alive()) return;
+    s.say("Now flatten it onto the page.", "note");
+    await s.cont("Flatten it"); if (!s.alive()) return;
+    flat = true; ink.flat(1800); ink.to(targets(), 2000); await sleep(2000); if (!s.alive()) return;
+    axes(); pick(0);
+    s.card("A dinosaur. And the other four branches, with exactly the same numbers:", "10:07 am");
+    const tabs = s.el("div", SETS.map((_, j) => `<button class="btn ghost">${L[j]}</button>`).join(""), "btns"); if (tabs) tabs.id = "dn-tabs";
+    tabs?.querySelectorAll("button").forEach((b, j) => b.onclick = e => { auto = false; pick(j); if (e.detail) b.blur(); });
+    tabs?.querySelectorAll("button")[0].setAttribute("aria-pressed", true);
+    auto = !reduced; let last = performance.now();
+    onRaf(t => { if (auto && t - last > 3000) { last = t; pick((set + 1) % SETS.length); } });
+    s.say(c.reply, "reply");
+    s.note("dino", "Five branches, one summary", c.label, c.right, "drawn better");
+    await s.cont(); if (!s.alive()) return;
+    s.moral("Numbers that match can hide data that doesn't. Never trust a summary you haven't seen drawn.");
+    await s.cont("Next plate"); if (!s.alive()) return;
+    next();
+  }
+  return {
+    enter() { story(); },
+    leave() { ov.innerHTML = ""; auto = false; },
+    resize() { ink.retarget(stage === "cloud" ? targets() : sheetTargets()); axes(); },
+    label: i => stage !== "cloud" ? (i < 5 * N ? `Branch ${L[Math.floor(i / N)]}, row ${i % N + 1}` : null) : i < N ? `(${DINO[SETS[set][0]][i].map(v => v.toFixed(1)).join(", ")})` : null,
+  };
+})();
+
+// ---------- Plate VI: your record ----------
+plates.record = (() => {
+  const fig = $("#rc-fig");
+  const ORDER = ["bomber", "weight", "wealth", "turkey", "dino", "gp", "press", "headline"];
+  // the crowd as a slowly turning globe of ink
+  function globe() {
+    const b = box(fig), R = Math.min(b.w, b.h) * .36, cx = b.x + b.w / 2, cy = b.y + b.h / 2, n = INK, ga = Math.PI * (3 - Math.sqrt(5));
+    const wrong = Object.values(record).filter(r => r.right === false).length;
+    return Array.from({ length: n }, (_, i) => {
+      const y = 1 - 2 * (i + .5) / n, rr = Math.sqrt(1 - y * y), th = ga * i;
+      return { x: cx + R * rr * Math.cos(th), y: cy - R * y, z: R * rr * Math.sin(th), r: 2, c: i === 512 ? 2 : i % 97 < wrong ? 1 : 0, a: .85 };
+    });
+  }
+  async function story() {
+    const s = storyOf("record", 2);
+    ink.to(globe(), 2000); ink.pose(orbit(fig, { dist: 1.35, elev: .3, speed: .08 }), 2000);
+    s.cap("Every decision you made tonight, and the world it belonged to.");
+    const rows = ORDER.filter(k => record[k]);
+    if (!rows.length) { s.card("You haven't made any decisions yet. Take a seat in any story and come back here.", "Tonight"); await s.cont("Begin"); if (s.alive()) location.hash = "#bombers"; return; }
+    s.card("", "Tonight, you were");
+    const scored = rows.filter(k => record[k].right !== null), right = scored.filter(k => record[k].right).length;
+    s.el("ol", rows.map(k => { const r = record[k], m = r.right === null ? ["na", "~"] : r.right ? ["ok", "✓"] : ["no", "✗"]; const lesson = { Mediocristan: "Mediocristan: no one moves the total", Extremistan: "Extremistan: one can be everything", survivors: "The survivors' trap: count the graveyard", "drawn better": "A better picture", framing: "A choice of words: both are true" }[r.world];
+      return `<li><b class="${m[0]}">${m[1]}</b><span>${r.q}</span><small>You chose “${r.choice.replace(/^“|”$/g, "")}”. ${lesson}.</small></li>`; }).join(""), "rec");
+    if (scored.length) s.el("p", `${right} of ${scored.length}`, "big");
+    const fooled = rows.filter(k => record[k].right === false).map(k => record[k].world);
+    const verdict = !scored.length ? "" : !fooled.length ? "Your gut knew which world it was in every time. Few people manage that."
+      : fooled.includes("Extremistan") ? "Your gut was trained in Mediocristan, where the average is a fair guide. Out in Extremistan it trusted the past and the crowd a little too much. Most people's does."
+      : fooled.includes("survivors") ? "The survivors fooled you. Next time, ask where the graveyard is."
+      : fooled.includes("Mediocristan") ? "Your gut over-worried in Mediocristan, where no single case can move the total. Save the alarm for Extremistan."
+      : "Your gut read the world well, but the picture fooled it. Ask for it to be drawn better.";
+    if (verdict) s.say(verdict);
+    await s.cont(); if (!s.alive()) return;
+    s.moral("Which world you are in, and how you draw it, decide half the answer.");
+    await s.cont("Start again"); if (!s.alive()) return;
+    clearRecord(); location.hash = "#home";
+  }
+  return { enter() { story(); }, resize() { ink.retarget(globe()); }, label: () => null };
+})();
+
+// ---------- router, keys, idle ----------
+const order = ["home", ...[...document.querySelectorAll(".rail a")].map(a => a.hash.slice(1))];
+let cur = null;
+const next = () => { location.hash = "#" + order[(order.indexOf(cur) + 1) % order.length]; };
+function show() {
+  const id = order.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home";
+  if (cur) { stopAll(); RUN++; AC.abort(); AC = new AbortController(); plates[cur]?.leave?.(); propFn = null; ink.clearProps(); tip(null); }
+  document.body.dataset.wash = id;
+  document.querySelectorAll(".plate").forEach(s => s.classList.toggle("on", s.dataset.plate === id));
+  document.querySelectorAll(".rail a").forEach(a => a.hash === "#" + id ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  const host = $(`[data-plate=${id}] .story`); if (host) host.innerHTML = "";
+  cur = id; layoutKey = ""; look.yaw = look.pitch = 0; window.scrollTo(0, 0); plates[id]?.enter?.();
+}
+addEventListener("hashchange", show);
+// props (scenery) are rebuilt with the layout: plates register a builder with setProps
+let propFn = null;
+function setProps(fn) { propFn = fn; ink.clearProps(); fn && fn(); }
+let layoutKey = "";
+const ro = new ResizeObserver(() => {
+  const f = document.querySelector(".plate.on .fig"), r = f ? f.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };
+  const key = [innerWidth, innerHeight, r.left, r.top, r.width, r.height].map(Math.round).join();
+  if (key === layoutKey) return;
+  layoutKey = key; plates[cur]?.resize?.(); if (propFn) { ink.clearProps(); propFn(); }
+});
+ro.observe($("#ink"));
+document.querySelectorAll(".fig, .margin").forEach(f => ro.observe(f));
+
+addEventListener("pointermove", e => {
+  const i = ink.pick(e.clientX, e.clientY);
+  tip(e, i < 0 ? null : ink.D[i].c === 2 ? SWAN : plates[cur]?.label?.(i));
+});
+addEventListener("keydown", e => {
+  const t = e.target, slider = t.type === "range";
+  if (e.key === " " && t.tagName !== "BUTTON") {
+    e.preventDefault(); if (e.repeat) return;
+    if (document.querySelector(".plate.on .btn.hold")) return;
+    const go = [...document.querySelectorAll(".plate.on .btn.go")].pop(); go ? go.click() : plates[cur]?.primary?.();
+  } else if (!slider && !e.metaKey && !e.altKey && !e.ctrlKey && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+    const i = order.indexOf(cur) + (e.key === "ArrowRight" ? 1 : -1);
+    location.hash = "#" + order[(i + order.length) % order.length];
+  }
+});
+
+const qs = new URLSearchParams(location.search), IDLE = (+qs.get("idle") || 60) * 1000;
+let idleT;
+function poke() { clearTimeout(idleT); if (!qs.has("talk")) idleT = setTimeout(() => { clearRecord(); location.hash = "#home"; }, IDLE); }
+["pointermove", "pointerdown", "keydown"].forEach(ev => addEventListener(ev, poke, { passive: true }));
+poke(); show();
+</script>
+</body>
+</html>
