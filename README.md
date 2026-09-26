@@ -12,10 +12,13 @@ the data needs 3D, scale, or motion.
 |---|---|---|
 | [Shipman deaths by age](https://l69d.github.io/art-of-data/shipman-data/age_by_year.html) | [Shipman Inquiry case decisions](shipman-data/) — 531 deaths, 1974–1998 | SVG + vanilla JS |
 | [Which world are you in?](https://l69d.github.io/art-of-data/which-world/) | [Wald's bombers, the Datasaurus Dozen + figures from *The Black Swan* and *The Art of Statistics*](which-world/) — five dreamy stories you play from the driver's seat | three.js (vendored) + SVG, offline |
+| [Where the holes aren’t](https://l69d.github.io/art-of-data/holes/) | [Wald's bombers: 300 simulated sorties, holes per plane by part](holes/) — a four-minute interactive film, every frame drawn live | WebGL2 + WebAudio, no libraries, offline |
 
 ![Shipman deaths by age](shipman-data/shipman-scatter.png)
 
 ![Which world are you in? Plate I, the bombers that never came back](which-world/preview.png)
+
+![Where the holes aren’t: holes per plane on the planes that came home and the planes that didn’t](holes/preview.png)
 
 ## Layout
 
@@ -69,3 +72,10 @@ One folder per dataset. Each one holds:
   planes that came home, 1.0 on the ones that didn't); a dreamy, hand-inked look (watercolour
   washes, glowing floating points, gold dust, sketched lines, paper clouds and lanterns, a
   murmuration on the title page). The league table and the fund managers were cut.
+- **2026-09-26** — Where the holes aren't: Wald's bombers alone, as a four-minute interactive
+  film in `holes/`. You ride one of 300 simulated sorties through a raid, count the 748 holes
+  of the 250 planes that came home through a dozen generative art media, choose where the
+  armour goes, and watch the 50 lost planes' holes fall into the engines (0.2 holes per plane
+  on the survivors, 1.0 on the lost). A hand-written WebGL2 engine and a synthesized score, no
+  libraries; `test_model.mjs` and `test_film.py` check the numbers and that it runs offline.
+  Built with Claude, with parallel Claude agents on the media, the sky, the airfield and the sound.
