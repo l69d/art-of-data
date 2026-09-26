@@ -12,13 +12,13 @@ the data needs 3D, scale, or motion.
 |---|---|---|
 | [Shipman deaths by age](https://l69d.github.io/art-of-data/shipman-data/age_by_year.html) | [Shipman Inquiry case decisions](shipman-data/) — 531 deaths, 1974–1998 | SVG + vanilla JS |
 | [Which world are you in?](https://l69d.github.io/art-of-data/which-world/) | [Wald's bombers, the Datasaurus Dozen + figures from *The Black Swan* and *The Art of Statistics*](which-world/) — five dreamy stories you play from the driver's seat | three.js (vendored) + SVG, offline |
-| [What You Don’t See](https://l69d.github.io/art-of-data/holes/) | [Wald's bombers: 300 simulated sorties, holes per plane by part](holes/) — a four-minute interactive film, every frame drawn live | WebGL2 + WebAudio, no libraries, offline |
+| [What You Don’t See](https://l69d.github.io/art-of-data/holes/) | [Wald's bombers: 300 simulated sorties, the share of planes hit in each part](holes/) — a four-minute interactive film, every frame drawn live | WebGL2 + WebAudio, no libraries, offline |
 
 ![Shipman deaths by age](shipman-data/shipman-scatter.png)
 
 ![Which world are you in? Plate I, the bombers that never came back](which-world/preview.png)
 
-![What You Don’t See: holes per plane on the planes that came home and the planes that didn’t](holes/preview.png)
+![What You Don’t See: the share of planes hit in each part, for the planes that came home and the planes that didn’t](holes/preview.png)
 
 ## Layout
 
@@ -75,7 +75,8 @@ One folder per dataset. Each one holds:
 - **2026-09-26** — What You Don't See: Wald's bombers alone, as a four-minute interactive
   film in `holes/`. You ride one of 300 simulated sorties through a raid, count the 748 holes
   of the 250 planes that came home through a dozen generative art media, choose where the
-  armour goes, and watch the 50 lost planes' holes fall into the engines (0.2 holes per plane
-  on the survivors, 1.0 on the lost). A hand-written WebGL2 engine and a synthesized score, no
+  armour goes, and watch the 50 lost planes' holes fall into the engines (19% of the survivors
+  were hit in the engines, against 82% of the lost). The film closes on "Always question what
+  you don't see." A hand-written WebGL2 engine and a synthesized score, no
   libraries; `test_model.mjs` and `test_film.py` check the numbers and that it runs offline.
   Built with Claude, with parallel Claude agents on the media, the sky, the airfield and the sound.
