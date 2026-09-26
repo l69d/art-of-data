@@ -80,3 +80,15 @@ One folder per dataset. Each one holds:
   you don't see." A hand-written WebGL2 engine and a synthesized score, no
   libraries; `test_model.mjs` and `test_film.py` check the numbers and that it runs offline.
   Built with Claude, with parallel Claude agents on the media, the sky, the airfield and the sound.
+- **2026-09-26** — What You Don't See, later the same day:
+  - renamed from Where the holes aren't;
+  - the share of planes hit in each part is now the headline (engines 19% on the survivors against 82% on the lost);
+  - the heat map resolves into three coloured parts;
+  - "hits" replaces "holes" on screen;
+  - the count takes 3 s of holding;
+  - a mastered sound pass (audio-mix.html);
+  - two end panels, Explore the cost (tokens and time, measured from the session transcripts) and The team;
+  - fixes from a code review.
+
+  It is also published on its own at github.com/l69d/what-you-dont-see, with GitHub Pages, for the
+  Claude Opus Build Day.
